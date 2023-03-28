@@ -7,6 +7,8 @@ namespace RatingTime.Domain.Models
         public int Id { get; set; }
         [MinLength(3)]
         public string Username { get; set; }
+        [MinLength(3)]
+        [EmailAddress]
         public string Email { get; set; }
         [MinLength(8)]
         [DataType(DataType.Password)]
