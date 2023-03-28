@@ -25,6 +25,14 @@ export default function NavbarComponent() {
               </Link>
             </Nav.Link>
           </Nav>
+          <Nav.Link>
+              <Link id="profile-menu"
+                className="text-decoration-none text-white"
+                to="/rated-movies"
+              >
+                Profile
+              </Link>
+            </Nav.Link>
         </Navbar.Collapse>
       </Container>
     </Navbar>
