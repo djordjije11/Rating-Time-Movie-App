@@ -1,3 +1,22 @@
 #profile-menu{
   padding-left: 80%;
 }
+
+.footer-div{
+  background-color: #ede1d4;
+  padding: 20px;
+  
+}
+.info{
+  text-align: center;
+}
+.footer{
+  text-align: center;
+
+}
+
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
