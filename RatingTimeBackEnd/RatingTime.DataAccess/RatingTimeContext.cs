@@ -54,8 +54,7 @@ namespace RatingTime.DataAccess
                         .HasColumnType("nvarchar(320)");
             modelBuilder.Entity<User>()
                         .Property(u => u.Password)
-                        .HasMaxLength(40)
-                        .HasColumnType("varchar(40)");
+                        .HasColumnType("nvarchar(max)");
 
             modelBuilder.Entity<Movie>()
                         .Property(m => m.Title)

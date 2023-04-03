@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RatingTime.DataAccess\RatingTime.DataAccess.csproj" />
     <ProjectReference Include="..\RatingTime.DTO\RatingTime.DTO.csproj" />
+    <ProjectReference Include="..\RatingTime.Validation\RatingTime.Validation.csproj" />
   </ItemGroup>
 
 </Project>

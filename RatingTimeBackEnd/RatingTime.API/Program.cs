@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RatingTime.DataAccess;
+using RatingTime.DataAccess.Repositories.UserRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddDataProtection();
+
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers()
                 .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
