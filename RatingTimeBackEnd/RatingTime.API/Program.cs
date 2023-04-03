@@ -48,6 +48,16 @@ app.UseCors(myReactOrigin);
 
 app.UseAuthorization();
 
+app.MapGet("/username", (HttpContext context) =>
+    context.Request.Headers.Cookie.FirstOrDefault()
+);
+
+app.MapGet("/login", (HttpContext context) =>
+{
+    context.Response.Headers.SetCookie = "auth=usr:djordjo";
+    return "ok";
+});
+
 app.MapControllers();
 
 app.Run();

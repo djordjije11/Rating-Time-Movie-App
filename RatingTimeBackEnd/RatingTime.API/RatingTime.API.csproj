@@ -17,10 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RatingTime.DataAccess\RatingTime.DataAccess.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\RatingTime.DTO\RatingTime.DTO.csproj" />
   </ItemGroup>
 
 </Project>
