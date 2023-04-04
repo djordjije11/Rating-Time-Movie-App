@@ -20,3 +20,15 @@
   flex-direction: column;
   align-items: center;
 }
+
+/*HOME*/
+#inputSearch{
+  border-radius: 5px;
+  margin: 30px;
+  margin-left: 70px;
+}
+.movieWrapper{
+  display: flex;
+  justify-content: center;
+  flex-wrap:wrap;
+}
