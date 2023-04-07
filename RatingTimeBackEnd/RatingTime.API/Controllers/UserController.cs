@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
-using RatingTime.DataAccess.Repositories.UserRepository;
 using RatingTime.Domain.Models;
-using RatingTime.DTO.User;
-using RatingTime.Validation;
+using RatingTime.DTO.Models.Users;
+using RatingTime.Logic.Users;
+using RatingTime.Validation.Users;
 
 namespace RatingTime.API.Controllers
 {
@@ -11,61 +12,57 @@ namespace RatingTime.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _repository;
-        //private readonly IMapper _mapper;
-        private readonly IDataProtectionProvider _dataProtection;
+        private readonly IUserLogic userLogic;
+        private readonly IMapper mapper;
+        private readonly IDataProtectionProvider dataProtection;
+        private readonly UserValidator userValidator;
 
-        public UserController(IUserRepository repository, /*IMapper mapper,*/ IDataProtectionProvider dataProtection)
+        public UserController(IUserLogic userLogic, IMapper mapper, IDataProtectionProvider dataProtection, UserValidator userValidator)
         {
-            _repository = repository;
-            //_mapper = mapper;
-            _dataProtection = dataProtection;
+            this.userLogic = userLogic;
+            this.mapper = mapper;
+            this.dataProtection = dataProtection;
+            this.userValidator = userValidator;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult> Register([FromBody] UserRegister userRegister)
         {
-            if(await _repository.ExistsAsync(new User() { Username = userRegister.Username, Email = userRegister.Email }) == true)
+            var user = mapper.Map<User>(userRegister);
+
+            var validationResult = await userValidator.ValidateAsync(user);
+            if (validationResult.IsValid == false)
             {
-                return BadRequest(new { Error = "The username or email is already being used by an active user." });
+                return BadRequest(new { Errors = validationResult.Errors.Select(e => e.ErrorMessage) } );
             }
-            var user = new User()
+
+            try
             {
-                Username = userRegister.Username,
-                Password = userRegister.Password,
-                Email = userRegister.Email,
-            };
-            var validationResult = await (new UserValidator().ValidateAsync(user));
-            if(validationResult.IsValid == false)
+                await userLogic.RegisterAsync(user);
+            } 
+            catch(Exception ex)
             {
-                return BadRequest(new { Errors = validationResult.Errors.Select(e => e.ErrorMessage) });
+                return BadRequest(ex.Message);
             }
-            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            await _repository.SaveAsync(user);
-            await _repository.SaveChangesAsync();
-            return Ok();
+
+            return Ok("The user is registered.");
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] UserLogin userRegister)
+        public async Task<ActionResult> Login([FromBody] UserLogin userLogin)
         {
-            var user = new User()
+            var user = mapper.Map<User>(userLogin);
+
+            try
             {
-                Username = userRegister.Username,
-                Password = userRegister.Password,
-                Email = userRegister.Email,
-            };
-            var loggedInUser = await _repository.GetUserAsync(user);
-            if(loggedInUser == null)
-            {
-                return BadRequest(new { Error = "Wrong username or e-mail." });
+                await userLogic.LoginAsync(user);
             }
-            if(BCrypt.Net.BCrypt.Verify(userRegister.Password, loggedInUser.Password) == false) 
+            catch(Exception ex)
             {
-                return BadRequest(new { Error = "Wrong password." });
+                return BadRequest(ex.Message);
             }
 
-            return Ok();
+            return Ok("The user is logged in.");
         }
     }
 }

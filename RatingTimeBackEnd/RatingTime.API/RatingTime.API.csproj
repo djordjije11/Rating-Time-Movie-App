@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
       <PrivateAssets>all</PrivateAssets>
@@ -16,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RatingTime.DataAccess\RatingTime.DataAccess.csproj" />
     <ProjectReference Include="..\RatingTime.DTO\RatingTime.DTO.csproj" />
+    <ProjectReference Include="..\RatingTime.Logic\RatingTime.Logic.csproj" />
     <ProjectReference Include="..\RatingTime.Validation\RatingTime.Validation.csproj" />
   </ItemGroup>
 

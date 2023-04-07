@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\RatingTime.DataAccess\RatingTime.DataAccess.csproj" />
     <ProjectReference Include="..\RatingTime.Domain\RatingTime.Domain.csproj" />
   </ItemGroup>
 

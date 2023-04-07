@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using RatingTime.Domain.Models;
 
-namespace RatingTime.Validation
+namespace RatingTime.Validation.Users
 {
     public class UserValidator : AbstractValidator<User>
     {
@@ -22,10 +22,10 @@ namespace RatingTime.Validation
                                  .EmailAddress();
         }
 
-        protected bool HaveUpperCaseCharacter(string text) => text.Any(Char.IsUpper);
+        protected bool HaveUpperCaseCharacter(string text) => text.Any(char.IsUpper);
 
-        protected bool HaveLowerCaseCharacter(string text) => text.Any(Char.IsLower);
+        protected bool HaveLowerCaseCharacter(string text) => text.Any(char.IsLower);
 
-        protected bool HaveDigit(string text) => text.Any(Char.IsDigit);
+        protected bool HaveDigit(string text) => text.Any(char.IsDigit);
     }
 }
