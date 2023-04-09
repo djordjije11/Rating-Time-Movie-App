@@ -35,6 +35,7 @@ namespace RatingTime.API.Controllers
         }
 
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterAsync([FromBody] UserRegister userRegister)
         {
             var user = mapper.Map<User>(userRegister);
@@ -58,6 +59,7 @@ namespace RatingTime.API.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<string>> LoginAsync([FromBody] UserLogin userLogin)
         {
             var user = mapper.Map<User>(userLogin);
@@ -98,6 +100,7 @@ namespace RatingTime.API.Controllers
         }
 
         [HttpGet("refresh")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<string> Refresh()
         {
             if(session.UsersAuthenticationTokens.TryGetValue(Request.Cookies.First(c => c.Key == Session.REFRESH_TOKEN_KEY).Value, out string tokenToReturn) && tokenToReturn != null)
@@ -111,6 +114,7 @@ namespace RatingTime.API.Controllers
             }
         }
         [HttpGet("logout")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Logout()
         {
             session.UsersAuthenticationTokens.Remove(Request.Cookies.First(c => c.Key == Session.REFRESH_TOKEN_KEY).Value);
