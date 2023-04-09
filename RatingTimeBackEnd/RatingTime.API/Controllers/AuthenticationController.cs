@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using RatingTime.API.Options;
+using RatingTime.API.Sessions;
 using RatingTime.Domain.Models;
 using RatingTime.DTO.Models.Users;
 using RatingTime.Logic.Users;
 using RatingTime.Validation.Users;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -20,16 +22,16 @@ namespace RatingTime.API.Controllers
         private readonly IConfiguration configuration;
         private readonly IUserLogic userLogic;
         private readonly IMapper mapper;
-        private readonly IDataProtectionProvider dataProtection;
         private readonly UserValidator userValidator;
+        private readonly Session session;
 
-        public AuthenticationController(IConfiguration configuration, IUserLogic userLogic, IMapper mapper, IDataProtectionProvider dataProtection, UserValidator userValidator)
+        public AuthenticationController(IConfiguration configuration, IUserLogic userLogic, IMapper mapper, IDataProtectionProvider dataProtection, UserValidator userValidator, Session session)
         {
             this.configuration = configuration;
             this.userLogic = userLogic;
             this.mapper = mapper;
-            this.dataProtection = dataProtection;
             this.userValidator = userValidator;
+            this.session = session;
         }
 
         [HttpPost("register")]
@@ -82,7 +84,37 @@ namespace RatingTime.API.Controllers
             var jwtSecurityToken = new JwtSecurityToken(configuration[MyConfig.CONFIG_AUTH_ISSUER], configuration[MyConfig.CONFIG_AUTH_AUDIENCE], claimsForToken, DateTime.UtcNow, DateTime.UtcNow.AddDays(1), signingCredentials);
             var tokenToReturn = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
+            var refreshToken = Guid.NewGuid().ToString();
+            session.UsersAuthenticationTokens.Add(refreshToken, tokenToReturn);
+
+            CookieOptions cookieOptions = new()
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(1),
+            };
+            Response.Cookies.Append(Session.REFRESH_TOKEN_KEY, refreshToken, cookieOptions);
+
             return Ok(tokenToReturn);
+        }
+
+        [HttpGet("refresh")]
+        public ActionResult<string> Refresh()
+        {
+            if(session.UsersAuthenticationTokens.TryGetValue(Request.Cookies.First(c => c.Key == Session.REFRESH_TOKEN_KEY).Value, out string tokenToReturn) && tokenToReturn != null)
+            {
+                return Ok(tokenToReturn);
+            }
+            else
+            {
+                return BadRequest("Refresh token is not valid.");
+            
+            }
+        }
+        [HttpGet("logout")]
+        public ActionResult Logout()
+        {
+            session.UsersAuthenticationTokens.Remove(Request.Cookies.First(c => c.Key == Session.REFRESH_TOKEN_KEY).Value);
+            return NoContent();
         }
     }
 }

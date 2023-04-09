@@ -31,13 +31,22 @@ namespace RatingTime.Logic.Users.Impl
             return await context.Users.CountAsync();
         }
 
+        public async Task<List<Rating>> GetRatingsAsync(int userId)
+        {
+            return await context.Ratings.AsNoTracking()
+                                        .Include(r => r.Movie)
+                                        .Where(r => r.UserId == userId)
+                                        .Select(r => new Rating
+                                        {
+                                            Id = r.Id,
+                                            StarsNumber = r.StarsNumber,
+                                            Movie = r.Movie
+                                        })
+                                        .ToListAsync();
+        }
+
         public async Task<User> LoginAsync(User user)
         {
-            //var hashedPassword = await context.Users.AsNoTracking()
-            //                                        .Where(u => u.Username == user.Username || u.Email == user.Email)
-            //                                        .Select(u => u.Password)
-            //                                        .SingleOrDefaultAsync();
-
             var dbUser = await context.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Username == user.Username || u.Email == user.Email);
 
             if (dbUser == null)

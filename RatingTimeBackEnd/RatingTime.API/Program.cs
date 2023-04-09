@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RatingTime.API.Options;
+using RatingTime.API.Sessions;
 using RatingTime.DataAccess;
 using RatingTime.DTO.Models.Users;
 using RatingTime.Logic.Users;
@@ -33,6 +34,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDataProtection();
 
+builder.Services.AddSingleton<Session>();
 builder.Services.AddTransient<IUserLogic, UserLogic>();
 builder.Services.AddTransient<UserValidator>();
 builder.Services.AddAutoMapper(typeof(UserLogin).Assembly);
@@ -64,6 +66,12 @@ builder.Services.AddAuthentication("Bearer")
                     }
                 );
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("User", policy => policy.RequireAuthenticatedUser());
+    options.AddPolicy("Admin", policy => policy.RequireRole("admin"));
+});
+
 
 var app = builder.Build();
 
@@ -83,6 +91,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(MY_REACT_ORIGIN);
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
