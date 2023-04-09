@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using RatingTime.API.Options;
 using RatingTime.DataAccess;
 using RatingTime.DTO.Models.Users;
 using RatingTime.Logic.Users;
 using RatingTime.Logic.Users.Impl;
 using RatingTime.Validation.Users;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +51,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<RatingTimeContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 //builder.Services.AddAuthentication("cookie");
+builder.Services.AddAuthentication("Bearer")
+                .AddJwtBearer(options =>
+                    options.TokenValidationParameters = new()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration[MyConfig.CONFIG_AUTH_ISSUER],
+                        ValidAudience = builder.Configuration[MyConfig.CONFIG_AUTH_AUDIENCE],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration[MyConfig.CONFIG_AUTH_SECRET]))
+                    }
+                );
+
 
 var app = builder.Build();
 

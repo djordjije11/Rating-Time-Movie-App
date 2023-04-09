@@ -31,21 +31,25 @@ namespace RatingTime.Logic.Users.Impl
             return await context.Users.CountAsync();
         }
 
-        public async Task LoginAsync(User user)
+        public async Task<User> LoginAsync(User user)
         {
-            var hashedPassword = await context.Users.AsNoTracking()
-                                                    .Where(u => u.Username == user.Username || u.Email == user.Email)
-                                                    .Select(u => u.Password)
-                                                    .SingleOrDefaultAsync();
+            //var hashedPassword = await context.Users.AsNoTracking()
+            //                                        .Where(u => u.Username == user.Username || u.Email == user.Email)
+            //                                        .Select(u => u.Password)
+            //                                        .SingleOrDefaultAsync();
 
-            if (hashedPassword == null)
+            var dbUser = await context.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Username == user.Username || u.Email == user.Email);
+
+            if (dbUser == null)
             {
                 throw new Exception("Wrong username or e-mail.");
             }
-            if (BCrypt.Net.BCrypt.Verify(user.Password, hashedPassword) == false)
+            if (BCrypt.Net.BCrypt.Verify(user.Password, dbUser.Password) == false)
             {
                 throw new Exception("Wrong password.");
             }
+
+            return dbUser;
         }
 
         public async Task RegisterAsync(User user)

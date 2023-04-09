@@ -5,7 +5,7 @@ namespace RatingTime.Logic.Users
     public interface IUserLogic
     {
         Task RegisterAsync(User user);
-        Task LoginAsync(User user);
+        Task<User> LoginAsync(User user);
         Task<List<User>> GetAllAsync(int take = 100, int skip = 0);
         Task<List<User>> GetAllAsync();
         Task<int> GetCountAsync();
