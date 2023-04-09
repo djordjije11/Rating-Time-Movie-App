@@ -1,36 +1,74 @@
-﻿using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RatingTime.DataAccess.Repositories.UserRepository;
-using RatingTime.Domain.Models;
-using RatingTime.DTO.User;
+using RatingTime.DTO.Models.Ratings;
+using RatingTime.DTO.Models.Users;
+using RatingTime.DTO.Pagination;
+using RatingTime.Logic.Users;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace RatingTime.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _repository;
-        //private readonly IMapper _mapper;
-        private readonly IDataProtectionProvider _dataProtection;
+        private readonly IUserLogic userLogic;
+        private readonly IMapper mapper;
 
-        public UserController(IUserRepository repository, /*IMapper mapper,*/ IDataProtectionProvider dataProtection)
+        public UserController(IUserLogic userLogic, IMapper mapper)
         {
-            _repository = repository;
-            //_mapper = mapper;
-            _dataProtection = dataProtection;
+            this.userLogic = userLogic;
+            this.mapper = mapper;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Register([FromBody] UserRegister user)
+        [HttpGet("all"), Authorize(Policy = "Admin")]
+        public async Task<ActionResult<List<UserInfo>>> GetAll()
         {
-            if(await _repository.ExistsAsync(new User() { Username = user.Username }) == true)
+            //proveriti da li je administrator
+
+            return mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync());
+        }
+
+        [HttpGet, Authorize(Policy = "Admin")]
+        public async Task<ActionResult<List<UserInfo>>> GetAllAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 40)
+        {
+            if(pageNumber < 1 || pageSize < 1)
             {
-                return BadRequest(new { Error = "The username is already being used by an active user." });
+                return BadRequest("Query parameters are not valid.");
             }
+            if(pageSize > 200)
+            {
+                return BadRequest("Page size cannot be upper than 200.");
+            }
+            //proveriti da li je administrator
 
+            var paginationMetadata = new PaginationMetadata() {
+                CurrentPage = pageNumber,
+                PageSize = pageSize,
+                TotalItemCount = await userLogic.GetCountAsync()
+            };
 
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+            return mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync(pageSize, pageSize * (pageNumber - 1)));
+        }
+
+        [HttpGet("ratings"), Authorize(Policy = "User")]
+        public async Task<ActionResult<List<UserRatingInfo>>> GetRatingsAsync()
+        {
+            try
+            {
+                int userId = int.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var userRatings = mapper.Map<List<UserRatingInfo>>(await userLogic.GetRatingsAsync(userId));
+                return Ok(userRatings);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

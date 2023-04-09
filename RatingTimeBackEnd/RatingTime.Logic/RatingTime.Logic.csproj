@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.5.1" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\RatingTime.DataAccess\RatingTime.DataAccess.csproj" />
     <ProjectReference Include="..\RatingTime.Domain\RatingTime.Domain.csproj" />
   </ItemGroup>
 
