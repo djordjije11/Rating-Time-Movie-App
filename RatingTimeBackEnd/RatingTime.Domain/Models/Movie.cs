@@ -10,7 +10,7 @@ namespace RatingTime.Domain.Models
         public int TmdbId { get; set; }
         public string Title { get; set; }
         public string? ImageUrl { get; set; }
-        public List<Rating> Ratings { get; set; } = new List<Rating>();
+        //public List<Rating> Ratings { get; set; } = new List<Rating>();
         public List<MovieGenre> MovieGenreList { get; set; } = new List<MovieGenre>();
     }
 }

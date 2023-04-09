@@ -25,8 +25,16 @@ namespace RatingTime.API.Controllers
             this.userValidator = userValidator;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<UserInfo>>> GetAll()
+        {
+            //proveriti da li je administrator
+
+            return mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync());
+        }
+
         [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody] UserRegister userRegister)
+        public async Task<IActionResult> Register([FromBody] UserRegister userRegister)
         {
             var user = mapper.Map<User>(userRegister);
 
@@ -49,7 +57,7 @@ namespace RatingTime.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] UserLogin userLogin)
+        public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
             var user = mapper.Map<User>(userLogin);
 

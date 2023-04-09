@@ -10,6 +10,8 @@ namespace RatingTime.DTO.Profiles.Users
         {
             CreateMap<UserLogin, User>();
             CreateMap<UserRegister, User>();
+            CreateMap<User, UserInfo>();
+            CreateMap<User, UserDetailInfo>();
         }
     }    
 }

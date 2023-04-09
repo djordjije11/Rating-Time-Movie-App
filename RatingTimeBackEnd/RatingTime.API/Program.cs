@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
+using RatingTime.API.Options;
 using RatingTime.DataAccess;
 using RatingTime.DTO.Models.Users;
 using RatingTime.Logic.Users;
@@ -33,10 +35,12 @@ builder.Services.AddTransient<IUserLogic, UserLogic>();
 builder.Services.AddTransient<UserValidator>();
 builder.Services.AddAutoMapper(typeof(UserLogin).Assembly);
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(options => {
+    options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+    options.ReturnHttpNotAcceptable = true;
+    })
+                .AddXmlDataContractSerializerFormatters()
                 .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
-
-builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -53,6 +57,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+} else if (app.Environment.IsProduction())
+{
+    app.Services.GetService<ILoggerFactory>().AddFile(builder.Configuration["Logging:LogFile:Path"].ToString());
 }
 
 app.UseHttpsRedirection();

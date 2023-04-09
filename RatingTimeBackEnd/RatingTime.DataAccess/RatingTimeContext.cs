@@ -76,25 +76,25 @@ namespace RatingTime.DataAccess
 
             modelBuilder.Entity<Rating>()
                         .HasOne(r => r.Movie)
-                        .WithMany(m => m.Ratings)
+                        .WithMany(/*m => m.Rating*/)
                         .HasForeignKey(r => r.MovieId)
                         .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Rating>()
                         .HasOne(r => r.User)
-                        .WithMany(r => r.Ratings)
+                        .WithMany(u => u.Ratings)
                         .HasForeignKey(r => r.UserId)
                         .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<MovieGenre>()
                         .HasOne(mg => mg.Movie)
-                        .WithMany(mg => mg.MovieGenreList)
+                        .WithMany(m => m.MovieGenreList)
                         .HasForeignKey(mg => mg.MovieId)
                         .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<MovieGenre>()
                         .HasOne(mg => mg.Genre)
-                        .WithMany(mg => mg.MovieGenreList)
+                        .WithMany(/*g => g.MovieGenreList*/)
                         .HasForeignKey(mg => mg.GenreId)
                         .OnDelete(DeleteBehavior.Cascade);
 
