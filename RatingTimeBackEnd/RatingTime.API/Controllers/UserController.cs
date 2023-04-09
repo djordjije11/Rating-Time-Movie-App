@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using RatingTime.Domain.Models;
 using RatingTime.DTO.Models.Users;
+using RatingTime.DTO.Pagination;
 using RatingTime.Logic.Users;
 using RatingTime.Validation.Users;
+using System.Text.Json;
 
 namespace RatingTime.API.Controllers
 {
@@ -25,7 +27,7 @@ namespace RatingTime.API.Controllers
             this.userValidator = userValidator;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<List<UserInfo>>> GetAll()
         {
             //proveriti da li je administrator
@@ -33,8 +35,32 @@ namespace RatingTime.API.Controllers
             return mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync());
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<UserInfo>>> GetAllAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 40)
+        {
+            if(pageNumber < 1 || pageSize < 1)
+            {
+                return BadRequest("Query parameters are not valid.");
+            }
+            if(pageSize > 200)
+            {
+                return BadRequest("Page size cannot be upper than 200.");
+            }
+            //proveriti da li je administrator
+
+            var paginationMetadata = new PaginationMetadata() {
+                CurrentPage = pageNumber,
+                PageSize = pageSize,
+                TotalItemCount = await userLogic.GetCountAsync()
+            };
+
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+            return mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync(pageSize, pageSize * (pageNumber - 1)));
+        }
+
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegister userRegister)
+        public async Task<IActionResult> RegisterAsync([FromBody] UserRegister userRegister)
         {
             var user = mapper.Map<User>(userRegister);
 
@@ -57,7 +83,7 @@ namespace RatingTime.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
+        public async Task<IActionResult> LoginAsync([FromBody] UserLogin userLogin)
         {
             var user = mapper.Map<User>(userLogin);
 

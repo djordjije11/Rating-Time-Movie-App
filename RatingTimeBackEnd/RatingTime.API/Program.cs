@@ -11,10 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-string myReactOrigin = "myReactOrigin";
+string MY_REACT_ORIGIN = "my-react-origin";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: myReactOrigin,
+    options.AddPolicy(name: MY_REACT_ORIGIN,
                       policy =>
                       {
                           policy
@@ -57,14 +57,17 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-} else if (app.Environment.IsProduction())
-{
-    app.Services.GetService<ILoggerFactory>().AddFile(builder.Configuration["Logging:LogFile:Path"].ToString());
+
+    IConfigurationSection configLogFileSection = app.Configuration.GetSection("Logging").GetSection("LogFile");
+    if (configLogFileSection.GetValue<bool>("Include") == true)
+    {
+        app.Services.GetService<ILoggerFactory>().AddFile(configLogFileSection.GetValue<string>("Path"));
+    }
 }
 
 app.UseHttpsRedirection();
 
-app.UseCors(myReactOrigin);
+app.UseCors(MY_REACT_ORIGIN);
 
 app.UseAuthorization();
 
