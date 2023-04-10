@@ -1,5 +1,5 @@
 
-import { right } from "@popperjs/core";
+
 import Film from "./Film";
 import { useState, useEffect } from "react";
 
@@ -39,7 +39,7 @@ export default function Home(props) {
         `https://api.themoviedb.org/3/movie/popular?api_key=8771fe8f23902acbfebb7de7c98e45ec&page=${pageNumber}`
       );
       const responseJson = await response.json();
-      const topMovies = responseJson.results.slice(0, 40)
+      const topMovies = responseJson.results.slice(0, 15)
         .map(result => {
           return {
             title: result.title,
@@ -87,6 +87,7 @@ export default function Home(props) {
       });
     setMovies(moviesByGenre);
   }
+  
   const handleClose = () => {
     setFilmTitle("");
     setFilmImageUrl("");

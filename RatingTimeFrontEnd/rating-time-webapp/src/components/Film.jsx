@@ -52,6 +52,7 @@ export default function Film(props) {
           />
         )}
         <p className="movieTitle">{props.title}</p>
+       
       </div>
     );
   }
