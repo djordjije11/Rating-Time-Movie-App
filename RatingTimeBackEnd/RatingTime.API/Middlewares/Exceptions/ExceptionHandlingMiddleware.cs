@@ -33,11 +33,11 @@ namespace RatingTime.API.Middlewares.Exceptions
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     return context.Response.WriteAsJsonAsync(new {exception.Message});
                 case Exception:
-                    logger.LogCritical($"{DateTime.Now}: {ToString()}\nMessage: {exception.Message}");
+                    logger.LogCritical(exception ,$"{DateTime.Now}: {ToString()}\nMessage: {exception.Message}");
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     return context.Response.WriteAsJsonAsync(new { message = "The action is not done successfully." });
                 default:
-                    logger.LogCritical($"{DateTime.Now}: {ToString()}\nMessage: {exception.Message}");
+                    logger.LogCritical(exception, $"{DateTime.Now}: {ToString()}\nMessage: {exception.Message}");
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     return context.Response.WriteAsJsonAsync(new { message = "The action is not done successfully." });
             }
