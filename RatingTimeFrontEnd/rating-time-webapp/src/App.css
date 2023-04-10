@@ -26,6 +26,12 @@
   margin: 30px;
   margin-left: 70px;
 }
+
+.movieTitle{
+  font-size: 18px;
+  text-align: center;
+  max-width: 280px;
+}
 .movieWrapper{
   display: flex;
   justify-content: center;
@@ -39,4 +45,5 @@
 
 #txtInput{
   margin: 2%;
+  margin-left: 4%;
 }
