@@ -3,9 +3,27 @@ import Film from "./Film";
 import { useState, useEffect } from "react";
 
 export default function Home(props) {
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [txtState, setTxtState] = useState("");
+  const [filmTitle, setFilmTitle] = useState("");
+  const [filmImageUrl, setFilmImageUrl] = useState("");
+  // const [rating, setRating] = useState(0);
+  const filmShown = filmTitle !== "";
+
+
+  const getMovieFromSearch= async function(title){
+    const response= await fetch (
+      `https://api.themoviedb.org/3/search/movie?api_key=8771fe8f23902acbfebb7de7c98e45ec&query=${title}`
+    );
+    const responseJson= await response.json();
+    setFilmImageUrl(
+      `https://image.tmdb.org/t/p/original/${responseJson.results[0].poster_path}`
+    );
+    setFilmTitle(responseJson.results[0].title);
+  }
 
   useEffect(() => {
     const getTopMovies = async function(pageNumber) {
@@ -31,19 +49,45 @@ export default function Home(props) {
     setCurrentPage(pageNumber);
   }
 
+  const handleClose = () => {
+    setFilmTitle("");
+    setFilmImageUrl("");
+    setTxtState("");
+  };
+
   return (
     <>
+    
       <div>
-        <input type="text" id="inputSearch" />
-        <button>Search</button>
+        <input id="txtInput"
+            onClick={() => {
+              handleClose();
+            }}
+            type="text"
+            value={txtState}
+            onChange={(event) => setTxtState(event.target.value)}
+          />
+        <button onClick={() => getMovieFromSearch(txtState)}>Search</button>
       </div>
+      {filmShown && (
+        <div className="movieSearch">
+            <Film
+              title={filmTitle}
+              image={filmImageUrl}
+              filmShown={true}
+              setFilmTitle={setFilmTitle}
+              setFilmImageUrl={setFilmImageUrl}
+          />
+
+          </div>
+      )}
+
       <div className="movieWrapper">
         {movies.map((movie, index) => (
           <Film
             key={index}
             title={movie.title}
             image={movie.imageUrl}
-            setMessage={setMessage}
             filmShown={true}
             rating={movie.rating}
           />

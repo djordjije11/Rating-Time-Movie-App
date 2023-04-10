@@ -14,7 +14,6 @@
   text-align: center;
 
 }
-
 .login-wrapper {
   display: flex;
   flex-direction: column;
@@ -31,4 +30,13 @@
   display: flex;
   justify-content: center;
   flex-wrap:wrap;
+}
+
+.movieSearch{
+  display:flex;
+  justify-content: center;
+}
+
+#txtInput{
+  margin: 2%;
 }
