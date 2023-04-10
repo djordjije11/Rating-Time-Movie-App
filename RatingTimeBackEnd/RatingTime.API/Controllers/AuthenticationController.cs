@@ -45,34 +45,20 @@ namespace RatingTime.API.Controllers
                 return BadRequest(new { Errors = validationResult.Errors.Select(e => e.ErrorMessage) });
             }
 
-            try
-            {
-                await userLogic.RegisterAsync(user);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await userLogic.RegisterAsync(user);
 
             return Ok("The user is registered.");
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> LoginAsync([FromBody] UserLogin userLogin)
         {
             var user = mapper.Map<User>(userLogin);
 
             User loggedInUser;
 
-            try
-            {
-                loggedInUser = await userLogic.LoginAsync(user);
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(ex.Message);
-            }
+            loggedInUser = await userLogic.LoginAsync(user);
 
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration[MyConfig.CONFIG_AUTH_SECRET]));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -108,7 +94,7 @@ namespace RatingTime.API.Controllers
             }
             else
             {
-                return BadRequest("Refresh token is not valid.");
+                return BadRequest(new { message = "Refresh token is not valid." });
             }
         }
         [HttpGet("logout")]

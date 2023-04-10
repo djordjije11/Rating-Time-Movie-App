@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using RatingTime.DataAccess;
 using RatingTime.Domain.Models;
 using RatingTime.Logic.Exceptions;
@@ -9,12 +8,10 @@ namespace RatingTime.Logic.Users.Impl
     public class UserLogic : IUserLogic
     {
         private readonly RatingTimeContext context;
-        private readonly ILogger<UserLogic> logger;
 
-        public UserLogic(RatingTimeContext context, ILogger<UserLogic> logger)
+        public UserLogic(RatingTimeContext context)
         {
             this.context = context;
-            this.logger = logger;
         }
 
         public async Task<List<User>> GetAllAsync()
@@ -87,8 +84,7 @@ namespace RatingTime.Logic.Users.Impl
             }
             catch(Exception ex)
             {
-                logger.LogCritical($"{DateTime.Now}: {ToString()} - Database Exception! The user is not saved successfully while registering.\n{ex.Message}");
-                throw new Exception("The user is not registered.", ex);
+                throw new Exception($"{DateTime.Now}: {ToString()} - Database Exception! The user is not saved successfully while registering.\n{ex.Message}", ex);
             }
             
         }
