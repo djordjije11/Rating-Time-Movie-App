@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using RatingTime.DataAccess;
 using RatingTime.Domain.Models;
+using RatingTime.Logic.Exceptions;
 
 namespace RatingTime.Logic.Users.Impl
 {
@@ -31,6 +32,9 @@ namespace RatingTime.Logic.Users.Impl
             return await context.Users.CountAsync();
         }
 
+        /// <inheritdoc/>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="OperationCanceledException"></exception>
         public async Task<List<Rating>> GetRatingsAsync(int userId)
         {
             return await context.Ratings.AsNoTracking()
@@ -51,11 +55,11 @@ namespace RatingTime.Logic.Users.Impl
 
             if (dbUser == null)
             {
-                throw new Exception("Wrong username or e-mail.");
+                throw new LogicException("Wrong username or e-mail.");
             }
             if (BCrypt.Net.BCrypt.Verify(user.Password, dbUser.Password) == false)
             {
-                throw new Exception("Wrong password.");
+                throw new LogicException("Wrong password.");
             }
 
             return dbUser;
@@ -66,7 +70,7 @@ namespace RatingTime.Logic.Users.Impl
             bool userExists = await context.Users.AnyAsync(u => u.Username == user.Username || u.Email == user.Email);
             if (userExists)
             {
-                throw new Exception("The username or email is already being used by an active user.");
+                throw new LogicException("The username or email is already being used by an active user.");
             }
             
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
@@ -84,7 +88,7 @@ namespace RatingTime.Logic.Users.Impl
             catch(Exception ex)
             {
                 logger.LogCritical($"{DateTime.Now}: {ToString()} - Database Exception! The user is not saved successfully while registering.\n{ex.Message}");
-                throw new Exception("The user is not registered.");
+                throw new Exception("The user is not registered.", ex);
             }
             
         }

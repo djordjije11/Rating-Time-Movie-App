@@ -9,7 +9,6 @@ using RatingTime.DTO.Models.Users;
 using RatingTime.Logic.Users;
 using RatingTime.Validation.Users;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -110,7 +109,6 @@ namespace RatingTime.API.Controllers
             else
             {
                 return BadRequest("Refresh token is not valid.");
-            
             }
         }
         [HttpGet("logout")]
