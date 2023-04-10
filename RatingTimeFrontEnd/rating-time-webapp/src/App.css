@@ -1,19 +1,4 @@
-#profile-menu{
-  padding-left: 80%;
-}
 
-.footer-div{
-  background-color: #ede1d4;
-  padding: 20px;
-  
-}
-.info{
-  text-align: center;
-}
-.footer{
-  text-align: center;
-
-}
 .login-wrapper {
   display: flex;
   flex-direction: column;
@@ -39,11 +24,18 @@
 }
 
 .movieSearch{
-  display:flex;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #txtInput{
   margin: 2%;
   margin-left: 4%;
+}
+
+.btnRating{
+  width: 10rem;
+  height: 3rem;
+  text-align: center;
 }

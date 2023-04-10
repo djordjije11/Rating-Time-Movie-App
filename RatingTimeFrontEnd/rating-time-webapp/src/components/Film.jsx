@@ -1,4 +1,5 @@
-
+import EmptyStar from "./EmptyStar";
+import FullStar from "./FullStar";
 import { useState} from "react";
 export default function Film(props) {
 
@@ -26,10 +27,10 @@ export default function Film(props) {
         style={{
           display: "flex",
           flexDirection: "column",
-          margin: "30px",
+          margin: "1%",
         }}
       >
-        {props.filmShown && props.isSearchedMovie && (
+        {props.isSearchedMovie && (
           <button
             id="closeButton"
             style={{ alignSelf: "flex-end" }}
@@ -38,7 +39,6 @@ export default function Film(props) {
             X
           </button>
         )}
-        {!isClosed && (
           <img
             className="movieImg"
             src={props.image}
@@ -50,9 +50,22 @@ export default function Film(props) {
               height: "28rem",
             }}
           />
-        )}
         <p className="movieTitle">{props.title}</p>
-       
+        <div style={{textAlign:"center"}}>
+        {Array.from({ length: 5 }, (_, i) => i + 1).map((index) => (
+          <span onClick={() => props.setRating(index)}>
+            {props.filmShown ? (
+              props.rating < index ? (
+                <EmptyStar />
+              ) : (
+                <FullStar />
+              )
+            ) : (
+              <></>
+            )}
+          </span>
+        ))}
+      </div>
       </div>
     );
   }

@@ -1,17 +1,18 @@
-
-
 import Film from "./Film";
 import { useState, useEffect } from "react";
 
 export default function Home(props) {
+
   const [movies, setMovies] = useState([]);
+  const [searchedMovies, setSearchedMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [txtState, setTxtState] = useState("");
   const [filmTitle, setFilmTitle] = useState("");
   const [filmImageUrl, setFilmImageUrl] = useState("");
   const [filmShown, setFilmShown] = useState(false);
   const [genres, setGenres] = useState([]);
-
+  const [rating, setRating]= useState(0);
+  const [message, setMessage]= useState("");
   const getGenres = async function() {
     const response = await fetch(
       `https://api.themoviedb.org/3/genre/movie/list?api_key=8771fe8f23902acbfebb7de7c98e45ec`
@@ -31,7 +32,9 @@ export default function Home(props) {
     );
     setFilmTitle(responseJson.results[0].title);
     setFilmShown(true);
+    setRating(0);
   };
+
 
   useEffect(() => {
     const getTopMovies = async function(pageNumber) {
@@ -44,7 +47,7 @@ export default function Home(props) {
           return {
             title: result.title,
             imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-            rating: 0
+            rating: rating
           };
         });
       setMovies(topMovies);
@@ -64,7 +67,7 @@ export default function Home(props) {
       return {
         title: result.title,
         imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-        rating: 0
+        rating: rating
       };
     });
     setMovies(moviesByGenre);
@@ -82,21 +85,26 @@ export default function Home(props) {
         return {
           title: result.title,
           imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-          rating: 0
+          rating: rating
         };
       });
     setMovies(moviesByGenre);
   }
   
+ 
   const handleClose = () => {
     setFilmTitle("");
     setFilmImageUrl("");
     setTxtState("");
+    setRating(0);
     setFilmShown(false);
-  };
+    
 
+  };
+  
   return (
     <>
+    
       <div>
        
         <input 
@@ -122,14 +130,18 @@ export default function Home(props) {
           <Film
             title={filmTitle}
             image={filmImageUrl}
-            filmShown={filmShown}
+            filmShown={true}
             setFilmTitle={setFilmTitle}
             setFilmImageUrl={setFilmImageUrl}
             handleClose={handleClose}
             isSearchedMovie={true}
+            rating={rating}
+            setRating={setRating}
           />
+          
         </div>
       )}
+       
       <div className="movieWrapper">
         {movies.map((movie, index) => (
           <Film
@@ -139,8 +151,10 @@ export default function Home(props) {
             filmShown={false}
             rating={movie.rating}
             isSearchedMovie={false}
+            
           />
         ))}
+
       </div>
       <div className="pagination">
         <button onClick={() => handlePageChange(1)}>1</button>
