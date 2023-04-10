@@ -1,108 +1,5 @@
 
-// import Film from "./Film";
-// import { useState, useEffect } from "react";
-
-// export default function Home(props) {
-//   // const [message, setMessage] = useState("");
-//   const [movies, setMovies] = useState([]);
-//   const [currentPage, setCurrentPage] = useState(1);
-
-//   const [txtState, setTxtState] = useState("");
-//   const [filmTitle, setFilmTitle] = useState("");
-//   const [filmImageUrl, setFilmImageUrl] = useState("");
-//   // const [rating, setRating] = useState(0);
-//   const filmShown = filmTitle !== "";
-
-
-//   const getMovieFromSearch= async function(title){
-//     const response= await fetch (
-//       `https://api.themoviedb.org/3/search/movie?api_key=8771fe8f23902acbfebb7de7c98e45ec&query=${title}`
-//     );
-//     const responseJson= await response.json();
-//     setFilmImageUrl(
-//       `https://image.tmdb.org/t/p/original/${responseJson.results[0].poster_path}`
-//     );
-//     setFilmTitle(responseJson.results[0].title);
-//   }
-
-//   useEffect(() => {
-//     const getTopMovies = async function(pageNumber) {
-//       const response = await fetch(
-//         `https://api.themoviedb.org/3/movie/popular?api_key=8771fe8f23902acbfebb7de7c98e45ec&page=${pageNumber}`
-//       );
-//       const responseJson = await response.json();
-//       const topMovies = responseJson.results.slice(0, 20)
-//         .map(result => {
-//           return {
-//             title: result.title,
-//             imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-//             rating: 0
-//           };
-//         });
-//       setMovies(topMovies);
-      
-//     }
-//     getTopMovies(currentPage);
-//   }, [currentPage]);
-
-//   const handlePageChange = (pageNumber) => {
-//     setCurrentPage(pageNumber);
-//   }
-
-//   const handleClose = () => {
-//     setFilmTitle("");
-//     setFilmImageUrl("");
-//     setTxtState("");
-//   };
-
-//   return (
-//     <>
-    
-//       <div>
-//         <input id="txtInput"
-//             onClick={() => {
-//               handleClose();
-//             }}
-//             type="text"
-//             value={txtState}
-//             onChange={(event) => setTxtState(event.target.value)}
-//           />
-//         <button onClick={() => getMovieFromSearch(txtState)}>Search</button>
-//       </div>
-//       {filmShown && (
-//         <div className="movieSearch">
-//             <Film
-//               title={filmTitle}
-//               image={filmImageUrl}
-//               filmShown={true}
-//               setFilmTitle={setFilmTitle}
-//               setFilmImageUrl={setFilmImageUrl}
-//           />
-
-//           </div>
-//       )}
-
-//       <div className="movieWrapper">
-//         {movies.map((movie, index) => (
-//           <Film
-//             key={index}
-//             title={movie.title}
-//             image={movie.imageUrl}
-//             filmShown={true}
-//             rating={movie.rating}
-//           />
-//         ))}
-//       </div>
-//       <div className="pagination">
-//         <button onClick={() => handlePageChange(1)}>1</button>
-//         <button onClick={() => handlePageChange(2)}>2</button>
-//         <button onClick={() => handlePageChange(3)}>3</button>
-//       </div>
-//     </>
-//   );
-// }
-
-
+import { right } from "@popperjs/core";
 import Film from "./Film";
 import { useState, useEffect } from "react";
 
@@ -113,6 +10,16 @@ export default function Home(props) {
   const [filmTitle, setFilmTitle] = useState("");
   const [filmImageUrl, setFilmImageUrl] = useState("");
   const [filmShown, setFilmShown] = useState(false);
+  const [genres, setGenres] = useState([]);
+
+  const getGenres = async function() {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/genre/movie/list?api_key=8771fe8f23902acbfebb7de7c98e45ec`
+    );
+    const responseJson = await response.json();
+    setGenres(responseJson.genres);
+  }
+
 
   const getMovieFromSearch= async function(title){
     const response= await fetch (
@@ -132,7 +39,7 @@ export default function Home(props) {
         `https://api.themoviedb.org/3/movie/popular?api_key=8771fe8f23902acbfebb7de7c98e45ec&page=${pageNumber}`
       );
       const responseJson = await response.json();
-      const topMovies = responseJson.results.slice(0, 20)
+      const topMovies = responseJson.results.slice(0, 40)
         .map(result => {
           return {
             title: result.title,
@@ -144,12 +51,42 @@ export default function Home(props) {
       
     }
     getTopMovies(currentPage);
+    getGenres();
   }, [currentPage]);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handlePageChange = async (pageNumber) => {
+    const selectedGenre = document.getElementById("genreSelect").value;
+    const response = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?api_key=8771fe8f23902acbfebb7de7c98e45ec&with_genres=${selectedGenre}&page=${pageNumber}`
+    );
+    const responseJson = await response.json();
+    const moviesByGenre = responseJson.results.slice(0, 15).map(result => {
+      return {
+        title: result.title,
+        imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
+        rating: 0
+      };
+    });
+    setMovies(moviesByGenre);
+    window.scrollTo(0,0);
   }
-
+  
+  const handleGenreChange = async (event) => {
+    const selectedGenre = event.target.value;
+    const response = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?api_key=8771fe8f23902acbfebb7de7c98e45ec&with_genres=${selectedGenre}`
+    );
+    const responseJson = await response.json();
+    const moviesByGenre = responseJson.results.slice(0, 15)
+      .map(result => {
+        return {
+          title: result.title,
+          imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
+          rating: 0
+        };
+      });
+    setMovies(moviesByGenre);
+  }
   const handleClose = () => {
     setFilmTitle("");
     setFilmImageUrl("");
@@ -160,6 +97,7 @@ export default function Home(props) {
   return (
     <>
       <div>
+       
         <input 
           id="txtInput"
           onClick={() => {
@@ -169,7 +107,14 @@ export default function Home(props) {
           value={txtState}
           onChange={(event) => setTxtState(event.target.value)}
         />
-        <button onClick={() => getMovieFromSearch(txtState)}>Search</button>
+        <button style={{marginRight:"2%"}}onClick={() => getMovieFromSearch(txtState)}>Search</button>
+
+        <select id="genreSelect" onChange={handleGenreChange}>
+            <option value="">Select a genre</option>
+            {genres.map(genre => (
+              <option key={genre.id} value={genre.id}>{genre.name}</option>
+            ))}
+        </select>
       </div>
       {filmShown && (
         <div className="movieSearch">
@@ -180,6 +125,7 @@ export default function Home(props) {
             setFilmTitle={setFilmTitle}
             setFilmImageUrl={setFilmImageUrl}
             handleClose={handleClose}
+            isSearchedMovie={true}
           />
         </div>
       )}
@@ -191,6 +137,7 @@ export default function Home(props) {
             image={movie.imageUrl}
             filmShown={false}
             rating={movie.rating}
+            isSearchedMovie={false}
           />
         ))}
       </div>
@@ -198,6 +145,7 @@ export default function Home(props) {
         <button onClick={() => handlePageChange(1)}>1</button>
         <button onClick={() => handlePageChange(2)}>2</button>
         <button onClick={() => handlePageChange(3)}>3</button>
+        <button onClick={() => handlePageChange(4)}>4</button>
       </div>
     </>
   );
