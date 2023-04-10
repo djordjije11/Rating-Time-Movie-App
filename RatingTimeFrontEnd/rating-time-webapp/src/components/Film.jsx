@@ -1,6 +1,16 @@
-
-
 export default function Film(props) {
+  const closeButtonOnClick = () => {
+    props.setFilmTitle("");
+    props.setFilmImageUrl("");
+    removeCloseButton();
+  };
+
+  const removeCloseButton = () => {
+    const closeButton = document.getElementById("closeButton");
+    closeButton.removeEventListener("click", closeButtonOnClick);
+    closeButton.remove();
+  };
+
   return (
     <div
       style={{
@@ -10,12 +20,9 @@ export default function Film(props) {
       }}
     >
       {props.filmShown && (
-        <button
+        <button id="closeButton"
           style={{ alignSelf: "flex-end" }}
-          onClick={() => {
-            props.setFilmTitle("");
-            props.setFilmImageUrl("");
-          }}
+          onClick={closeButtonOnClick}
         >
           X
         </button>
