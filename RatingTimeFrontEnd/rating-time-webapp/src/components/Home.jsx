@@ -1,6 +1,6 @@
 import Film from "./Film";
 import { useState, useEffect } from "react";
-
+import {API_KEY} from "../constants.js";
 export default function Home(props) {
 
   const [movies, setMovies] = useState([]);
@@ -13,9 +13,11 @@ export default function Home(props) {
   const [genres, setGenres] = useState([]);
   const [rating, setRating]= useState(0);
   const [message, setMessage]= useState("");
+
+
   const getGenres = async function() {
     const response = await fetch(
-      `https://api.themoviedb.org/3/genre/movie/list?api_key=8771fe8f23902acbfebb7de7c98e45ec`
+      `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`
     );
     const responseJson = await response.json();
     setGenres(responseJson.genres);
@@ -24,7 +26,7 @@ export default function Home(props) {
 
   const getMovieFromSearch= async function(title){
     const response= await fetch (
-      `https://api.themoviedb.org/3/search/movie?api_key=8771fe8f23902acbfebb7de7c98e45ec&query=${title}`
+      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}query=${title}`
     );
     const responseJson= await response.json();
     setFilmImageUrl(
@@ -39,7 +41,7 @@ export default function Home(props) {
   useEffect(() => {
     const getTopMovies = async function(pageNumber) {
       const response = await fetch(
-        `https://api.themoviedb.org/3/movie/popular?api_key=8771fe8f23902acbfebb7de7c98e45ec&page=${pageNumber}`
+        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=${pageNumber}`
       );
       const responseJson = await response.json();
       const topMovies = responseJson.results.slice(0, 15)
@@ -60,7 +62,7 @@ export default function Home(props) {
   const handlePageChange = async (pageNumber) => {
     const selectedGenre = document.getElementById("genreSelect").value;
     const response = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?api_key=8771fe8f23902acbfebb7de7c98e45ec&with_genres=${selectedGenre}&page=${pageNumber}`
+      `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${selectedGenre}&page=${pageNumber}`
     );
     const responseJson = await response.json();
     const moviesByGenre = responseJson.results.slice(0, 15).map(result => {
@@ -77,7 +79,7 @@ export default function Home(props) {
   const handleGenreChange = async (event) => {
     const selectedGenre = event.target.value;
     const response = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?api_key=8771fe8f23902acbfebb7de7c98e45ec&with_genres=${selectedGenre}`
+      `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${selectedGenre}`
     );
     const responseJson = await response.json();
     const moviesByGenre = responseJson.results.slice(0, 15)
@@ -140,6 +142,7 @@ export default function Home(props) {
           />
           
         </div>
+
       )}
        
       <div className="movieWrapper">
