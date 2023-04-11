@@ -26,7 +26,7 @@ export default function Home(props) {
 
   const getMovieFromSearch= async function(title){
     const response= await fetch (
-      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}query=${title}`
+      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${title}`
     );
     const responseJson= await response.json();
     setFilmImageUrl(
@@ -53,7 +53,6 @@ export default function Home(props) {
           };
         });
       setMovies(topMovies);
-      
     }
     getTopMovies(currentPage);
     getGenres();

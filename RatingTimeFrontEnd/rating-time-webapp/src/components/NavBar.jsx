@@ -25,14 +25,6 @@ export default function NavbarComponent() {
               </Link>
             </Nav.Link>
           </Nav>
-          <Nav.Link>
-              <Link id="profile-menu"
-                className="text-decoration-none text-white"
-                to="/profile"
-              >
-                Profile
-              </Link>
-            </Nav.Link>
         </Navbar.Collapse>
       </Container>
     </Navbar>
