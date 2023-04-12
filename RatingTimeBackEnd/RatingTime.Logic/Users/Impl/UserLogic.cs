@@ -29,9 +29,6 @@ namespace RatingTime.Logic.Users.Impl
             return await context.Users.CountAsync();
         }
 
-        /// <inheritdoc/>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="OperationCanceledException"></exception>
         public async Task<List<Rating>> GetRatingsAsync(int userId)
         {
             return await context.Ratings.AsNoTracking()
