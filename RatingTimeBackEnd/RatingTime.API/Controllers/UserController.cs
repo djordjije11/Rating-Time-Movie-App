@@ -25,23 +25,25 @@ namespace RatingTime.API.Controllers
         }
 
         [HttpGet("all"), Authorize(Policy = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<UserInfo>>> GetAll()
         {
             //proveriti da li je administrator
 
-            return mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync());
+            return Ok(mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync()));
         }
 
         [HttpGet, Authorize(Policy = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<UserInfo>>> GetAllAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 40)
         {
             if(pageNumber < 1 || pageSize < 1)
             {
-                return BadRequest("Query parameters are not valid.");
+                return BadRequest(new { message = "Query parameters are not valid." });
             }
             if(pageSize > 200)
             {
-                return BadRequest("Page size cannot be upper than 200.");
+                return BadRequest(new { message = "Page size cannot be upper than 200." });
             }
             //proveriti da li je administrator
 
@@ -57,18 +59,12 @@ namespace RatingTime.API.Controllers
         }
 
         [HttpGet("ratings"), Authorize(Policy = "User")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<UserRatingInfo>>> GetRatingsAsync()
         {
-            try
-            {
-                int userId = int.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var userRatings = mapper.Map<List<UserRatingInfo>>(await userLogic.GetRatingsAsync(userId));
-                return Ok(userRatings);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            int userId = int.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userRatings = mapper.Map<List<UserRatingInfo>>(await userLogic.GetRatingsAsync(userId));
+            return Ok(userRatings);
         }
     }
 }

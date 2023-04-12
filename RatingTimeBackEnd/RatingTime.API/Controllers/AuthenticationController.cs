@@ -9,7 +9,6 @@ using RatingTime.DTO.Models.Users;
 using RatingTime.Logic.Users;
 using RatingTime.Validation.Users;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -35,6 +34,7 @@ namespace RatingTime.API.Controllers
         }
 
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterAsync([FromBody] UserRegister userRegister)
         {
             var user = mapper.Map<User>(userRegister);
@@ -45,33 +45,20 @@ namespace RatingTime.API.Controllers
                 return BadRequest(new { Errors = validationResult.Errors.Select(e => e.ErrorMessage) });
             }
 
-            try
-            {
-                await userLogic.RegisterAsync(user);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await userLogic.RegisterAsync(user);
 
             return Ok("The user is registered.");
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> LoginAsync([FromBody] UserLogin userLogin)
         {
             var user = mapper.Map<User>(userLogin);
 
             User loggedInUser;
 
-            try
-            {
-                loggedInUser = await userLogic.LoginAsync(user);
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(ex.Message);
-            }
+            loggedInUser = await userLogic.LoginAsync(user);
 
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration[MyConfig.CONFIG_AUTH_SECRET]));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -98,6 +85,7 @@ namespace RatingTime.API.Controllers
         }
 
         [HttpGet("refresh")]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<string> Refresh()
         {
             if(session.UsersAuthenticationTokens.TryGetValue(Request.Cookies.First(c => c.Key == Session.REFRESH_TOKEN_KEY).Value, out string tokenToReturn) && tokenToReturn != null)
@@ -106,11 +94,11 @@ namespace RatingTime.API.Controllers
             }
             else
             {
-                return BadRequest("Refresh token is not valid.");
-            
+                return BadRequest(new { message = "Refresh token is not valid." });
             }
         }
         [HttpGet("logout")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Logout()
         {
             session.UsersAuthenticationTokens.Remove(Request.Cookies.First(c => c.Key == Session.REFRESH_TOKEN_KEY).Value);

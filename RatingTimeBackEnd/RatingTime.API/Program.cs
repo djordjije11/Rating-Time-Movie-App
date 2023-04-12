@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RatingTime.API.Middlewares.Exceptions;
 using RatingTime.API.Options;
 using RatingTime.API.Sessions;
 using RatingTime.DataAccess;
@@ -74,6 +75,8 @@ builder.Services.AddAuthorization(options =>
 
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
