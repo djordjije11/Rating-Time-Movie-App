@@ -66,5 +66,6 @@ namespace RatingTime.API.Controllers
             var userRatings = mapper.Map<List<UserRatingInfo>>(await userLogic.GetRatingsAsync(userId, cancellationToken));
             return Ok(userRatings);
         }
+
     }
 }

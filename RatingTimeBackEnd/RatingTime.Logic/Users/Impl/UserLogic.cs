@@ -19,7 +19,7 @@ namespace RatingTime.Logic.Users.Impl
             return await context.Users.AsNoTracking().OrderBy(u => u.Username).ToListAsync(cancellationToken);
         }
 
-        public async Task<List<User>> GetAllAsync(int take = 100, int skip = 0, CancellationToken cancellationToken)
+        public async Task<List<User>> GetAllAsync(int take, int skip, CancellationToken cancellationToken)
         {
             return await context.Users.AsNoTracking().OrderBy(u => u.Username).Skip(skip).Take(take).ToListAsync(cancellationToken);
         }
