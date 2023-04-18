@@ -17,19 +17,20 @@ namespace RatingTime.Logic.Users
         /// </para>
         /// </summary>
         /// <param name="user">User with valid username, email and password</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="LogicException">If the username or email is already being used by an active user.</exception>
         /// <exception cref="Exception">If the user is not saved successfully.</exception>
         Task RegisterAsync(User user);
-        Task<User> LoginAsync(User user);
-        Task<List<User>> GetAllAsync(int take = 100, int skip = 0);
-        Task<List<User>> GetAllAsync();
-        Task<int> GetCountAsync();
+        Task<User> LoginAsync(User user, CancellationToken cancellationToken);
+        Task<List<User>> GetAllAsync(int take, int skip, CancellationToken cancellationToken);
+        Task<List<User>> GetAllAsync(CancellationToken cancellationToken);
+        Task<int> GetCountAsync(CancellationToken cancellationToken);
         /// <summary>
         /// Returns ratings of user by user's id.
         /// </summary>
         /// <param name="userId">User's id</param>
         /// <returns>List of ratings by user</returns>
-        Task<List<Rating>> GetRatingsAsync(int userId);
+        Task<List<Rating>> GetRatingsAsync(int userId, CancellationToken cancellationToken);
     }
 }

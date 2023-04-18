@@ -26,16 +26,16 @@ namespace RatingTime.API.Controllers
 
         [HttpGet("all"), Authorize(Policy = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<UserInfo>>> GetAll()
+        public async Task<ActionResult<List<UserInfo>>> GetAll(CancellationToken cancellationToken)
         {
             //proveriti da li je administrator
 
-            return Ok(mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync()));
+            return Ok(mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync(cancellationToken)));
         }
 
         [HttpGet, Authorize(Policy = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<UserInfo>>> GetAllAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 40)
+        public async Task<ActionResult<List<UserInfo>>> GetAllAsync(CancellationToken cancellationToken, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 40)
         {
             if(pageNumber < 1 || pageSize < 1)
             {
@@ -50,20 +50,20 @@ namespace RatingTime.API.Controllers
             var paginationMetadata = new PaginationMetadata() {
                 CurrentPage = pageNumber,
                 PageSize = pageSize,
-                TotalItemCount = await userLogic.GetCountAsync()
+                TotalItemCount = await userLogic.GetCountAsync(cancellationToken)
             };
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
-            return mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync(pageSize, pageSize * (pageNumber - 1)));
+            return mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync(pageSize, pageSize * (pageNumber - 1), cancellationToken));
         }
 
         [HttpGet("ratings"), Authorize(Policy = "User")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<UserRatingInfo>>> GetRatingsAsync()
+        public async Task<ActionResult<List<UserRatingInfo>>> GetRatingsAsync(CancellationToken cancellationToken)
         {
             int userId = int.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userRatings = mapper.Map<List<UserRatingInfo>>(await userLogic.GetRatingsAsync(userId));
+            var userRatings = mapper.Map<List<UserRatingInfo>>(await userLogic.GetRatingsAsync(userId, cancellationToken));
             return Ok(userRatings);
         }
     }

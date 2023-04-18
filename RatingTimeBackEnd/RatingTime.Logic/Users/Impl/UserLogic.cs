@@ -14,22 +14,22 @@ namespace RatingTime.Logic.Users.Impl
             this.context = context;
         }
 
-        public async Task<List<User>> GetAllAsync()
+        public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await context.Users.AsNoTracking().OrderBy(u => u.Username).ToListAsync();
+            return await context.Users.AsNoTracking().OrderBy(u => u.Username).ToListAsync(cancellationToken);
         }
 
-        public async Task<List<User>> GetAllAsync(int take = 100, int skip = 0)
+        public async Task<List<User>> GetAllAsync(int take = 100, int skip = 0, CancellationToken cancellationToken)
         {
-            return await context.Users.AsNoTracking().OrderBy(u => u.Username).Skip(skip).Take(take).ToListAsync();
+            return await context.Users.AsNoTracking().OrderBy(u => u.Username).Skip(skip).Take(take).ToListAsync(cancellationToken);
         }
 
-        public async Task<int> GetCountAsync()
+        public async Task<int> GetCountAsync(CancellationToken cancellationToken)
         {
-            return await context.Users.CountAsync();
+            return await context.Users.CountAsync(cancellationToken);
         }
 
-        public async Task<List<Rating>> GetRatingsAsync(int userId)
+        public async Task<List<Rating>> GetRatingsAsync(int userId, CancellationToken cancellationToken)
         {
             return await context.Ratings.AsNoTracking()
                                         .Include(r => r.Movie)
@@ -40,12 +40,12 @@ namespace RatingTime.Logic.Users.Impl
                                             StarsNumber = r.StarsNumber,
                                             Movie = r.Movie
                                         })
-                                        .ToListAsync();
+                                        .ToListAsync(cancellationToken);
         }
 
-        public async Task<User> LoginAsync(User user)
+        public async Task<User> LoginAsync(User user, CancellationToken cancellationToken)
         {
-            var dbUser = await context.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Username == user.Username || u.Email == user.Email);
+            var dbUser = await context.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Username == user.Username || u.Email == user.Email, cancellationToken);
 
             if (dbUser == null)
             {

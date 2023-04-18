@@ -52,13 +52,13 @@ namespace RatingTime.API.Controllers
 
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<string>> LoginAsync([FromBody] UserLogin userLogin)
+        public async Task<ActionResult<string>> LoginAsync(CancellationToken cancellationToken, [FromBody] UserLogin userLogin)
         {
             var user = mapper.Map<User>(userLogin);
 
             User loggedInUser;
 
-            loggedInUser = await userLogic.LoginAsync(user);
+            loggedInUser = await userLogic.LoginAsync(user, cancellationToken);
 
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration[MyConfig.CONFIG_AUTH_SECRET]));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

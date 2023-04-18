@@ -32,6 +32,10 @@ namespace RatingTime.API.Middlewares.Exceptions
                 case LogicException:
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     return context.Response.WriteAsJsonAsync(new {exception.Message});
+                case OperationCanceledException:
+                    logger.LogInformation(exception, $"{DateTime.Now}: {ToString()}\nMessage: {exception.Message}");
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    return context.Response.WriteAsJsonAsync(new { message = "The action is canceled." });
                 case Exception:
                     logger.LogCritical(exception ,$"{DateTime.Now}: {ToString()}\nMessage: {exception.Message}");
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
