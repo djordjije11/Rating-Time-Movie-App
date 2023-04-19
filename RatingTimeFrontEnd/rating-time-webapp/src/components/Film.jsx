@@ -18,6 +18,7 @@ export default function Film(props) {
     closeButton.remove();
   };
 
+  
     if (isClosed) {
       return null;
     }
@@ -51,7 +52,7 @@ export default function Film(props) {
             }}
           />
         <p className="movieTitle">{props.title}</p>
-        <div style={{textAlign:"center"}}>
+        {/* <div style={{textAlign:"center"}}>
         {Array.from({ length: 5 }, (_, i) => i + 1).map((index) => (
           <span onClick={() => props.setRating(index)}>
             {props.filmShown ? (
@@ -65,9 +66,13 @@ export default function Film(props) {
             )}
           </span>
         ))}
-      </div>
+      </div> */}
+      
       </div>
     );
+
   }
   
 
+
+  

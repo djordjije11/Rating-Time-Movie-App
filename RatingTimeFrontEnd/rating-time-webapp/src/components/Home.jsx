@@ -1,6 +1,8 @@
 import Film from "./Film";
 import { useState, useEffect } from "react";
 import {API_KEY} from "../constants.js";
+
+import StarRatings from 'react-star-ratings';
 export default function Home(props) {
 
   const [movies, setMovies] = useState([]);
@@ -26,7 +28,7 @@ export default function Home(props) {
 
   const getMovieFromSearch= async function(title){
     const response= await fetch (
-      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}query=${title}`
+      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${title}`
     );
     const responseJson= await response.json();
     setFilmImageUrl(
@@ -104,6 +106,21 @@ export default function Home(props) {
 
   };
   
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+    addMovie();
+  };
+
+  const addMovie = function () {
+    props.setMovies((prev) => [
+      ...prev,
+      {
+        title: filmTitle,
+        imageUrl: filmImageUrl,
+        rating: rating,
+      },
+    ]);
+  };
   return (
     <>
     
@@ -140,6 +157,20 @@ export default function Home(props) {
             rating={rating}
             setRating={setRating}
           />
+          <div>
+          <StarRatings
+            rating={rating}
+            starRatedColor="orange"
+            changeRating={handleRatingChange}
+            numberOfStars={5}
+            starDimension="30px"
+            starSpacing="5px"
+          />
+          {/* <div className="btnBox" >
+          <button className="btnRate" onClick={addMovie}>Save rating</button>
+          </div> */}
+         
+        </div>
           
         </div>
 
