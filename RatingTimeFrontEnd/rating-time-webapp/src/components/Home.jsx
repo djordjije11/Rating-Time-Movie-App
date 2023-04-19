@@ -17,6 +17,8 @@ export default function Home(props) {
   const [message, setMessage]= useState("");
 
 
+  const [zoomedMovie, setZoomedMovie] = useState(null);
+
   const getGenres = async function() {
     const response = await fetch(
       `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`
@@ -108,9 +110,14 @@ export default function Home(props) {
   
   const handleRatingChange = (newRating) => {
     setRating(newRating);
+    setZoomedMovie({ ...zoomedMovie, rating: newRating });
     addMovie();
   };
 
+  const handleMovieClick = (movie) => {
+    setZoomedMovie(movie);
+  };
+  
   const addMovie = function () {
     props.setMovies((prev) => [
       ...prev,
@@ -146,9 +153,9 @@ export default function Home(props) {
       </div>
       {filmShown && (
         <div className="movieSearch">
-          <Film
+          <Film 
             title={filmTitle}
-            image={filmImageUrl}
+            image={filmImageUrl} 
             filmShown={true}
             setFilmTitle={setFilmTitle}
             setFilmImageUrl={setFilmImageUrl}
@@ -178,18 +185,19 @@ export default function Home(props) {
        
       <div className="movieWrapper">
         {movies.map((movie, index) => (
-          <Film
+          <Film 
             key={index}
             title={movie.title}
             image={movie.imageUrl}
             filmShown={false}
             rating={movie.rating}
             isSearchedMovie={false}
-            
           />
+          
         ))}
-
+        
       </div>
+
       <div className="pagination">
         <button onClick={() => handlePageChange(1)}>1</button>
         <button onClick={() => handlePageChange(2)}>2</button>
