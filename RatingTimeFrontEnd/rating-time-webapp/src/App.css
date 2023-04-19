@@ -34,8 +34,15 @@
   margin-left: 4%;
 }
 
-.btnRating{
-  width: 10rem;
-  height: 3rem;
+.btnRate{
+  width: 8rem;
+  height: 2rem;
   text-align: center;
+  border-radius: 5px;
+}
+
+.btnBox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
