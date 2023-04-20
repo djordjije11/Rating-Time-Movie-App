@@ -1,11 +1,10 @@
 
-import { useState} from "react";
+import {useState} from "react";
 import StarRatings from 'react-star-ratings';
 export default function Film(props) {
 
   const [isClosed, setIsClosed] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
-
   const [rating, setRating] = useState(props.rating);
 
   const closeButtonOnClick = () => {
@@ -28,6 +27,9 @@ export default function Film(props) {
   const handleRatingChange = (newRating) => {
     setRating(newRating);
   };
+  
+  
+ 
     if (isClosed) {
       return null;
     }
@@ -64,7 +66,7 @@ export default function Film(props) {
         <p className="movieTitle">{props.title}</p>
         
       {isZoomed && (
-        <div className="zoomedWrapper" onClick={() => setIsZoomed(false)}>
+        <div className="zoomedWrapper">
           <div className="movieZoomed">
             <img src={props.image} alt={props.title} id="movieImgZoomed"/>
             <h3 style={{color:"#FFFDFA"}}>{props.title}</h3>
@@ -77,8 +79,9 @@ export default function Film(props) {
               starDimension="30px"
               starSpacing="10px"
             />
-            
+             <button className="btn btn-dark" onClick={()=>setIsZoomed(false)}>Save rating</button>
           </div>
+         
         </div>
       )}
       </div>

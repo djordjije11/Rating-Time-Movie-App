@@ -1,11 +1,12 @@
 import Film from "./Film";
-
+import StarRatings from 'react-star-ratings';
 export default function RatedFilms(props){
     
     function removeMovie(index){
         props.setMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
     }
-
+    
+    
     return(
         <>
         <div
@@ -14,7 +15,8 @@ export default function RatedFilms(props){
           justifyContent: "center",
           flexWrap: "wrap"
         }}
-      >
+        
+        >
         {props.movies.map((movie, index) => (
           <div
             style={{
@@ -30,6 +32,14 @@ export default function RatedFilms(props){
               rating={movie.rating}
               filmShown={true}
             />
+            
+            <StarRatings
+              rating={movie.rating}
+              starRatedColor="orange"
+              numberOfStars={5}
+              starDimension="30px"
+              starSpacing="10px"
+            />
             <button
               class="btn btn-dark"
               style={{ width: "10rem", height: "3rem", marginBottom: "1rem" }}
@@ -40,8 +50,8 @@ export default function RatedFilms(props){
           </div>
         ))}
       </div>
+      
 
-
-        </>
+      </>
     )
 }

@@ -6,7 +6,6 @@ import StarRatings from 'react-star-ratings';
 export default function Home(props) {
 
   const [movies, setMovies] = useState([]);
-  const [searchedMovies, setSearchedMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [txtState, setTxtState] = useState("");
   const [filmTitle, setFilmTitle] = useState("");
@@ -14,7 +13,6 @@ export default function Home(props) {
   const [filmShown, setFilmShown] = useState(false);
   const [genres, setGenres] = useState([]);
   const [rating, setRating]= useState(0);
-  const [message, setMessage]= useState("");
 
 
   const [zoomedMovie, setZoomedMovie] = useState(null);
@@ -63,6 +61,8 @@ export default function Home(props) {
     getGenres();
   }, [currentPage]);
 
+
+
   const handlePageChange = async (pageNumber) => {
     const selectedGenre = document.getElementById("genreSelect").value;
     const response = await fetch(
@@ -102,14 +102,13 @@ export default function Home(props) {
     setFilmTitle("");
     setFilmImageUrl("");
     setTxtState("");
-    setRating(0);
     setFilmShown(false);
   };
   
   const handleRatingChange = (newRating) => {
     setRating(newRating);
     setZoomedMovie({ ...zoomedMovie, rating: newRating });
-    addMovie();
+    console.log(rating);
   };
 
   const handleMovieClick = (movie) => {
@@ -173,7 +172,7 @@ export default function Home(props) {
           />
          
         </div>
-          
+          <button onClick={addMovie}  className="btn btn-dark"> Save rating</button>
         </div>
 
       )}
@@ -187,11 +186,13 @@ export default function Home(props) {
             filmShown={false}
             rating={movie.rating}
             isSearchedMovie={false}
+            setZoomedMovie={handleMovieClick}
           />
           
         ))}
         
       </div>
+
 
       <div className="pagination">
         <button onClick={() => handlePageChange(1)}>1</button>
