@@ -1,5 +1,4 @@
-import EmptyStar from "./EmptyStar";
-import FullStar from "./FullStar";
+
 import { useState} from "react";
 import StarRatings from 'react-star-ratings';
 export default function Film(props) {
@@ -63,27 +62,13 @@ export default function Film(props) {
             }}
           />
         <p className="movieTitle">{props.title}</p>
-        {/* <div style={{textAlign:"center"}}>
-        {Array.from({ length: 5 }, (_, i) => i + 1).map((index) => (
-          <span onClick={() => props.setRating(index)}>
-            {props.filmShown ? (
-              props.rating < index ? (
-                <EmptyStar />
-              ) : (
-                <FullStar />
-              )
-            ) : (
-              <></>
-            )}
-          </span>
-        ))}
-      </div> */}
+        
       {isZoomed && (
-        <div style={{ position: 'fixed', textAlign:'center',top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 1000 }}>
-          <div style={{ position: 'absolute', top: '30%', bottom:'20%', left: '50%', transform: 'translate(-50%, -50%)', width: '500px' }}>
-            <img src={props.image} alt={props.title} style={{ width: '100%', height: 'auto', marginBottom: '10px' }} />
-            <h3>{props.title}</h3>
-            <p>Please rate this movie:</p>
+        <div className="zoomedWrapper" onClick={() => setIsZoomed(false)}>
+          <div className="movieZoomed">
+            <img src={props.image} alt={props.title} id="movieImgZoomed"/>
+            <h3 style={{color:"#FFFDFA"}}>{props.title}</h3>
+            <p style={{color:"#FFFDFA"}}>Rate this movie:</p>
             <StarRatings
               rating={rating}
               starRatedColor="orange"
@@ -92,9 +77,7 @@ export default function Film(props) {
               starDimension="30px"
               starSpacing="10px"
             />
-            <div>
-            <button onClick={() => setIsZoomed(false)}>Close</button>
-            </div>
+            
           </div>
         </div>
       )}

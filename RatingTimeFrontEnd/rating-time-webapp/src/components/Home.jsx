@@ -104,8 +104,6 @@ export default function Home(props) {
     setTxtState("");
     setRating(0);
     setFilmShown(false);
-    
-
   };
   
   const handleRatingChange = (newRating) => {
@@ -173,9 +171,6 @@ export default function Home(props) {
             starDimension="30px"
             starSpacing="5px"
           />
-          {/* <div className="btnBox" >
-          <button className="btnRate" onClick={addMovie}>Save rating</button>
-          </div> */}
          
         </div>
           
