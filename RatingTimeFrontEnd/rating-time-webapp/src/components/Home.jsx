@@ -14,9 +14,8 @@ export default function Home(props) {
   const [genres, setGenres] = useState([]);
   const [rating, setRating]= useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
-  
-  const [isClosed, setIsClosed] = useState(false);
   const [overview, setOverview] = useState("");
+  const [averageVote, setAverageVote] = useState(0);
 
   const getGenres = async function() {
     const response = await fetch(
@@ -37,6 +36,7 @@ export default function Home(props) {
     );
     setOverview(responseJson.results[0].overview);
     setFilmTitle(responseJson.results[0].title);
+    setAverageVote(responseJson.results[0].vote_average);
     setFilmShown(true);
     setRating(0);
   };
@@ -54,7 +54,8 @@ export default function Home(props) {
             title: result.title,
             imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
             rating: rating,
-            overview: result.overview
+            overview: result.overview,
+            averageVote: result.vote_average
           };
         });
       setMovies(topMovies);
@@ -63,7 +64,6 @@ export default function Home(props) {
     getTopMovies(currentPage);
     getGenres();
   }, [currentPage]);
-
 
 
   const handlePageChange = async (pageNumber) => {
@@ -100,7 +100,6 @@ export default function Home(props) {
     setMovies(moviesByGenre);
   }
   
- 
   const handleClose = () => {
     setFilmTitle("");
     setFilmImageUrl("");
@@ -116,13 +115,16 @@ export default function Home(props) {
     setIsZoomed(true);
     setFilmTitle(movie.title);
     setFilmImageUrl(movie.imageUrl);
+    setAverageVote(movie.averageVote);
   };
   
   const closeButtonOnClick = () => {
     setFilmShown(false);
   };
 
- 
+  const closeZoomedMovie = () => {
+    setIsZoomed(false);
+  }
   const addMovie = function () {
     props.setMovies((prev) => [
       ...prev,
@@ -137,9 +139,7 @@ export default function Home(props) {
   };
   return (
     <>
-    
       <div>
-       
         <input 
           id="txtInput"
           onClick={() => {
@@ -149,8 +149,8 @@ export default function Home(props) {
           value={txtState}
           onChange={(event) => setTxtState(event.target.value)}
         />
-        <button style={{marginRight:"2%"}}onClick={() => getMovieFromSearch(txtState)}>Search</button>
-
+        <button style={{marginRight:"2%"}} onClick={() => getMovieFromSearch(txtState)}>Search</button>
+        
         <select id="genreSelect" onChange={handleGenreChange}>
             <option value="">Select a genre</option>
             {genres.map(genre => (
@@ -159,6 +159,7 @@ export default function Home(props) {
         </select>
       </div>
       {filmShown && (
+        <div className="movieWrapperSearched">
         <div className="movieSearch">
            <button
             id="closeButton"
@@ -171,6 +172,7 @@ export default function Home(props) {
             title={filmTitle}
             image={filmImageUrl} 
             overview={overview}
+            voteAverage={averageVote}
             filmShown={true}
             handleClose={handleClose}
             isSearchedMovie={true}
@@ -188,11 +190,10 @@ export default function Home(props) {
             starDimension="30px"
             starSpacing="5px"
           />
-         
         </div>
           <button onClick={addMovie}  className="btn btn-dark"> Save rating</button>
         </div>
-
+        </div>
       )}
        
       <div className="movieWrapper">
@@ -201,21 +202,29 @@ export default function Home(props) {
             key={index}
             title={movie.title}
             image={movie.imageUrl}
+            voteAverage={movie.averageVote}
             filmShown={false}
             rating={movie.rating}
             isSearchedMovie={false}
             onClick={() => handleZoomChange(movie)}
           />
-          
         ))}
       </div>
       
       {isZoomed && (
         <div className="zoomedWrapper" >
           <div className="movieZoomed" >
+          <button
+            id="closeButton"
+            style={{ alignSelf: "flex-end" }}
+            onClick={closeZoomedMovie}
+          >
+            X
+          </button>
             <Film 
               title={filmTitle}
               image={filmImageUrl} 
+              voteAverage={averageVote}
               isZoomed={true}
               setRating={setRating}
             />

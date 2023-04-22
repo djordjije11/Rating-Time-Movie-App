@@ -1,5 +1,5 @@
 
-
+import StarRatings from 'react-star-ratings';
 export default function Film(props) {
 
     return (
@@ -27,6 +27,14 @@ export default function Film(props) {
             <p>{props.overview}</p>
           )}
         <p className="movieTitle">{props.title}</p>
+        <StarRatings
+              rating={1}
+              starRatedColor="orange"
+              numberOfStars={1}
+              starDimension="30px"
+              starSpacing="10px"
+            />
+        <p>{props.voteAverage}</p>
       </div>
     );
 
