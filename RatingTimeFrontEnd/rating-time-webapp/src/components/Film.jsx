@@ -26,6 +26,7 @@ export default function Film(props) {
         style={{
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
           margin: "1%",
         }}
       >
@@ -44,10 +45,10 @@ export default function Film(props) {
             alt={props.title}
             onClick={props.onClick}
             style={{
-              marginTop: "20px",
+              marginTop: "10px",
               marginBottom: "10px",
-              width: "18rem",
-              height: "28rem",
+              width: props.isZoomed ? "28rem" : "auto",
+              height: props.isZoomed ? "38rem" : "28rem",
             }}
           />
         <p className="movieTitle">{props.title}</p>

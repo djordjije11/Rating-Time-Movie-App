@@ -116,6 +116,7 @@ export default function Home(props) {
     setFilmImageUrl(movie.imageUrl);
   };
   
+
   const addMovie = function () {
     props.setMovies((prev) => [
       ...prev,
@@ -188,17 +189,19 @@ export default function Home(props) {
             rating={movie.rating}
             isSearchedMovie={false}
             onClick={() => handleZoomChange(movie)}
+           
           />
           
         ))}
       </div>
       
       {isZoomed && (
-        <div className="zoomedWrapper">
-          <div className="movieZoomed">
+        <div className="zoomedWrapper" >
+          <div className="movieZoomed" >
             <Film 
               title={filmTitle}
               image={filmImageUrl} 
+              isZoomed={true}
             />
             <p style={{color:"#FFFDFA"}}>Rate this movie:</p>
             <StarRatings
@@ -211,6 +214,7 @@ export default function Home(props) {
             />
              <button className="btn btn-dark"  onClick={() => {addMovie(); setIsZoomed(false);}}>Save rating</button>
           </div>
+          
         </div>
       )}
 
