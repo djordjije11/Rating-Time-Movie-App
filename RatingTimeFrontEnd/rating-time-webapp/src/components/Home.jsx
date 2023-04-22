@@ -13,8 +13,10 @@ export default function Home(props) {
   const [filmShown, setFilmShown] = useState(false);
   const [genres, setGenres] = useState([]);
   const [rating, setRating]= useState(0);
-
   const [isZoomed, setIsZoomed] = useState(false);
+  
+  const [isClosed, setIsClosed] = useState(false);
+  const [overview, setOverview] = useState("");
 
   const getGenres = async function() {
     const response = await fetch(
@@ -33,6 +35,7 @@ export default function Home(props) {
     setFilmImageUrl(
       `https://image.tmdb.org/t/p/original/${responseJson.results[0].poster_path}`
     );
+    setOverview(responseJson.results[0].overview);
     setFilmTitle(responseJson.results[0].title);
     setFilmShown(true);
     setRating(0);
@@ -50,7 +53,8 @@ export default function Home(props) {
           return {
             title: result.title,
             imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-            rating: rating
+            rating: rating,
+            overview: result.overview
           };
         });
       setMovies(topMovies);
@@ -106,8 +110,6 @@ export default function Home(props) {
   
   const handleRatingChange = (newRating) => {
     setRating(newRating);
-    //setZoomedMovie({ ...zoomedMovie, rating: newRating });
-    console.log(rating);
   };
 
   const handleZoomChange = (movie) => {
@@ -116,7 +118,11 @@ export default function Home(props) {
     setFilmImageUrl(movie.imageUrl);
   };
   
+  const closeButtonOnClick = () => {
+    setFilmShown(false);
+  };
 
+ 
   const addMovie = function () {
     props.setMovies((prev) => [
       ...prev,
@@ -126,6 +132,8 @@ export default function Home(props) {
         rating: rating,
       },
     ]);
+    handleRatingChange(0);
+    setFilmShown(false);
   };
   return (
     <>
@@ -152,16 +160,24 @@ export default function Home(props) {
       </div>
       {filmShown && (
         <div className="movieSearch">
+           <button
+            id="closeButton"
+            style={{ alignSelf: "flex-end" }}
+            onClick={closeButtonOnClick}
+          >
+            X
+          </button>
           <Film 
             title={filmTitle}
             image={filmImageUrl} 
+            overview={overview}
             filmShown={true}
-            setFilmTitle={setFilmTitle}
-            setFilmImageUrl={setFilmImageUrl}
             handleClose={handleClose}
             isSearchedMovie={true}
             rating={rating}
-            setRating={setRating}
+            setFilmTitle={setFilmTitle}
+            setFilmImageUrl={setFilmImageUrl}
+            
           />
           <div>
           <StarRatings
@@ -189,7 +205,6 @@ export default function Home(props) {
             rating={movie.rating}
             isSearchedMovie={false}
             onClick={() => handleZoomChange(movie)}
-           
           />
           
         ))}
@@ -202,6 +217,7 @@ export default function Home(props) {
               title={filmTitle}
               image={filmImageUrl} 
               isZoomed={true}
+              setRating={setRating}
             />
             <p style={{color:"#FFFDFA"}}>Rate this movie:</p>
             <StarRatings
@@ -214,7 +230,6 @@ export default function Home(props) {
             />
              <button className="btn btn-dark"  onClick={() => {addMovie(); setIsZoomed(false);}}>Save rating</button>
           </div>
-          
         </div>
       )}
 

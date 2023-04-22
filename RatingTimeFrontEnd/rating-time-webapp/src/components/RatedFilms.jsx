@@ -32,13 +32,13 @@ export default function RatedFilms(props){
               rating={movie.rating}
               filmShown={true}
             />
-            
             <StarRatings
               rating={movie.rating}
               starRatedColor="orange"
               numberOfStars={5}
               starDimension="30px"
               starSpacing="10px"
+              changeRating={false}
             />
             <button
               class="btn btn-dark"

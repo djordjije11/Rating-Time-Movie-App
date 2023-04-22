@@ -1,26 +1,7 @@
 
-import {useState} from "react";
+
 export default function Film(props) {
 
-  const [isClosed, setIsClosed] = useState(false);
-
-  const closeButtonOnClick = () => {
-    props.setFilmTitle("");
-    props.setFilmImageUrl("");
-    setIsClosed(true);
-    removeCloseButton();
-  };
-
-  const removeCloseButton = () => {
-    const closeButton = document.getElementById("closeButton");
-    closeButton.removeEventListener("click", closeButtonOnClick);
-    closeButton.remove();
-  };
-
-    if (isClosed) {
-      return null;
-    }
-  
     return (
       <div
         style={{
@@ -30,15 +11,6 @@ export default function Film(props) {
           margin: "1%",
         }}
       >
-        {props.isSearchedMovie && (
-          <button
-            id="closeButton"
-            style={{ alignSelf: "flex-end" }}
-            onClick={closeButtonOnClick}
-          >
-            X
-          </button>
-        )}
           <img
             className="movieImg"
             src={props.image}
@@ -47,10 +19,13 @@ export default function Film(props) {
             style={{
               marginTop: "10px",
               marginBottom: "10px",
-              width: props.isZoomed ? "28rem" : "auto",
+              width: props.isZoomed ? "26rem" : "auto",
               height: props.isZoomed ? "38rem" : "28rem",
             }}
           />
+          {props.isSearchedMovie && (
+            <p>{props.overview}</p>
+          )}
         <p className="movieTitle">{props.title}</p>
       </div>
     );
