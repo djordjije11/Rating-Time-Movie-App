@@ -14,8 +14,7 @@ export default function Home(props) {
   const [genres, setGenres] = useState([]);
   const [rating, setRating]= useState(0);
 
-
-  const [zoomedMovie, setZoomedMovie] = useState(null);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   const getGenres = async function() {
     const response = await fetch(
@@ -107,12 +106,14 @@ export default function Home(props) {
   
   const handleRatingChange = (newRating) => {
     setRating(newRating);
-    setZoomedMovie({ ...zoomedMovie, rating: newRating });
+    //setZoomedMovie({ ...zoomedMovie, rating: newRating });
     console.log(rating);
   };
 
-  const handleMovieClick = (movie) => {
-    setZoomedMovie(movie);
+  const handleZoomChange = (movie) => {
+    setIsZoomed(true);
+    setFilmTitle(movie.title);
+    setFilmImageUrl(movie.imageUrl);
   };
   
   const addMovie = function () {
@@ -186,13 +187,32 @@ export default function Home(props) {
             filmShown={false}
             rating={movie.rating}
             isSearchedMovie={false}
-            setZoomedMovie={handleMovieClick}
+            onClick={() => handleZoomChange(movie)}
           />
           
         ))}
-        
       </div>
-
+      
+      {isZoomed && (
+        <div className="zoomedWrapper">
+          <div className="movieZoomed">
+            <Film 
+              title={filmTitle}
+              image={filmImageUrl} 
+            />
+            <p style={{color:"#FFFDFA"}}>Rate this movie:</p>
+            <StarRatings
+              rating={rating}
+              starRatedColor="orange"
+              changeRating={handleRatingChange}
+              numberOfStars={5}
+              starDimension="30px"
+              starSpacing="10px"
+            />
+             <button className="btn btn-dark"  onClick={() => {addMovie(); setIsZoomed(false);}}>Save rating</button>
+          </div>
+        </div>
+      )}
 
       <div className="pagination">
         <button onClick={() => handlePageChange(1)}>1</button>
