@@ -40,13 +40,22 @@ export default function RatedFilms(props){
               starSpacing="10px"
               changeRating={false}
             />
+            <div className="btnRatedMovies"> 
             <button
-              class="btn btn-dark"
-              style={{ width: "10rem", height: "3rem", marginBottom: "1rem" }}
+              class="button-28"
+              style={{ width: "10rem", height: "3rem", marginBottom: "1rem", marginTop: "1rem"}}
               onClick={() => removeMovie(index)}
             >
-              Remove a rating
+              Remove the rating
             </button>
+            <button
+              class="button-28"
+              style={{ width: "10rem", height: "3rem", marginBottom: "1rem", marginTop: "1rem"}}
+              onClick={() => removeMovie(index)}
+            >
+              Update the rating
+            </button>
+            </div>
           </div>
         ))}
       </div>
