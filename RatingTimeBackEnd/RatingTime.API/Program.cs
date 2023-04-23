@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RatingTime.API.Middlewares.Exceptions;
 using RatingTime.API.Options;
 using RatingTime.API.Sessions;
 using RatingTime.DataAccess;
@@ -14,21 +15,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-string MY_REACT_ORIGIN = "my-react-origin";
+string MY_REACT_POLICY = "my-react-origin";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MY_REACT_ORIGIN,
+    options.AddPolicy(name: MY_REACT_POLICY,
                       policy =>
                       {
                           policy
-                          //.AllowAnyOrigin()
-                          .WithOrigins("http://localhost:3000")
-                          .WithOrigins("http://127.0.0.1:3000")
-                          .WithOrigins("http://172.25.192.1:3000")
+                          .AllowAnyOrigin()
+                          //.WithOrigins("http://localhost:3000")
+                          //.WithOrigins("http://127.0.0.1:3000")
+                          //.WithOrigins("http://172.25.192.1:3000")
                           .AllowAnyMethod()
                           //.WithMethods("POST", "GET", "OPTIONS")
-                          .AllowAnyHeader()
-                          .AllowCredentials();
+                          .AllowAnyHeader();
+                          //.AllowCredentials();
                       });
 });
 
@@ -75,6 +76,8 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -90,7 +93,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(MY_REACT_ORIGIN);
+app.UseCors(MY_REACT_POLICY);
 
 app.UseAuthentication();
 

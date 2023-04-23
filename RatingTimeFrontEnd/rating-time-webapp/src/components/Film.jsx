@@ -1,73 +1,45 @@
-import EmptyStar from "./EmptyStar";
-import FullStar from "./FullStar";
-import { useState} from "react";
+
+import StarRatings from 'react-star-ratings';
 export default function Film(props) {
 
-  const [isClosed, setIsClosed] = useState(false);
-
-  const closeButtonOnClick = () => {
-    props.setFilmTitle("");
-    props.setFilmImageUrl("");
-    setIsClosed(true);
-    removeCloseButton();
-  };
-
-  const removeCloseButton = () => {
-    const closeButton = document.getElementById("closeButton");
-    closeButton.removeEventListener("click", closeButtonOnClick);
-    closeButton.remove();
-  };
-
-    if (isClosed) {
-      return null;
-    }
-  
     return (
       <div
         style={{
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
           margin: "1%",
         }}
       >
-        {props.isSearchedMovie && (
-          <button
-            id="closeButton"
-            style={{ alignSelf: "flex-end" }}
-            onClick={closeButtonOnClick}
-          >
-            X
-          </button>
-        )}
           <img
             className="movieImg"
             src={props.image}
             alt={props.title}
+            onClick={props.onClick}
             style={{
-              marginTop: "20px",
+              marginTop: "10px",
               marginBottom: "10px",
-              width: "18rem",
-              height: "28rem",
+              width: props.isZoomed ? "26rem" : "auto",
+              height: props.isZoomed ? "38rem" : "28rem",
             }}
           />
+          {props.isSearchedMovie && (
+            <p>{props.overview}</p>
+          )}
         <p className="movieTitle">{props.title}</p>
-        <div style={{textAlign:"center"}}>
-        {Array.from({ length: 5 }, (_, i) => i + 1).map((index) => (
-          <span onClick={() => props.setRating(index)}>
-            {props.filmShown ? (
-              props.rating < index ? (
-                <EmptyStar />
-              ) : (
-                <FullStar />
-              )
-            ) : (
-              <></>
-            )}
-          </span>
-        ))}
-      </div>
+        <StarRatings
+              rating={1}
+              starRatedColor="orange"
+              numberOfStars={1}
+              starDimension="30px"
+              starSpacing="10px"
+            />
+        <p>{props.voteAverage}</p>
       </div>
     );
+
   }
   
 
+
+  

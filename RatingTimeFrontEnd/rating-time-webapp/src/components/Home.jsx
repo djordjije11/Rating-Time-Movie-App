@@ -1,10 +1,11 @@
 import Film from "./Film";
 import { useState, useEffect } from "react";
 import {API_KEY} from "../constants.js";
+
+import StarRatings from 'react-star-ratings';
 export default function Home(props) {
 
   const [movies, setMovies] = useState([]);
-  const [searchedMovies, setSearchedMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [txtState, setTxtState] = useState("");
   const [filmTitle, setFilmTitle] = useState("");
@@ -12,8 +13,9 @@ export default function Home(props) {
   const [filmShown, setFilmShown] = useState(false);
   const [genres, setGenres] = useState([]);
   const [rating, setRating]= useState(0);
-  const [message, setMessage]= useState("");
-
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [overview, setOverview] = useState("");
+  const [averageVote, setAverageVote] = useState(0);
 
   const getGenres = async function() {
     const response = await fetch(
@@ -32,7 +34,9 @@ export default function Home(props) {
     setFilmImageUrl(
       `https://image.tmdb.org/t/p/original/${responseJson.results[0].poster_path}`
     );
+    setOverview(responseJson.results[0].overview);
     setFilmTitle(responseJson.results[0].title);
+    setAverageVote(responseJson.results[0].vote_average);
     setFilmShown(true);
     setRating(0);
   };
@@ -49,7 +53,9 @@ export default function Home(props) {
           return {
             title: result.title,
             imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-            rating: rating
+            rating: rating,
+            overview: result.overview,
+            averageVote: result.vote_average
           };
         });
       setMovies(topMovies);
@@ -57,6 +63,7 @@ export default function Home(props) {
     getTopMovies(currentPage);
     getGenres();
   }, [currentPage]);
+
 
   const handlePageChange = async (pageNumber) => {
     const selectedGenre = document.getElementById("genreSelect").value;
@@ -92,22 +99,46 @@ export default function Home(props) {
     setMovies(moviesByGenre);
   }
   
- 
   const handleClose = () => {
     setFilmTitle("");
     setFilmImageUrl("");
     setTxtState("");
-    setRating(0);
     setFilmShown(false);
-    
-
   };
   
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
+  const handleZoomChange = (movie) => {
+    setIsZoomed(true);
+    setFilmTitle(movie.title);
+    setFilmImageUrl(movie.imageUrl);
+    setAverageVote(movie.averageVote);
+  };
+  
+  const closeButtonOnClick = () => {
+    setFilmShown(false);
+  };
+
+  const closeZoomedMovie = () => {
+    setIsZoomed(false);
+  }
+  const addMovie = function () {
+    props.setMovies((prev) => [
+      ...prev,
+      {
+        title: filmTitle,
+        imageUrl: filmImageUrl,
+        rating: rating,
+      },
+    ]);
+    handleRatingChange(0);
+    setFilmShown(false);
+  };
   return (
     <>
-    
       <div>
-       
         <input 
           id="txtInput"
           onClick={() => {
@@ -117,8 +148,8 @@ export default function Home(props) {
           value={txtState}
           onChange={(event) => setTxtState(event.target.value)}
         />
-        <button style={{marginRight:"2%"}}onClick={() => getMovieFromSearch(txtState)}>Search</button>
-
+        <button style={{marginRight:"2%"}} onClick={() => getMovieFromSearch(txtState)}>Search</button>
+        
         <select id="genreSelect" onChange={handleGenreChange}>
             <option value="">Select a genre</option>
             {genres.map(genre => (
@@ -127,37 +158,89 @@ export default function Home(props) {
         </select>
       </div>
       {filmShown && (
+        <div className="movieWrapperSearched">
         <div className="movieSearch">
-          <Film
+           <button
+            id="closeButton"
+            style={{ alignSelf: "flex-end" }}
+            onClick={closeButtonOnClick}
+          >
+            X
+          </button>
+          <Film 
             title={filmTitle}
-            image={filmImageUrl}
+            image={filmImageUrl} 
+            overview={overview}
+            voteAverage={averageVote}
             filmShown={true}
-            setFilmTitle={setFilmTitle}
-            setFilmImageUrl={setFilmImageUrl}
             handleClose={handleClose}
             isSearchedMovie={true}
             rating={rating}
-            setRating={setRating}
+            setFilmTitle={setFilmTitle}
+            setFilmImageUrl={setFilmImageUrl}
+            
           />
-          
+          <div>
+          <StarRatings
+            rating={rating}
+            starRatedColor="orange"
+            changeRating={handleRatingChange}
+            numberOfStars={5}
+            starDimension="30px"
+            starSpacing="5px"
+          />
         </div>
-
+          <button onClick={addMovie}  className="btn btn-dark"> Save rating</button>
+        </div>
+        </div>
       )}
        
       <div className="movieWrapper">
         {movies.map((movie, index) => (
-          <Film
+          <Film 
             key={index}
             title={movie.title}
             image={movie.imageUrl}
+            voteAverage={movie.averageVote}
             filmShown={false}
             rating={movie.rating}
             isSearchedMovie={false}
-            
+            onClick={() => handleZoomChange(movie)}
           />
         ))}
-
       </div>
+      
+      {isZoomed && (
+        <div className="zoomedWrapper" >
+          <div className="movieZoomed" >
+          <button
+            id="closeButton"
+            style={{ alignSelf: "flex-end" }}
+            onClick={closeZoomedMovie}
+          >
+            X
+          </button>
+            <Film 
+              title={filmTitle}
+              image={filmImageUrl} 
+              voteAverage={averageVote}
+              isZoomed={true}
+              setRating={setRating}
+            />
+            <p style={{color:"#FFFDFA"}}>Rate this movie:</p>
+            <StarRatings
+              rating={rating}
+              starRatedColor="orange"
+              changeRating={handleRatingChange}
+              numberOfStars={5}
+              starDimension="30px"
+              starSpacing="10px"
+            />
+             <button className="btn btn-dark"  onClick={() => {addMovie(); setIsZoomed(false);}}>Save rating</button>
+          </div>
+        </div>
+      )}
+
       <div className="pagination">
         <button onClick={() => handlePageChange(1)}>1</button>
         <button onClick={() => handlePageChange(2)}>2</button>

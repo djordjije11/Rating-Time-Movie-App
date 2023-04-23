@@ -1,37 +1,35 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using RatingTime.DataAccess;
 using RatingTime.Domain.Models;
+using RatingTime.Logic.Exceptions;
 
 namespace RatingTime.Logic.Users.Impl
 {
     public class UserLogic : IUserLogic
     {
         private readonly RatingTimeContext context;
-        private readonly ILogger<UserLogic> logger;
 
-        public UserLogic(RatingTimeContext context, ILogger<UserLogic> logger)
+        public UserLogic(RatingTimeContext context)
         {
             this.context = context;
-            this.logger = logger;
         }
 
-        public async Task<List<User>> GetAllAsync()
+        public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await context.Users.AsNoTracking().OrderBy(u => u.Username).ToListAsync();
+            return await context.Users.AsNoTracking().OrderBy(u => u.Username).ToListAsync(cancellationToken);
         }
 
-        public async Task<List<User>> GetAllAsync(int take = 100, int skip = 0)
+        public async Task<List<User>> GetAllAsync(int take, int skip, CancellationToken cancellationToken)
         {
-            return await context.Users.AsNoTracking().OrderBy(u => u.Username).Skip(skip).Take(take).ToListAsync();
+            return await context.Users.AsNoTracking().OrderBy(u => u.Username).Skip(skip).Take(take).ToListAsync(cancellationToken);
         }
 
-        public async Task<int> GetCountAsync()
+        public async Task<int> GetCountAsync(CancellationToken cancellationToken)
         {
-            return await context.Users.CountAsync();
+            return await context.Users.CountAsync(cancellationToken);
         }
 
-        public async Task<List<Rating>> GetRatingsAsync(int userId)
+        public async Task<List<Rating>> GetRatingsAsync(int userId, CancellationToken cancellationToken)
         {
             return await context.Ratings.AsNoTracking()
                                         .Include(r => r.Movie)
@@ -42,20 +40,20 @@ namespace RatingTime.Logic.Users.Impl
                                             StarsNumber = r.StarsNumber,
                                             Movie = r.Movie
                                         })
-                                        .ToListAsync();
+                                        .ToListAsync(cancellationToken);
         }
 
-        public async Task<User> LoginAsync(User user)
+        public async Task<User> LoginAsync(User user, CancellationToken cancellationToken)
         {
-            var dbUser = await context.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Username == user.Username || u.Email == user.Email);
+            var dbUser = await context.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Username == user.Username || u.Email == user.Email, cancellationToken);
 
             if (dbUser == null)
             {
-                throw new Exception("Wrong username or e-mail.");
+                throw new LogicException("Wrong username or e-mail.");
             }
             if (BCrypt.Net.BCrypt.Verify(user.Password, dbUser.Password) == false)
             {
-                throw new Exception("Wrong password.");
+                throw new LogicException("Wrong password.");
             }
 
             return dbUser;
@@ -66,7 +64,7 @@ namespace RatingTime.Logic.Users.Impl
             bool userExists = await context.Users.AnyAsync(u => u.Username == user.Username || u.Email == user.Email);
             if (userExists)
             {
-                throw new Exception("The username or email is already being used by an active user.");
+                throw new LogicException("The username or email is already being used by an active user.");
             }
             
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
@@ -83,8 +81,7 @@ namespace RatingTime.Logic.Users.Impl
             }
             catch(Exception ex)
             {
-                logger.LogCritical($"{DateTime.Now}: {ToString()} - Database Exception! The user is not saved successfully while registering.\n{ex.Message}");
-                throw new Exception("The user is not registered.");
+                throw new Exception($"{DateTime.Now}: {ToString()} - Database Exception! The user is not saved successfully while registering.\n{ex.Message}", ex);
             }
             
         }
