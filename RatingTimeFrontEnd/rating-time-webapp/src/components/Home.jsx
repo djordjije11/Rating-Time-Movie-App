@@ -2,6 +2,7 @@ import Film from "./Film";
 import { useState, useEffect } from "react";
 import {API_KEY} from "../constants.js";
 
+
 import StarRatings from 'react-star-ratings';
 export default function Home(props) {
 
@@ -16,6 +17,7 @@ export default function Home(props) {
   const [isZoomed, setIsZoomed] = useState(false);
   const [overview, setOverview] = useState("");
   const [averageVote, setAverageVote] = useState(0);
+  
 
   const getGenres = async function() {
     const response = await fetch(
@@ -75,7 +77,8 @@ export default function Home(props) {
       return {
         title: result.title,
         imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-        rating: rating
+        rating: rating,
+        averageVote: result.vote_average
       };
     });
     setMovies(moviesByGenre);
@@ -93,7 +96,8 @@ export default function Home(props) {
         return {
           title: result.title,
           imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-          rating: rating
+          rating: rating,
+          averageVote: result.vote_average
         };
       });
     setMovies(moviesByGenre);
@@ -125,14 +129,24 @@ export default function Home(props) {
     setIsZoomed(false);
   }
   const addMovie = function () {
+    const film = {
+      title: filmTitle,
+      imageUrl: filmImageUrl,
+      rating: rating,
+    };
+    let contains = false;
+    props.movies.forEach(element => {
+      if(element.title === film.title){
+        contains = true;
+      }
+    });
+    if(!contains) {
     props.setMovies((prev) => [
-      ...prev,
-      {
-        title: filmTitle,
-        imageUrl: filmImageUrl,
-        rating: rating,
-      },
+      ...prev, film
     ]);
+  } else {
+    alert("Movie already rated!")
+  }
     handleRatingChange(0);
     setFilmShown(false);
   };
@@ -148,9 +162,9 @@ export default function Home(props) {
           value={txtState}
           onChange={(event) => setTxtState(event.target.value)}
         />
-        <button style={{marginRight:"2%"}} onClick={() => getMovieFromSearch(txtState)}>Search</button>
+        <button id="searchbtn" className="button-28" onClick={() => getMovieFromSearch(txtState)}>Search</button>
         
-        <select id="genreSelect" onChange={handleGenreChange}>
+        <select id="genreSelect" className="button-28" onChange={handleGenreChange}>
             <option value="">Select a genre</option>
             {genres.map(genre => (
               <option key={genre.id} value={genre.id}>{genre.name}</option>
@@ -190,7 +204,7 @@ export default function Home(props) {
             starSpacing="5px"
           />
         </div>
-          <button onClick={addMovie}  className="btn btn-dark"> Save rating</button>
+          <button onClick={addMovie}  className="button-28" style={{marginTop: "1rem"}}>Save rating</button>
         </div>
         </div>
       )}
@@ -213,20 +227,23 @@ export default function Home(props) {
       {isZoomed && (
         <div className="zoomedWrapper" >
           <div className="movieZoomed" >
-          <button
-            id="closeButton"
-            style={{ alignSelf: "flex-end" }}
-            onClick={closeZoomedMovie}
-          >
-            X
-          </button>
-            <Film 
-              title={filmTitle}
-              image={filmImageUrl} 
-              voteAverage={averageVote}
-              isZoomed={true}
-              setRating={setRating}
-            />
+            <div className="movieImage"> 
+              <button
+              id="closeButton"
+              style={{ alignSelf: "flex-end" }}
+              onClick={closeZoomedMovie}
+              >
+              X
+              </button>
+              <Film 
+                title={filmTitle}
+                image={filmImageUrl} 
+                voteAverage={averageVote}
+                isZoomed={true}
+                setRating={setRating}
+              />
+            </div>
+            <div className="zoomedRate">
             <p style={{color:"#FFFDFA"}}>Rate this movie:</p>
             <StarRatings
               rating={rating}
@@ -236,16 +253,18 @@ export default function Home(props) {
               starDimension="30px"
               starSpacing="10px"
             />
-             <button className="btn btn-dark"  onClick={() => {addMovie(); setIsZoomed(false);}}>Save rating</button>
+             <button className="button-28" style={{marginTop: "1rem"}} onClick={() => {addMovie(); setIsZoomed(false);}}>Save rating</button>
+            </div>
+            
           </div>
         </div>
       )}
 
       <div className="pagination">
-        <button onClick={() => handlePageChange(1)}>1</button>
-        <button onClick={() => handlePageChange(2)}>2</button>
-        <button onClick={() => handlePageChange(3)}>3</button>
-        <button onClick={() => handlePageChange(4)}>4</button>
+        <button class="button-28" onClick={() => handlePageChange(1)}>1</button>
+        <button class="button-28" onClick={() => handlePageChange(2)}>2</button>
+        <button class="button-28" onClick={() => handlePageChange(3)}>3</button>
+        <button class="button-28" onClick={() => handlePageChange(4)}>4</button>
       </div>
     </>
   );
