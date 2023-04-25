@@ -19,8 +19,11 @@ export default function Home(props) {
   const [totalResults, setTotalResults] = useState(0);
 
   useEffect(() => {
-    getTopMoviesAsync(currentPage);
     getGenresAsync();
+  }, []);
+
+  useEffect(() => {
+    getTopMoviesAsync(currentPage);
   }, [currentPage, totalPages, totalResults]);
 
   const getMoviesPerPageFromJSON = function (results) {
