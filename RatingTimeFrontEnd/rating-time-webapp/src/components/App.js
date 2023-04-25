@@ -24,7 +24,7 @@ function App() {
           element={<RatedFilms movies={movies} setMovies={setMovies} />}
           path={"/rated-movies"}
         />
-        {/* <Route path="/login" element={<Login />} /> */}
+       <Route path="/login" element={<Login />} /> 
         
       </Routes>
 

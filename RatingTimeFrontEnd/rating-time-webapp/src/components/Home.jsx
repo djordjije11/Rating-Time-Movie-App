@@ -17,8 +17,9 @@ export default function Home(props) {
   const [isZoomed, setIsZoomed] = useState(false);
   const [overview, setOverview] = useState("");
   const [averageVote, setAverageVote] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalResults, setTotalResults] = useState(0);
   
-
   const getGenres = async function() {
     const response = await fetch(
       `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`
@@ -38,11 +39,22 @@ export default function Home(props) {
     );
     setOverview(responseJson.results[0].overview);
     setFilmTitle(responseJson.results[0].title);
-    setAverageVote(responseJson.results[0].vote_average);
+    setAverageVote(responseJson.results[0].vote_average/2);
     setFilmShown(true);
     setRating(0);
   };
 
+  function getMoviesFromJSON(results){
+    return results.slice(0, 20)
+    .map(result => {
+      return {
+        title: result.title,
+        imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
+        rating: rating,
+        averageVote: result.vote_average/2
+      };
+    });
+  }
 
   useEffect(() => {
     const getTopMovies = async function(pageNumber) {
@@ -50,16 +62,9 @@ export default function Home(props) {
         `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=${pageNumber}`
       );
       const responseJson = await response.json();
-      const topMovies = responseJson.results.slice(0, 15)
-        .map(result => {
-          return {
-            title: result.title,
-            imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-            rating: rating,
-            overview: result.overview,
-            averageVote: result.vote_average
-          };
-        });
+      setTotalPages(responseJson.total_pages);
+      setTotalResults(responseJson.total_results);
+      const topMovies = getMoviesFromJSON(responseJson.results);
       setMovies(topMovies);
     }
     getTopMovies(currentPage);
@@ -68,19 +73,13 @@ export default function Home(props) {
 
 
   const handlePageChange = async (pageNumber) => {
+    setCurrentPage(pageNumber);
     const selectedGenre = document.getElementById("genreSelect").value;
     const response = await fetch(
       `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${selectedGenre}&page=${pageNumber}`
     );
     const responseJson = await response.json();
-    const moviesByGenre = responseJson.results.slice(0, 15).map(result => {
-      return {
-        title: result.title,
-        imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-        rating: rating,
-        averageVote: result.vote_average
-      };
-    });
+    const moviesByGenre = getMoviesFromJSON(responseJson.results);
     setMovies(moviesByGenre);
     window.scrollTo(0,0);
   }
@@ -91,15 +90,7 @@ export default function Home(props) {
       `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${selectedGenre}`
     );
     const responseJson = await response.json();
-    const moviesByGenre = responseJson.results.slice(0, 15)
-      .map(result => {
-        return {
-          title: result.title,
-          imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-          rating: rating,
-          averageVote: result.vote_average
-        };
-      });
+    const moviesByGenre = getMoviesFromJSON(responseJson.results);
     setMovies(moviesByGenre);
   }
   
@@ -133,6 +124,7 @@ export default function Home(props) {
       title: filmTitle,
       imageUrl: filmImageUrl,
       rating: rating,
+      voteAverage: averageVote,
     };
     let contains = false;
     props.movies.forEach(element => {
@@ -141,18 +133,18 @@ export default function Home(props) {
       }
     });
     if(!contains) {
-    props.setMovies((prev) => [
-      ...prev, film
-    ]);
-  } else {
-    alert("Movie already rated!")
-  }
+      props.setMovies((prev) => [
+        ...prev, film
+      ]);
+    } else {
+      alert("Movie already rated!")
+    }
     handleRatingChange(0);
     setFilmShown(false);
   };
   return (
     <>
-      <div>
+      <div style={{marginLeft:"5%"}}>
         <input 
           id="txtInput"
           onClick={() => {
@@ -261,10 +253,9 @@ export default function Home(props) {
       )}
 
       <div className="pagination">
-        <button class="button-28" onClick={() => handlePageChange(1)}>1</button>
-        <button class="button-28" onClick={() => handlePageChange(2)}>2</button>
-        <button class="button-28" onClick={() => handlePageChange(3)}>3</button>
-        <button class="button-28" onClick={() => handlePageChange(4)}>4</button>
+        <button class="button-28" style={{visibility: (currentPage > 1) ? "visible" : "hidden" }} onClick={() => handlePageChange(currentPage - 1)}>BACK</button>
+        <span>{currentPage}</span>
+        <button class="button-28" style={{visibility: (currentPage < totalPages) ? "visible" : "hidden" }} onClick={() => handlePageChange(currentPage + 1)}>NEXT</button>
       </div>
     </>
   );

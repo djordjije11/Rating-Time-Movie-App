@@ -28,9 +28,9 @@ export default function Film(props) {
           )}
         <p className="movieTitle">{props.title}</p>
         <StarRatings
-              rating={1}
+              rating={props.voteAverage}
               starRatedColor="orange"
-              numberOfStars={1}
+              numberOfStars={5}
               starDimension="30px"
               starSpacing="10px"
             />
