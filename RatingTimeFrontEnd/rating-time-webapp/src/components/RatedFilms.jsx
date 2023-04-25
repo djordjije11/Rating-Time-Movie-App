@@ -5,7 +5,11 @@ export default function RatedFilms(props){
     function removeMovie(index){
         props.setMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
     }
-   //UPDATE MOVIE - prikazati opet zumiran film 
+  
+
+    function updateMovie(){
+      //PRIKAZATI ZOOMEDFILM
+    }
     return(
         <>
         <div
@@ -51,7 +55,7 @@ export default function RatedFilms(props){
             <button
               class="button-28"
               style={{ width: "10rem", height: "3rem", marginBottom: "1rem", marginTop: "1rem"}}
-              onClick={() => removeMovie()}
+              onClick={() => updateMovie()}
             >
               Update the rating
             </button>

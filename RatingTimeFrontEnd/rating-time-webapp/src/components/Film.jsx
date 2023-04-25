@@ -26,7 +26,9 @@ export default function Film(props) {
           {props.isSearchedMovie && (
             <p>{props.overview}</p>
           )}
-        <p className="movieTitle">{props.title}</p>
+        <p className="movieTitle"
+        style={{height: props.isZoomed ? "10px" : "60px"}}
+        >{props.title}</p>
         <StarRatings
               rating={props.voteAverage}
               starRatedColor="orange"

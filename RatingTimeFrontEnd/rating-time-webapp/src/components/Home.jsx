@@ -2,6 +2,7 @@ import Film from "./Film";
 import { useState, useEffect } from "react";
 import { API_KEY } from "../constants.js";
 import StarRatings from "react-star-ratings";
+import ZoomedFilm from "./ZoomedFilm";
 
 export default function Home(props) {
   const [movies, setMovies] = useState([]);
@@ -106,7 +107,7 @@ export default function Home(props) {
   };
 
   const handleZoomChange = (movie) => {
-    setIsZoomed(true);
+    setIsZoomed(true); 
     setFilmTitle(movie.title);
     setFilmImageUrl(movie.imageUrl);
     setAverageVote(movie.averageVote);
@@ -125,6 +126,7 @@ export default function Home(props) {
       imageUrl: filmImageUrl,
       rating: rating,
       voteAverage: averageVote,
+      overview: overview,
     };
     let contains = false;
     props.movies.forEach((element) => {
@@ -223,6 +225,7 @@ export default function Home(props) {
             title={movie.title}
             image={movie.imageUrl}
             voteAverage={movie.averageVote}
+            overview={movie.overview}
             filmShown={false}
             rating={movie.rating}
             isSearchedMovie={false}
@@ -232,47 +235,19 @@ export default function Home(props) {
       </div>
 
       {isZoomed && (
-        <div className="zoomedWrapper">
-          <div className="movieZoomed">
-            <div className="movieImage">
-              <button
-                id="closeButton"
-                style={{ alignSelf: "flex-end" }}
-                onClick={closeZoomedMovie}
-              >
-                X
-              </button>
-              <Film
-                title={filmTitle}
-                image={filmImageUrl}
-                voteAverage={averageVote}
-                isZoomed={true}
-                setRating={setRating}
-              />
-            </div>
-            <div className="zoomedRate">
-              <p style={{ color: "#FFFDFA" }}>Rate this movie:</p>
-              <StarRatings
-                rating={rating}
-                starRatedColor="orange"
-                changeRating={handleRatingChange}
-                numberOfStars={5}
-                starDimension="30px"
-                starSpacing="10px"
-              />
-              <button
-                className="button-28"
-                style={{ marginTop: "1rem" }}
-                onClick={() => {
-                  addMovie();
-                  setIsZoomed(false);
-                }}
-              >
-                Save rating
-              </button>
-            </div>
-          </div>
-        </div>
+        <ZoomedFilm
+          closeZoomedMovie = {closeZoomedMovie}
+          addMovie = {addMovie}
+          setIsZoomed = {setIsZoomed}
+          title={filmTitle}
+          image={filmImageUrl}
+          voteAverage={averageVote}
+          isZoomed={true}
+          overview={overview}
+          rating={rating}
+          setRating={setRating}
+          handleRatingChange={handleRatingChange}
+        />
       )}
 
       <div className="pagination">
@@ -283,7 +258,9 @@ export default function Home(props) {
         >
           BACK
         </button>
-        <span>{currentPage}</span>
+        <span
+        style={{marginLeft: "10px", marginRight: "10px", fontSize: "25px"}}
+        >{currentPage}</span>
         <button
           className="button-28"
           style={{
