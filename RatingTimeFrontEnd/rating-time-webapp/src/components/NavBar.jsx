@@ -14,12 +14,16 @@ export default function NavbarComponent() {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <Link className="text-decoration-none text-white" to="/">
+            <Link className="text-decoration-none text-white"
+            to="/"
+            style={{marginRight: "30px", fontSize: "20px"}}
+            >
               Home
             </Link>
             <Link
               className="text-decoration-none text-white"
               to="/rated-movies"
+              style={{ fontSize: "20px"}}
             >
               Rated movies
             </Link>
