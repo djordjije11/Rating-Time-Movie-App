@@ -54,6 +54,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<RatingTimeContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 //builder.Services.AddAuthentication("cookie");
+
 builder.Services.AddAuthentication("Bearer")
                 .AddJwtBearer(options =>
                     options.TokenValidationParameters = new()
