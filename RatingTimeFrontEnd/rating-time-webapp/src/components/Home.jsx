@@ -1,25 +1,34 @@
-import Film from "./Film";
 import { useState, useEffect } from "react";
 import { API_KEY } from "../constants.js";
-import ZoomedFilm from "./ZoomedFilm";
+import ZoomedMovie from "./ZoomedMovie.jsx";
+import ListedMovies from "./ListedMovies.jsx";
+import MovieDefinition from "../models/MovieDefinition.js";
+import PropTypes from "prop-types";
+
+Home.propTypes = {
+  ratedMovies: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.instanceOf(MovieDefinition).isRequired,
+      PropTypes.any,
+    ])
+  ),
+  setRatedMovies: PropTypes.func,
+};
 
 export default function Home(props) {
+  const [ratedMovies, setRatedMovies] = [
+    props.ratedMovies,
+    props.setRatedMovies,
+  ];
+  const [currentMovie, setCurrentMovie] = useState(new MovieDefinition());
   const [movies, setMovies] = useState([]);
+  const [searchedMovies, setSearchedMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [txtState, setTxtState] = useState("");
-  const [filmTitle, setFilmTitle] = useState("");
-  const [filmImageUrl, setFilmImageUrl] = useState("");
-  const [filmShown, setFilmShown] = useState(false);
-  const [genres, setGenres] = useState([]);
-  const [rating, setRating] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false);
-  const [overview, setOverview] = useState("");
-  const [averageVote, setAverageVote] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
-  const [searchedMovies, setSearchedMovies]= useState([]);
-
-  
+  const [txtState, setTxtState] = useState("");
+  const [genres, setGenres] = useState([]);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     getGenresAsync();
@@ -31,15 +40,18 @@ export default function Home(props) {
 
   const getMoviesPerPageFromJSON = function (results) {
     const numberOfMoviesPerPage = Math.ceil(totalResults / totalPages);
-    return results.slice(0, numberOfMoviesPerPage).map((result) => {
-      return {
-        title: result.title,
-        imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-        rating: rating,
-        overview: result.overview,
-        averageVote: result.vote_average / 2,
-      };
-    });
+    return results
+      .slice(0, numberOfMoviesPerPage)
+      .map(
+        (result) =>
+          new MovieDefinition(
+            result.title,
+            `https://image.tmdb.org/t/p/original/${result.poster_path}`,
+            0,
+            result.overview,
+            result.vote_average / 2
+          )
+      );
   };
 
   const getTopMoviesAsync = async function (pageNumber) {
@@ -62,32 +74,28 @@ export default function Home(props) {
   };
 
   const getMovieFromSearchAsync = async function (title) {
-    
     const response = await fetch(
       `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${title}`
     );
     const responseJson = await response.json();
-    const searchedMovies= getMoviesPerPageFromJSON(responseJson.results);
-   
+    const searchedMovies = getMoviesPerPageFromJSON(responseJson.results);
     setSearchedMovies(searchedMovies);
   };
 
-  const loader = () =>{
-    const loading= document.querySelector(".loading");
-    const movies= document.querySelector(".movieWrapper");
-    
-    loading.style.display = 'flex';
-    movies.classList.add('blur');
+  const loader = () => {
+    const loading = document.querySelector(".loading");
+    const movies = document.querySelector(".movieWrapper");
+    loading.style.display = "flex";
+    movies.classList.add("blur");
     setTimeout(() => {
-      loading.style.display = 'none';
-      movies.classList.remove('blur');
+      loading.style.display = "none";
+      movies.classList.remove("blur");
     }, 2000);
-  }
+  };
 
   const handlePageChange = async (pageNumber) => {
     loader();
     window.scrollTo(0, 0);
-
     setCurrentPage(pageNumber);
     const selectedGenre = document.getElementById("genreSelect").value;
     const response = await fetch(
@@ -96,13 +104,10 @@ export default function Home(props) {
     const responseJson = await response.json();
     const moviesByGenre = getMoviesPerPageFromJSON(responseJson.results);
     setMovies(moviesByGenre);
-   
-     
   };
- 
+
   const handleGenreChange = async (event) => {
     loader();
-
     const selectedGenre = event.target.value;
     const response = await fetch(
       `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${selectedGenre}`
@@ -113,22 +118,22 @@ export default function Home(props) {
   };
 
   const handleClose = () => {
-    setFilmTitle("");
-    setFilmImageUrl("");
+    setCurrentMovie((prevMovie) => ({ ...prevMovie, title: "", imageUrl: "" }));
     setTxtState("");
-    setFilmShown(false);
   };
 
   const handleRatingChange = (newRating) => {
-    setRating(newRating);
+    setCurrentMovie((prevMovie) => ({ ...prevMovie, rating: newRating }));
   };
 
   const handleZoomChange = (movie) => {
-    setIsZoomed(true); 
-    setFilmTitle(movie.title);
-    setFilmImageUrl(movie.imageUrl);
-    setAverageVote(movie.averageVote);
-    setOverview(movie.overview);
+    const newMovie = new MovieDefinition();
+    newMovie.title = movie.title;
+    newMovie.imageUrl = movie.imageUrl;
+    newMovie.averageVote = movie.averageVote;
+    newMovie.overview = movie.overview;
+    setCurrentMovie(newMovie);
+    setIsZoomed(true);
   };
 
   const closeButtonOnClick = () => {
@@ -140,38 +145,27 @@ export default function Home(props) {
   };
 
   const addMovie = function () {
-    const film = {
-      title: filmTitle,
-      imageUrl: filmImageUrl,
-      rating: rating,
-      voteAverage: averageVote,
-      overview: overview,
-    };
+    const movie = currentMovie;
     let contains = false;
-    props.movies.forEach((element) => {
-      if (element.title === film.title) {
+    ratedMovies.forEach((element) => {
+      if (element.title === movie.title) {
         contains = true;
       }
     });
     if (!contains) {
-      props.setMovies((prev) => [...prev, film]);
+      setRatedMovies((prev) => [...prev, movie]);
     } else {
       alert("Movie already rated!");
     }
     handleRatingChange(0);
-    setFilmShown(false);
   };
 
   return (
     <>
-    
       <div style={{ marginLeft: "5%" }}>
-        
         <input
           id="txtInput"
-          onClick={() => {
-            handleClose();
-          }}
+          onClick={handleClose}
           type="text"
           value={txtState}
           onChange={(event) => setTxtState(event.target.value)}
@@ -200,56 +194,40 @@ export default function Home(props) {
       {searchedMovies.length > 0 && (
         <div>
           <button
-              id="closeButton"
-              style={{ alignSelf: "flex-end", position: "absolute",top: "20%",right: "5%" }}
-              onClick={closeButtonOnClick}
-            >
-              X
+            id="closeButton"
+            style={{
+              alignSelf: "flex-end",
+              position: "absolute",
+              top: "20%",
+              right: "5%",
+            }}
+            onClick={closeButtonOnClick}
+          >
+            X
           </button>
-          <div className="movieWrapperSearched">
-              {searchedMovies.map((movie) => (
-                <Film
-                  title={movie.title}
-                  image={movie.imageUrl}
-                  voteAverage={movie.averageVote}
-                  overview={movie.overview}
-                  filmShown={false}
-                  rating={movie.rating}
-                  isSearchedMovie={false}
-                  onClick={() => handleZoomChange(movie)}
-                />
-              ))}
-          </div>
-          <hr style={{ visibility: searchedMovies.length > 0 ? "visible" : "hidden" }}/>
-        </div>
-        )}
-      <div className="movieWrapper">
-        {movies.map((movie, index) => (
-          <Film
-            key={index}
-            title={movie.title}
-            image={movie.imageUrl}
-            voteAverage={movie.averageVote}
-            overview={movie.overview}
-            filmShown={false}
-            rating={movie.rating}
-            isSearchedMovie={false}
-            onClick={() => handleZoomChange(movie)}
+          <ListedMovies
+            movies={searchedMovies}
+            styleClassName={"movieWrapperSearched"}
+            handleZoomChange={handleZoomChange}
           />
-        ))}
-      </div>
+          <hr
+            style={{
+              visibility: searchedMovies.length > 0 ? "visible" : "hidden",
+            }}
+          />
+        </div>
+      )}
+      <ListedMovies
+        movies={movies}
+        styleClassName={"movieWrapper"}
+        handleZoomChange={handleZoomChange}
+      />
       {isZoomed && (
-        <ZoomedFilm
-          closeZoomedMovie = {closeZoomedMovie}
-          addMovie = {addMovie}
-          setIsZoomed = {setIsZoomed}
-          title={filmTitle}
-          image={filmImageUrl}
-          voteAverage={averageVote}
-          isZoomed={true}
-          overview={overview}
-          rating={rating}
-          setRating={setRating}
+        <ZoomedMovie
+          movie={currentMovie}
+          addMovie={addMovie}
+          closeZoomedMovie={closeZoomedMovie}
+          setIsZoomed={setIsZoomed}
           handleRatingChange={handleRatingChange}
         />
       )}
@@ -262,8 +240,10 @@ export default function Home(props) {
           BACK
         </button>
         <span
-        style={{marginLeft: "10px", marginRight: "10px", fontSize: "25px"}}
-        >{currentPage}</span>
+          style={{ marginLeft: "10px", marginRight: "10px", fontSize: "25px" }}
+        >
+          {currentPage}
+        </span>
         <button
           className="button-28"
           style={{
@@ -278,7 +258,5 @@ export default function Home(props) {
         </div>
       </div>
     </>
-   
   );
-  
 }
