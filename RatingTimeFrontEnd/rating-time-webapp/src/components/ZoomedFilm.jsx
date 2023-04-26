@@ -1,5 +1,6 @@
 import Film from "./Film";
 import StarRatings from 'react-star-ratings';
+
 export default function ZoomedFilms(props){
 return (
 <div className="zoomedWrapper">
