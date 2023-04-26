@@ -1,15 +1,40 @@
 import Film from "./Film";
+import ZoomedFilm from "./ZoomedFilm";
 import StarRatings from 'react-star-ratings';
+import { useState, useEffect } from "react";
+
 export default function RatedFilms(props){
-    
+
+  const [showZoomedFilm, setShowZoomedFilm] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState(null);
+
     function removeMovie(index){
         props.setMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
     }
   
-
-    function updateMovie(){
-      //PRIKAZATI ZOOMEDFILM
+    function updateMovieRating(index){
+      setSelectedMovie(props.movies[index]);
+      setShowZoomedFilm(true);
     }
+
+    function closeZoomedMovie(){
+      setShowZoomedFilm(false);
+    }
+
+    function handleRatingChange(newRating){
+      setSelectedMovie({...selectedMovie, rating: newRating});
+    }
+  
+    function addMovie(){
+      props.setMovies(prevMovies => prevMovies.map(movie => {
+        if (movie.title === selectedMovie.title) {
+          return selectedMovie;
+        }
+        return movie;
+      }));
+      setSelectedMovie(null);
+    }
+  
     return(
         <>
         <div
@@ -55,16 +80,28 @@ export default function RatedFilms(props){
             <button
               class="button-28"
               style={{ width: "10rem", height: "3rem", marginBottom: "1rem", marginTop: "1rem"}}
-              onClick={() => updateMovie()}
+              onClick={() => updateMovieRating(index)}
             >
               Update the rating
             </button>
             </div>
           </div>
         ))}
-      </div>
-      
 
+      {showZoomedFilm && selectedMovie && (
+        <ZoomedFilm
+          title={selectedMovie.title}
+          image={selectedMovie.imageUrl}
+          voteAverage={selectedMovie.voteAverage}
+          overview={selectedMovie.overview}
+          rating={selectedMovie.rating}
+          handleRatingChange={handleRatingChange}
+          addMovie={addMovie}
+          setIsZoomed={setShowZoomedFilm}
+          closeZoomedMovie={closeZoomedMovie}
+        />
+      )}
+      </div>
       </>
     )
 }

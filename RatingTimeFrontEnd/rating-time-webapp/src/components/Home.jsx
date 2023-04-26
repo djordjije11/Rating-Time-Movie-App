@@ -34,6 +34,7 @@ export default function Home(props) {
         title: result.title,
         imageUrl: `https://image.tmdb.org/t/p/original/${result.poster_path}`,
         rating: rating,
+        overview: result.overview,
         averageVote: result.vote_average / 2,
       };
     });
@@ -111,6 +112,7 @@ export default function Home(props) {
     setFilmTitle(movie.title);
     setFilmImageUrl(movie.imageUrl);
     setAverageVote(movie.averageVote);
+    setOverview(movie.overview);
   };
 
   const closeButtonOnClick = () => {
