@@ -1,7 +1,6 @@
 import Film from "./Film";
 import { useState, useEffect } from "react";
 import { API_KEY } from "../constants.js";
-import StarRatings from "react-star-ratings";
 import ZoomedFilm from "./ZoomedFilm";
 
 export default function Home(props) {
@@ -19,6 +18,9 @@ export default function Home(props) {
   const [totalPages, setTotalPages] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
   const [searchedMovies, setSearchedMovies]= useState([]);
+
+  
+
   useEffect(() => {
     getGenresAsync();
   }, []);
@@ -71,6 +73,18 @@ export default function Home(props) {
 
 
   const handlePageChange = async (pageNumber) => {
+    const loading= document.querySelector(".loading");
+    const movies= document.querySelector(".movieWrapper");
+
+    loading.style.display = 'flex';
+    movies.classList.add('blur');
+    setTimeout(() => {
+      loading.style.display = 'none';
+      movies.classList.remove('blur');
+    }, 2000);
+
+    window.scrollTo(0, 0);
+    
     setCurrentPage(pageNumber);
     const selectedGenre = document.getElementById("genreSelect").value;
     const response = await fetch(
@@ -79,7 +93,8 @@ export default function Home(props) {
     const responseJson = await response.json();
     const moviesByGenre = getMoviesPerPageFromJSON(responseJson.results);
     setMovies(moviesByGenre);
-    window.scrollTo(0, 0);
+   
+     
   };
 
   const handleGenreChange = async (event) => {
@@ -118,6 +133,7 @@ export default function Home(props) {
   const closeZoomedMovie = () => {
     setIsZoomed(false);
   };
+
   const addMovie = function () {
     const film = {
       title: filmTitle,
@@ -140,9 +156,12 @@ export default function Home(props) {
     handleRatingChange(0);
     setFilmShown(false);
   };
+
   return (
     <>
+    
       <div style={{ marginLeft: "5%" }}>
+        
         <input
           id="txtInput"
           onClick={() => {
@@ -175,77 +194,30 @@ export default function Home(props) {
       </div>
       {searchedMovies.length > 0 && (
         <div>
-        <button
-            id="closeButton"
-            style={{ alignSelf: "flex-end" }}
-            onClick={closeButtonOnClick}
-          >
-            X
-        </button>
-        <div className="movieWrapperSearched">
-          
-                {searchedMovies.map((movie) => (
-                  <Film
-                    title={movie.title}
-                    image={movie.imageUrl}
-                    voteAverage={movie.averageVote}
-                    overview={movie.overview}
-                    filmShown={false}
-                    rating={movie.rating}
-                    isSearchedMovie={false}
-                    onClick={() => handleZoomChange(movie)}
-                  
-                  />
-                ))}
-          </div>
-          </div>
-        )}
-      {/* {filmShown && (
-        <div className="movieWrapperSearched">
-          <div className="movieSearch">
-            <button
+          <button
               id="closeButton"
-              style={{ alignSelf: "flex-end" }}
+              style={{ alignSelf: "flex-end", position: "absolute",top: "20%",right: "5%" }}
               onClick={closeButtonOnClick}
             >
               X
-            </button>
-            
-           
-            <Film
-              title={filmTitle}
-              image={filmImageUrl}
-              overview={overview}
-              voteAverage={averageVote}
-              filmShown={true}
-              handleClose={handleClose}
-              isSearchedMovie={true}
-              rating={rating}
-              setFilmTitle={setFilmTitle}
-              setFilmImageUrl={setFilmImageUrl}
-            />
-            <div>
-              <StarRatings
-                rating={rating}
-                starRatedColor="orange"
-                changeRating={handleRatingChange}
-                numberOfStars={5}
-                starDimension="30px"
-                starSpacing="5px"
-              />
-            </div>
-            <button
-              onClick={addMovie}
-              className="button-28"
-              style={{ marginTop: "1rem" }}
-            >
-              Save rating
-            </button>
+          </button>
+          <div className="movieWrapperSearched">
+              {searchedMovies.map((movie) => (
+                <Film
+                  title={movie.title}
+                  image={movie.imageUrl}
+                  voteAverage={movie.averageVote}
+                  overview={movie.overview}
+                  filmShown={false}
+                  rating={movie.rating}
+                  isSearchedMovie={false}
+                  onClick={() => handleZoomChange(movie)}
+                />
+              ))}
           </div>
-          
+          <hr style={{ visibility: searchedMovies.length > 0 ? "visible" : "hidden" }}/>
         </div>
-      )} */}
-
+        )}
       <div className="movieWrapper">
         {movies.map((movie, index) => (
           <Film
@@ -261,7 +233,6 @@ export default function Home(props) {
           />
         ))}
       </div>
-
       {isZoomed && (
         <ZoomedFilm
           closeZoomedMovie = {closeZoomedMovie}
@@ -277,7 +248,6 @@ export default function Home(props) {
           handleRatingChange={handleRatingChange}
         />
       )}
-
       <div className="pagination">
         <button
           className="button-28"
@@ -298,7 +268,12 @@ export default function Home(props) {
         >
           NEXT
         </button>
+        <div class="loading">
+          <div class="spinner"></div>
+        </div>
       </div>
     </>
+   
   );
+  
 }

@@ -17,6 +17,7 @@ export default function Film(props) {
             alt={props.title}
             onClick={props.onClick}
             style={{
+              cursor: props.isZoomed? "default":"pointer",
               marginTop: "10px",
               marginBottom: "10px",
               width: props.isZoomed ? "26rem" : "auto",
