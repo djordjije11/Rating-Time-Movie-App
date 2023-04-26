@@ -62,6 +62,7 @@ export default function Home(props) {
   };
 
   const getMovieFromSearchAsync = async function (title) {
+    
     const response = await fetch(
       `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${title}`
     );
@@ -71,20 +72,22 @@ export default function Home(props) {
     setSearchedMovies(searchedMovies);
   };
 
-
-  const handlePageChange = async (pageNumber) => {
+  const loader = () =>{
     const loading= document.querySelector(".loading");
     const movies= document.querySelector(".movieWrapper");
-
+    
     loading.style.display = 'flex';
     movies.classList.add('blur');
     setTimeout(() => {
       loading.style.display = 'none';
       movies.classList.remove('blur');
     }, 2000);
+  }
 
+  const handlePageChange = async (pageNumber) => {
+    loader();
     window.scrollTo(0, 0);
-    
+
     setCurrentPage(pageNumber);
     const selectedGenre = document.getElementById("genreSelect").value;
     const response = await fetch(
@@ -96,8 +99,10 @@ export default function Home(props) {
    
      
   };
-
+ 
   const handleGenreChange = async (event) => {
+    loader();
+
     const selectedGenre = event.target.value;
     const response = await fetch(
       `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${selectedGenre}`
@@ -268,8 +273,8 @@ export default function Home(props) {
         >
           NEXT
         </button>
-        <div class="loading">
-          <div class="spinner"></div>
+        <div className="loading">
+          <div className="spinner"></div>
         </div>
       </div>
     </>
