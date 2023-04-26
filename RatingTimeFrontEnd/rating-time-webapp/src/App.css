@@ -27,8 +27,9 @@
 .movieWrapperSearched{
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   background: rgb(255,255,255);
-background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(187,210,222,1) 22%, rgba(158,190,207,1) 41%, rgba(157,190,207,1) 53%, rgba(183,207,218,1) 67%, rgba(212,230,236,1) 80%, rgba(255,255,255,1) 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(187,210,222,1) 22%, rgba(158,190,207,1) 41%, rgba(157,190,207,1) 53%, rgba(183,207,218,1) 67%, rgba(212,230,236,1) 80%, rgba(255,255,255,1) 100%);
 }
 .movieSearch{
   display: flex;
@@ -184,3 +185,4 @@ background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(187,210,222,1) 
   padding: 10px;
   width: 120%;
 }
+

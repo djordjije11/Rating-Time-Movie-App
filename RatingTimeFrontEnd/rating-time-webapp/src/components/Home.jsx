@@ -18,7 +18,7 @@ export default function Home(props) {
   const [averageVote, setAverageVote] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
-
+  const [searchedMovies, setSearchedMovies]= useState([]);
   useEffect(() => {
     getGenresAsync();
   }, []);
@@ -64,15 +64,11 @@ export default function Home(props) {
       `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${title}`
     );
     const responseJson = await response.json();
-    setFilmImageUrl(
-      `https://image.tmdb.org/t/p/original/${responseJson.results[0].poster_path}`
-    );
-    setOverview(responseJson.results[0].overview);
-    setFilmTitle(responseJson.results[0].title);
-    setAverageVote(responseJson.results[0].vote_average / 2);
-    setFilmShown(true);
-    setRating(0);
+    const searchedMovies= getMoviesPerPageFromJSON(responseJson.results);
+   
+    setSearchedMovies(searchedMovies);
   };
+
 
   const handlePageChange = async (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -116,7 +112,7 @@ export default function Home(props) {
   };
 
   const closeButtonOnClick = () => {
-    setFilmShown(false);
+    setSearchedMovies([]);
   };
 
   const closeZoomedMovie = () => {
@@ -177,7 +173,34 @@ export default function Home(props) {
           ))}
         </select>
       </div>
-      {filmShown && (
+      {searchedMovies.length > 0 && (
+        <div>
+        <button
+            id="closeButton"
+            style={{ alignSelf: "flex-end" }}
+            onClick={closeButtonOnClick}
+          >
+            X
+        </button>
+        <div className="movieWrapperSearched">
+          
+                {searchedMovies.map((movie) => (
+                  <Film
+                    title={movie.title}
+                    image={movie.imageUrl}
+                    voteAverage={movie.averageVote}
+                    overview={movie.overview}
+                    filmShown={false}
+                    rating={movie.rating}
+                    isSearchedMovie={false}
+                    onClick={() => handleZoomChange(movie)}
+                  
+                  />
+                ))}
+          </div>
+          </div>
+        )}
+      {/* {filmShown && (
         <div className="movieWrapperSearched">
           <div className="movieSearch">
             <button
@@ -187,6 +210,8 @@ export default function Home(props) {
             >
               X
             </button>
+            
+           
             <Film
               title={filmTitle}
               image={filmImageUrl}
@@ -217,8 +242,9 @@ export default function Home(props) {
               Save rating
             </button>
           </div>
+          
         </div>
-      )}
+      )} */}
 
       <div className="movieWrapper">
         {movies.map((movie, index) => (
