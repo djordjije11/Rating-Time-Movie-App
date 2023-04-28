@@ -38,7 +38,7 @@ export default function Movie(props) {
       {props.isSearchedMovie && <p>{props.movie?.overview}</p>}
       <p
         className="movieTitle"
-        style={{ height: props.isZoomed ? "10px" : "60px" }}
+        style={{ height: props.isZoomed ? "40px" : "60px" }}
       >
         {props.movie.title}
       </p>

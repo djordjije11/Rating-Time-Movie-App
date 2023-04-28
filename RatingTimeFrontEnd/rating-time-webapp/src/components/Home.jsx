@@ -74,27 +74,37 @@ export default function Home(props) {
   };
 
   const getMovieFromSearchAsync = async function (title) {
+    loader(2);
     const response = await fetch(
       `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${title}`
     );
     const responseJson = await response.json();
     const searchedMovies = getMoviesPerPageFromJSON(responseJson.results);
     setSearchedMovies(searchedMovies);
+    setTxtState("");
+    
   };
 
-  const loader = () => {
+  const loader = function(type){
+    let movies = document.querySelector(".movieWrapper");
+    if (type === 2) {
+      movies = document.querySelector(".movieWrapperSearched");
+    }
     const loading = document.querySelector(".loading");
-    const movies = document.querySelector(".movieWrapper");
+    if (!movies || !loading) {
+      console.error("Required DOM elements not found.");
+      return;
+    }
     loading.style.display = "flex";
     movies.classList.add("blur");
     setTimeout(() => {
       loading.style.display = "none";
       movies.classList.remove("blur");
     }, 2000);
-  };
-
+  }
+ 
   const handlePageChange = async (pageNumber) => {
-    loader();
+    loader(1);
     window.scrollTo(0, 0);
     setCurrentPage(pageNumber);
     const selectedGenre = document.getElementById("genreSelect").value;
@@ -107,7 +117,7 @@ export default function Home(props) {
   };
 
   const handleGenreChange = async (event) => {
-    loader();
+    loader(1);
     const selectedGenre = event.target.value;
     const response = await fetch(
       `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${selectedGenre}`
@@ -162,7 +172,7 @@ export default function Home(props) {
 
   return (
     <>
-      <div style={{ marginLeft: "5%" }}>
+      <div style={{ marginLeft: "10%" }}>
         <input
           id="txtInput"
           onClick={handleClose}
@@ -190,6 +200,7 @@ export default function Home(props) {
             </option>
           ))}
         </select>
+        
       </div>
       {searchedMovies.length > 0 && (
         <div>
