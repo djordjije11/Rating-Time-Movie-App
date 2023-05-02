@@ -22,14 +22,15 @@ builder.Services.AddCors(options =>
                       policy =>
                       {
                           policy
-                          .AllowAnyOrigin()
-                          //.WithOrigins("http://localhost:3000")
-                          //.WithOrigins("http://127.0.0.1:3000")
-                          //.WithOrigins("http://172.25.192.1:3000")
+                          //.AllowAnyOrigin()
+                          .WithOrigins("http://localhost:3000")
+                          .WithOrigins("http://127.0.0.1:3000")
+                          .WithOrigins("http://172.25.192.1:3000")
+                          
                           .AllowAnyMethod()
                           //.WithMethods("POST", "GET", "OPTIONS")
-                          .AllowAnyHeader();
-                          //.AllowCredentials();
+                          .AllowAnyHeader()
+                          .AllowCredentials();
                       });
 });
 

@@ -48,7 +48,7 @@ namespace RatingTime.API.Controllers
 
             await userLogic.RegisterAsync(user);
 
-            return Ok("The user is registered.");
+            return Ok(new { message = "The user is registered." });
         }
 
         [HttpPost("login")]
@@ -97,13 +97,6 @@ namespace RatingTime.API.Controllers
             {
                 return BadRequest(new { message = "Refresh token is not valid." });
             }
-        }
-        [HttpGet("logout")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult Logout()
-        {
-            session.UsersAuthenticationTokens.Remove(Request.Cookies.First(c => c.Key == Session.REFRESH_TOKEN_KEY).Value);
-            return NoContent();
         }
     }
 }
