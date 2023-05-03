@@ -8,7 +8,9 @@ namespace RatingTime.DTO.Profiles.Ratings
     {
         public RatingProfile()
         {
-            CreateMap<Rating, UserRatingInfo>();
+            CreateMap<Rating, RatingInfo>();
+            CreateMap<RatingPost, Rating>();
+            CreateMap<RatingDelete, Rating>();
         }
     }
 }

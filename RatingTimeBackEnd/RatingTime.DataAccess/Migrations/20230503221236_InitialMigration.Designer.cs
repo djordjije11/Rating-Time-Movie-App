@@ -11,8 +11,8 @@ using RatingTime.DataAccess;
 namespace RatingTime.DataAccess.Migrations
 {
     [DbContext(typeof(RatingTimeContext))]
-    [Migration("20230328145211_AddedUniqueIndexesForUsersUsernameAndEmail")]
-    partial class AddedUniqueIndexesForUsersUsernameAndEmail
+    [Migration("20230503221236_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,21 +27,14 @@ namespace RatingTime.DataAccess.Migrations
             modelBuilder.Entity("RatingTime.Domain.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)")
                         .HasColumnName("name");
-
-                    b.Property<int>("TmdbId")
-                        .HasColumnType("int")
-                        .HasColumnName("tmdb_id");
 
                     b.HasKey("Id")
                         .HasName("pk_genre");
@@ -52,11 +45,8 @@ namespace RatingTime.DataAccess.Migrations
             modelBuilder.Entity("RatingTime.Domain.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("varchar(2048)")
@@ -67,10 +57,6 @@ namespace RatingTime.DataAccess.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")
                         .HasColumnName("title");
-
-                    b.Property<int>("TmdbId")
-                        .HasColumnType("int")
-                        .HasColumnName("tmdb_id");
 
                     b.HasKey("Id")
                         .HasName("pk_movie");
@@ -129,10 +115,16 @@ namespace RatingTime.DataAccess.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("varchar(40)")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("password")
                         .UseCollation("SQL_Latin1_General_CP1_CS_AS");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varchar(40)")
+                        .HasDefaultValue("User")
+                        .HasColumnName("role");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -143,14 +135,6 @@ namespace RatingTime.DataAccess.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_user");
-
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasDatabaseName("ix_user_email");
-
-                    b.HasIndex("Username")
-                        .IsUnique()
-                        .HasDatabaseName("ix_user_username");
 
                     b.ToTable("user", (string)null);
                 });
@@ -188,7 +172,7 @@ namespace RatingTime.DataAccess.Migrations
             modelBuilder.Entity("RatingTime.Domain.Models.Rating", b =>
                 {
                     b.HasOne("RatingTime.Domain.Models.Movie", "Movie")
-                        .WithMany("Ratings")
+                        .WithMany()
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
@@ -209,7 +193,7 @@ namespace RatingTime.DataAccess.Migrations
             modelBuilder.Entity("RatingTime.Domain.Relationships.MovieGenre", b =>
                 {
                     b.HasOne("RatingTime.Domain.Models.Genre", "Genre")
-                        .WithMany("MovieGenreList")
+                        .WithMany()
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -227,16 +211,9 @@ namespace RatingTime.DataAccess.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("RatingTime.Domain.Models.Genre", b =>
-                {
-                    b.Navigation("MovieGenreList");
-                });
-
             modelBuilder.Entity("RatingTime.Domain.Models.Movie", b =>
                 {
                     b.Navigation("MovieGenreList");
-
-                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("RatingTime.Domain.Models.User", b =>

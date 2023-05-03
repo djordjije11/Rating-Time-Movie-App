@@ -1,4 +1,5 @@
 ﻿namespace RatingTime.DTO.Models.Genres
 {
-    public record GenreInfo(string Name);
+    public record GenreInfo(int Id, string Name);
+    public record MovieGenrePost(int Id, string? Name);
 }

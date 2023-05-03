@@ -9,6 +9,8 @@ namespace RatingTime.DTO.Profiles.Movies
         public MovieProfile()
         {
             CreateMap<Movie, MovieInfo>();
+            CreateMap<Movie, MovieDetailInfo>();
+            CreateMap<RatingMoviePost, Movie>();
         }
     }
 }

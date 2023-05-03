@@ -69,11 +69,17 @@ namespace RatingTime.DataAccess
                         .Property(m => m.ImageUrl)
                         .IsRequired(false)
                         .HasColumnType("varchar(2048)");
+            modelBuilder.Entity<Movie>()
+                        .Property(m => m.Id)
+                        .ValueGeneratedNever();
 
             modelBuilder.Entity<Genre>()
                         .Property(g => g.Name)
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
+            modelBuilder.Entity<Genre>()
+                        .Property(g => g.Id)
+                        .ValueGeneratedNever();
 
             modelBuilder.Entity<Rating>()
                         .Property(r => r.StarsNumber)
@@ -108,19 +114,16 @@ namespace RatingTime.DataAccess
                         .HasIndex(mg => new { mg.MovieId, mg.GenreId })
                         .IsUnique();
 
+            modelBuilder.Entity<Movie>()
+                        .HasMany(m => m.Genres)
+                        .WithMany()
+                        .UsingEntity<MovieGenre>();
+
             modelBuilder.Entity<User>()
                         .HasIndex(u => u.Username)
                         .IsUnique();
             modelBuilder.Entity<User>()
                         .HasIndex(u => u.Email)
-                        .IsUnique();
-
-            modelBuilder.Entity<Movie>()
-                        .HasIndex(m => m.TmdbId)
-                        .IsUnique();
-
-            modelBuilder.Entity<Genre>()
-                        .HasIndex(g => g.TmdbId)
                         .IsUnique();
 
             modelBuilder.Entity<Rating>()

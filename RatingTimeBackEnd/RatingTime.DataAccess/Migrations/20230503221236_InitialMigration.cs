@@ -14,9 +14,7 @@ namespace RatingTime.DataAccess.Migrations
                 name: "genre",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    tmdb_id = table.Column<int>(type: "int", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false),
                     name = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
@@ -28,9 +26,7 @@ namespace RatingTime.DataAccess.Migrations
                 name: "movie",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    tmdb_id = table.Column<int>(type: "int", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false),
                     title = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
                     image_url = table.Column<string>(type: "varchar(2048)", nullable: true)
                 },
@@ -47,7 +43,8 @@ namespace RatingTime.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     username = table.Column<string>(type: "varchar(40)", maxLength: 40, nullable: false, collation: "SQL_Latin1_General_CP1_CS_AS"),
                     email = table.Column<string>(type: "nvarchar(320)", maxLength: 320, nullable: false, collation: "SQL_Latin1_General_CP1_CS_AS"),
-                    password = table.Column<string>(type: "varchar(40)", maxLength: 40, nullable: false, collation: "SQL_Latin1_General_CP1_CS_AS")
+                    password = table.Column<string>(type: "nvarchar(max)", nullable: false, collation: "SQL_Latin1_General_CP1_CS_AS"),
+                    role = table.Column<string>(type: "varchar(40)", nullable: false, defaultValue: "User")
                 },
                 constraints: table =>
                 {

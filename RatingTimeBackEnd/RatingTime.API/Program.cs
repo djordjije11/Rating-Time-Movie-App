@@ -6,9 +6,15 @@ using RatingTime.API.Middlewares.Exceptions;
 using RatingTime.API.Options;
 using RatingTime.DataAccess;
 using RatingTime.Domain.Models;
+using RatingTime.DTO.Models.Genres;
+using RatingTime.DTO.Models.Movies;
+using RatingTime.DTO.Models.Ratings;
 using RatingTime.DTO.Models.Users;
+using RatingTime.Logic.Ratings;
+using RatingTime.Logic.Ratings.Impl;
 using RatingTime.Logic.Users;
 using RatingTime.Logic.Users.Impl;
+using RatingTime.Validation.Ratings;
 using RatingTime.Validation.Users;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,8 +43,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddSingleton<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserLogic, UserLogic>();
+builder.Services.AddTransient<IRatingLogic, RatingLogic>();
 builder.Services.AddTransient<UserValidator>();
-builder.Services.AddAutoMapper(typeof(UserLogin).Assembly);
+builder.Services.AddTransient<RatingValidator>();
+builder.Services.AddAutoMapper(typeof(UserInfo).Assembly, typeof(MovieInfo).Assembly, typeof(GenreInfo).Assembly, typeof(RatingInfo).Assembly);
 
 builder.Services.AddControllers(options => {
     options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));    //nece putanja kontrolera biti MovieRating nego movie-rating npr.

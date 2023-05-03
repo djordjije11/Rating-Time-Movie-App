@@ -24,11 +24,8 @@ namespace RatingTime.DataAccess.Migrations
             modelBuilder.Entity("RatingTime.Domain.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -36,16 +33,8 @@ namespace RatingTime.DataAccess.Migrations
                         .HasColumnType("varchar(30)")
                         .HasColumnName("name");
 
-                    b.Property<int>("TmdbId")
-                        .HasColumnType("int")
-                        .HasColumnName("tmdb_id");
-
                     b.HasKey("Id")
                         .HasName("pk_genre");
-
-                    b.HasIndex("TmdbId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_genre_tmdb_id");
 
                     b.ToTable("genre", (string)null);
                 });
@@ -53,11 +42,8 @@ namespace RatingTime.DataAccess.Migrations
             modelBuilder.Entity("RatingTime.Domain.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("varchar(2048)")
@@ -69,16 +55,8 @@ namespace RatingTime.DataAccess.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("title");
 
-                    b.Property<int>("TmdbId")
-                        .HasColumnType("int")
-                        .HasColumnName("tmdb_id");
-
                     b.HasKey("Id")
                         .HasName("pk_movie");
-
-                    b.HasIndex("TmdbId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_movie_tmdb_id");
 
                     b.ToTable("movie", (string)null);
                 });

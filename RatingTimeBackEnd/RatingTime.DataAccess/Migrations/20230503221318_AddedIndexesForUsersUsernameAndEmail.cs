@@ -5,7 +5,7 @@
 namespace RatingTime.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedUniqueIndexesForUsersUsernameAndEmail : Migration
+    public partial class AddedIndexesForUsersUsernameAndEmail : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

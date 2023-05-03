@@ -5,7 +5,6 @@ using RatingTime.Domain.Models;
 using RatingTime.DTO.Models.Users;
 using RatingTime.Logic.Users;
 using RatingTime.Validation.Users;
-using System.Security.Claims;
 
 namespace RatingTime.API.Controllers
 {
@@ -41,7 +40,7 @@ namespace RatingTime.API.Controllers
             await userLogic.SaveAsync(user);
             await authenticationService.LoginAsync(user, HttpContext);
 
-            return Ok(new { message = "The user is registered and logged in.", role = User.FindFirstValue(ClaimTypes.Role) });
+            return Ok(new { message = "The user is registered and logged in.", role = UserRole.User.ToString() });
         }
 
         [HttpPost("login")]
@@ -53,7 +52,7 @@ namespace RatingTime.API.Controllers
             var dbUser = await userLogic.GetUserAndCheckPasswordAsync(user, cancellationToken);
             await authenticationService.LoginAsync(dbUser, HttpContext);
 
-            return Ok(new { message = "The user is logged in.", role = User.FindFirstValue(ClaimTypes.Role) });
+            return Ok(new { message = "The user is logged in.", role = dbUser.Role.ToString() });
         }
 
         [HttpPost("logout")]

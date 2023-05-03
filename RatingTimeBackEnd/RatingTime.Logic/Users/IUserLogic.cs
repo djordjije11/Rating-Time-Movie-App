@@ -26,11 +26,5 @@ namespace RatingTime.Logic.Users
         Task<List<User>> GetAllAsync(int take, int skip, CancellationToken cancellationToken);
         Task<List<User>> GetAllAsync(CancellationToken cancellationToken);
         Task<int> GetCountAsync(CancellationToken cancellationToken);
-        /// <summary>
-        /// Returns ratings of user by user's id.
-        /// </summary>
-        /// <param name="userId">User's id</param>
-        /// <returns>List of ratings by user</returns>
-        Task<List<Rating>> GetRatingsAsync(int userId, CancellationToken cancellationToken);
     }
 }

@@ -5,7 +5,7 @@
 namespace RatingTime.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedUniqueIndexesForTmdbIdsAndRating : Migration
+    public partial class AddedIndexForRating : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,18 +19,6 @@ namespace RatingTime.DataAccess.Migrations
                 table: "rating",
                 columns: new[] { "user_id", "movie_id" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_movie_tmdb_id",
-                table: "movie",
-                column: "tmdb_id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_genre_tmdb_id",
-                table: "genre",
-                column: "tmdb_id",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -39,14 +27,6 @@ namespace RatingTime.DataAccess.Migrations
             migrationBuilder.DropIndex(
                 name: "ix_rating_user_id_movie_id",
                 table: "rating");
-
-            migrationBuilder.DropIndex(
-                name: "ix_movie_tmdb_id",
-                table: "movie");
-
-            migrationBuilder.DropIndex(
-                name: "ix_genre_tmdb_id",
-                table: "genre");
 
             migrationBuilder.CreateIndex(
                 name: "ix_rating_user_id",

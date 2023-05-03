@@ -9,6 +9,7 @@ namespace RatingTime.DTO.Profiles.Genres
         public GenreProfile()
         {
             CreateMap<Genre, GenreInfo>();
+            CreateMap<MovieGenrePost, Genre>();
         }
     }
 }

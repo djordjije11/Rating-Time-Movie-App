@@ -54,14 +54,5 @@ namespace RatingTime.API.Controllers
 
             return mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync(pageSize, pageSize * (pageNumber - 1), cancellationToken));
         }
-
-        [HttpGet("ratings")]
-        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<UserRatingInfo>>> GetRatingsAsync(CancellationToken cancellationToken)
-        {
-            int userId = int.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userRatings = mapper.Map<List<UserRatingInfo>>(await userLogic.GetRatingsAsync(userId, cancellationToken));
-            return Ok(userRatings);
-        }
     }
 }
