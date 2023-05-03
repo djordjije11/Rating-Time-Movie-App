@@ -21,8 +21,8 @@ namespace RatingTime.Logic.Users
         /// <returns></returns>
         /// <exception cref="LogicException">If the username or email is already being used by an active user.</exception>
         /// <exception cref="Exception">If the user is not saved successfully.</exception>
-        Task RegisterAsync(User user);
-        Task<User> LoginAsync(User user, CancellationToken cancellationToken);
+        Task SaveAsync(User user);
+        Task<User> GetUserAndCheckPasswordAsync(User user, CancellationToken cancellationToken);
         Task<List<User>> GetAllAsync(int take, int skip, CancellationToken cancellationToken);
         Task<List<User>> GetAllAsync(CancellationToken cancellationToken);
         Task<int> GetCountAsync(CancellationToken cancellationToken);

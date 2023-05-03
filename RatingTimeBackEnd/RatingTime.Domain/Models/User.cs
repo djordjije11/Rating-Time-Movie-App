@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace RatingTime.Domain.Models
+﻿namespace RatingTime.Domain.Models
 {
     public class User
     {
@@ -9,5 +7,6 @@ namespace RatingTime.Domain.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public List<Rating> Ratings { get; set; } = new List<Rating>();
+        public UserRole Role { get; set; }
     }
 }

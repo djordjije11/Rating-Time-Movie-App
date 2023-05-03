@@ -11,7 +11,7 @@ using System.Text.Json;
 namespace RatingTime.API.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Policy = "User")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -28,8 +28,6 @@ namespace RatingTime.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<UserInfo>>> GetAll(CancellationToken cancellationToken)
         {
-            //proveriti da li je administrator
-
             return Ok(mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync(cancellationToken)));
         }
 
@@ -45,7 +43,6 @@ namespace RatingTime.API.Controllers
             {
                 return BadRequest(new { message = "Page size cannot be upper than 200." });
             }
-            //proveriti da li je administrator
 
             var paginationMetadata = new PaginationMetadata() {
                 CurrentPage = pageNumber,
@@ -58,7 +55,7 @@ namespace RatingTime.API.Controllers
             return mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync(pageSize, pageSize * (pageNumber - 1), cancellationToken));
         }
 
-        [HttpGet("ratings"), Authorize(Policy = "User")]
+        [HttpGet("ratings")]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<UserRatingInfo>>> GetRatingsAsync(CancellationToken cancellationToken)
         {
@@ -66,6 +63,5 @@ namespace RatingTime.API.Controllers
             var userRatings = mapper.Map<List<UserRatingInfo>>(await userLogic.GetRatingsAsync(userId, cancellationToken));
             return Ok(userRatings);
         }
-
     }
 }

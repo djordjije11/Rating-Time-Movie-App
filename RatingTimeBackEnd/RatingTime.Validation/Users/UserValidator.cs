@@ -9,6 +9,7 @@ namespace RatingTime.Validation.Users
         {
             RuleFor(u => u.Username).NotNull()
                                     .Length(3, 40);
+
             RuleFor(u => u.Password).Cascade(CascadeMode.Stop)
                                     .NotNull()
                                     .Length(8, 40)

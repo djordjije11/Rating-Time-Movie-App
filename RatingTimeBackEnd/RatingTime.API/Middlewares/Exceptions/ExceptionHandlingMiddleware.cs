@@ -2,24 +2,22 @@
 
 namespace RatingTime.API.Middlewares.Exceptions
 {
-    public class ExceptionHandlingMiddleware
+    public class ExceptionHandlingMiddleware : IMiddleware
     {
-        private readonly RequestDelegate next;
         private readonly ILogger<ExceptionHandlingMiddleware> logger;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+        public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger)
         {
-            this.next = next;
             this.logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
             {
                 await next(context);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await HandleExceptionAsync(context, ex);
             }

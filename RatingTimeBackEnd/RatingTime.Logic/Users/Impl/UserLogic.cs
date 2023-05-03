@@ -43,7 +43,7 @@ namespace RatingTime.Logic.Users.Impl
                                         .ToListAsync(cancellationToken);
         }
 
-        public async Task<User> LoginAsync(User user, CancellationToken cancellationToken)
+        public async Task<User> GetUserAndCheckPasswordAsync(User user, CancellationToken cancellationToken)
         {
             var dbUser = await context.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Username == user.Username || u.Email == user.Email, cancellationToken);
 
@@ -59,7 +59,7 @@ namespace RatingTime.Logic.Users.Impl
             return dbUser;
         }
 
-        public async Task RegisterAsync(User user)
+        public async Task SaveAsync(User user)
         {
             bool userExists = await context.Users.AnyAsync(u => u.Username == user.Username || u.Email == user.Email);
             if (userExists)
