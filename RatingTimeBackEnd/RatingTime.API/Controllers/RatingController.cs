@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RatingTime.Domain.Models;
 using RatingTime.DTO.Models.Ratings;
+using RatingTime.Logic.Movies;
 using RatingTime.Logic.Ratings;
-using RatingTime.Validation.Ratings;
 using System.Security.Claims;
 
 namespace RatingTime.API.Controllers
@@ -15,14 +16,18 @@ namespace RatingTime.API.Controllers
     public class RatingController : ControllerBase
     {
         private readonly IRatingLogic ratingLogic;
+        private readonly IMovieLogic movieLogic;
         private readonly IMapper mapper;
-        private readonly RatingValidator ratingValidator;
+        private readonly IValidator<Rating> ratingValidator;
+        private readonly IValidator<Movie> movieValidator;
 
-        public RatingController(IRatingLogic ratingLogic, IMapper mapper, RatingValidator ratingValidator)
+        public RatingController(IRatingLogic ratingLogic, IMovieLogic movieLogic, IMapper mapper, IValidator<Rating> ratingValidator, IValidator<Movie> movieValidator)
         {
             this.ratingLogic = ratingLogic;
+            this.movieLogic = movieLogic;
             this.mapper = mapper;
             this.ratingValidator = ratingValidator;
+            this.movieValidator = movieValidator;
         }
 
         [HttpGet]
@@ -40,11 +45,17 @@ namespace RatingTime.API.Controllers
         {
             var rating = mapper.Map<Rating>(ratingPost);
             rating.UserId = int.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            var validationResult = await ratingValidator.ValidateAsync(rating);
-            if (validationResult.IsValid == false)
+            var movie = rating.Movie;
+            var movieValidationResult = await movieValidator.ValidateAsync(movie);
+            if(movieValidationResult.IsValid == true) 
             {
-                return BadRequest(new { Errors = validationResult.Errors.Select(e => e.ErrorMessage) });
+                await movieLogic.SaveAsync(movie);
+            }
+
+            var ratingValidationResult = await ratingValidator.ValidateAsync(rating);
+            if (ratingValidationResult.IsValid == false)
+            {
+                return BadRequest(new { Errors = ratingValidationResult.Errors.Select(e => e.ErrorMessage) });
             }
 
             await ratingLogic.SaveAsync(rating);
@@ -57,7 +68,9 @@ namespace RatingTime.API.Controllers
         {
             var rating = mapper.Map<Rating>(ratingDelete);
             rating.UserId = int.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
             await ratingLogic.DeleteAsync(rating);
+            
             return Ok(new { message = "Rating is deleted." });
         }
 

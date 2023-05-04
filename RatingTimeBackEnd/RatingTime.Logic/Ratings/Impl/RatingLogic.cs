@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RatingTime.DataAccess;
 using RatingTime.Domain.Models;
-using RatingTime.Domain.Relationships;
-using System.Collections.Generic;
+using RatingTime.Logic.Exceptions;
 
 namespace RatingTime.Logic.Ratings.Impl
 {
@@ -17,8 +16,13 @@ namespace RatingTime.Logic.Ratings.Impl
 
         public async Task DeleteAsync(Rating rating)
         {
-            var dbRating = await context.Ratings.FirstAsync(r => r.MovieId == rating.MovieId);
+            var dbRating = await context.Ratings.FirstOrDefaultAsync(r => r.MovieId == rating.MovieId && r.UserId == rating.UserId);
+            if(dbRating == null)
+            {
+                return;
+            }
             context.Ratings.Remove(dbRating);
+
             var ratingRemoved = await context.SaveChangesAsync() > 0;
             if (ratingRemoved == false)
             {
@@ -42,31 +46,25 @@ namespace RatingTime.Logic.Ratings.Impl
 
         public async Task SaveAsync(Rating rating)
         {
+            var movieExists = await context.Movies.AnyAsync(m => m.Id == rating.MovieId);
+            if(movieExists == false)
+            {
+                throw new LogicException("The movie user is rating is not in the database!");
+            }
+
             var dbRating = await context.Ratings.FirstOrDefaultAsync(r => r.MovieId == rating.MovieId && r.UserId == rating.UserId);
 
             if(dbRating != null)
             {
+                if(dbRating.StarsNumber == rating.StarsNumber)
+                {
+                    return;
+                }
                 dbRating.StarsNumber = rating.StarsNumber;
             }
             else
             {
-                var movieExists = await context.Movies.AnyAsync(m => m.Id == rating.MovieId);
-                if (movieExists)
-                {
-                    //rating.Movie = null;
-                    rating.Movie.Genres = null;
-                }
-                else
-                {
-                    //Genres are all in the database already
-                    List<MovieGenre> movieGenreList = rating.Movie.Genres.Select(genre => new MovieGenre()
-                    {
-                        GenreId = genre.Id,
-                        MovieId = rating.MovieId
-                    }).ToList();
-                    await context.MovieGenreList.AddRangeAsync(movieGenreList);
-                    rating.Movie.Genres = null;
-                }
+                rating.Movie = null;
                 await context.Ratings.AddAsync(rating);
             }
 

@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
@@ -6,14 +7,18 @@ using RatingTime.API.Middlewares.Exceptions;
 using RatingTime.API.Options;
 using RatingTime.DataAccess;
 using RatingTime.Domain.Enums;
+using RatingTime.Domain.Models;
 using RatingTime.DTO.Models.Genres;
 using RatingTime.DTO.Models.Movies;
 using RatingTime.DTO.Models.Ratings;
 using RatingTime.DTO.Models.Users;
+using RatingTime.Logic.Movies;
+using RatingTime.Logic.Movies.Impl;
 using RatingTime.Logic.Ratings;
 using RatingTime.Logic.Ratings.Impl;
 using RatingTime.Logic.Users;
 using RatingTime.Logic.Users.Impl;
+using RatingTime.Validation.Movies;
 using RatingTime.Validation.Ratings;
 using RatingTime.Validation.Users;
 
@@ -44,8 +49,11 @@ builder.Services.AddSingleton<ExceptionHandlingMiddleware>();
 builder.Services.AddSingleton<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserLogic, UserLogic>();
 builder.Services.AddTransient<IRatingLogic, RatingLogic>();
-builder.Services.AddTransient<UserValidator>();
-builder.Services.AddTransient<RatingValidator>();
+builder.Services.AddTransient<IMovieLogic, MovieLogic>();
+builder.Services.AddTransient<IValidator<User>, UserValidator>();
+builder.Services.AddTransient<IValidator<Rating>, RatingValidator>();
+builder.Services.AddTransient<IValidator<Movie>, MovieValidator>();
+
 builder.Services.AddAutoMapper(typeof(UserInfo).Assembly, typeof(MovieInfo).Assembly, typeof(GenreInfo).Assembly, typeof(RatingInfo).Assembly);
 
 builder.Services.AddControllers(options => {

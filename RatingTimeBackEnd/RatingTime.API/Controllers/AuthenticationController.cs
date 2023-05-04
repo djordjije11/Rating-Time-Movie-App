@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using RatingTime.API.Authentication;
 using RatingTime.Domain.Enums;
 using RatingTime.Domain.Models;
 using RatingTime.DTO.Models.Users;
 using RatingTime.Logic.Users;
-using RatingTime.Validation.Users;
 
 namespace RatingTime.API.Controllers
 {
@@ -15,10 +15,10 @@ namespace RatingTime.API.Controllers
     {
         private readonly IUserLogic userLogic;
         private readonly IMapper mapper;
-        private readonly UserValidator userValidator;
+        private readonly IValidator<User> userValidator;
         private readonly IAuthService authenticationService;
 
-        public AuthenticationController(IUserLogic userLogic, IMapper mapper, UserValidator userValidator, IAuthService authenticationService)
+        public AuthenticationController(IUserLogic userLogic, IMapper mapper, IValidator<User> userValidator, IAuthService authenticationService)
         {
             this.userLogic = userLogic;
             this.mapper = mapper;
