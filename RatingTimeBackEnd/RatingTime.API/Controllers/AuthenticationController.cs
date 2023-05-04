@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RatingTime.API.Authentication;
+using RatingTime.Domain.Enums;
 using RatingTime.Domain.Models;
 using RatingTime.DTO.Models.Users;
 using RatingTime.Logic.Users;

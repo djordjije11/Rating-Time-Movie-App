@@ -156,3 +156,22 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [migration_id] = N'20230504110450_AddedCheckConstraintUserRole')
+BEGIN
+    EXEC(N'ALTER TABLE [user] ADD CONSTRAINT [ck_user_role] CHECK ([role] in (''User'', ''Admin''))');
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [migration_id] = N'20230504110450_AddedCheckConstraintUserRole')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([migration_id], [product_version])
+    VALUES (N'20230504110450_AddedCheckConstraintUserRole', N'7.0.4');
+END;
+GO
+
+COMMIT;
+GO
+

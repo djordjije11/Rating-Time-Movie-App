@@ -379,3 +379,4 @@ RatingTimeContext.dgml
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/RatingTimeBackEnd/RatingTime.API/appsettings.json

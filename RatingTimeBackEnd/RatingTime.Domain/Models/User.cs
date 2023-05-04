@@ -1,4 +1,6 @@
-﻿namespace RatingTime.Domain.Models
+﻿using RatingTime.Domain.Enums;
+
+namespace RatingTime.Domain.Models
 {
     public class User
     {

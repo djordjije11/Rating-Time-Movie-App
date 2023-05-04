@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RatingTime.Domain.Enums;
 using RatingTime.Domain.Models;
 using RatingTime.Domain.Relationships;
 
@@ -60,6 +61,10 @@ namespace RatingTime.DataAccess
                         .HasConversion<string>()
                         .HasColumnType("varchar(40)")
                         .HasDefaultValue(UserRole.User);
+
+            modelBuilder.Entity<User>()
+                        .Metadata
+                        .AddCheckConstraint("ck_user_role", "[role] in ('User', 'Admin')");
 
             modelBuilder.Entity<Movie>()
                         .Property(m => m.Title)

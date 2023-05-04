@@ -1,4 +1,4 @@
-﻿namespace RatingTime.Domain.Models
+﻿namespace RatingTime.Domain.Enums
 {
     public enum UserRole
     {

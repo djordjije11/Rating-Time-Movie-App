@@ -1,4 +1,4 @@
-﻿using RatingTime.Domain.Models;
+﻿using RatingTime.Domain.Enums;
 using RatingTime.DTO.Models.Ratings;
 using System.Runtime.Serialization;
 

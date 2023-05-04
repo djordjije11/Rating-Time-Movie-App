@@ -5,7 +5,7 @@ using RatingTime.API.Authentication;
 using RatingTime.API.Middlewares.Exceptions;
 using RatingTime.API.Options;
 using RatingTime.DataAccess;
-using RatingTime.Domain.Models;
+using RatingTime.Domain.Enums;
 using RatingTime.DTO.Models.Genres;
 using RatingTime.DTO.Models.Movies;
 using RatingTime.DTO.Models.Ratings;
