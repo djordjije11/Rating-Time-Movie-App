@@ -354,6 +354,10 @@ MigrationBackup/
 # Visual Studio - DbContext Diagram file for RatingTimeContext
 RatingTimeContext.dgml
 
+# App Settings Json files
+/RatingTimeBackEnd/RatingTime.API/appsettings.json
+/RatingTimeBackEnd/RatingTime.API/appsettings.Development.json
+
 #FRONT END PART - React.js, Visual Studio Code
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
@@ -379,4 +383,3 @@ RatingTimeContext.dgml
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/RatingTimeBackEnd/RatingTime.API/appsettings.json
