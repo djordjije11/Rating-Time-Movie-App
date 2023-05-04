@@ -15,6 +15,7 @@ namespace RatingTime.DataAccess
         public DbSet<User> Users { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Genre> Genres { get; set; }
+        public DbSet<MovieGenre> MovieGenreList { get; set; }
         public DbSet<Rating> Ratings { get; set; }
 
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RatingTime.DataAccess;
 using RatingTime.Domain.Models;
+using RatingTime.Domain.Relationships;
+using System.Collections.Generic;
 
 namespace RatingTime.Logic.Ratings.Impl
 {
@@ -48,6 +50,23 @@ namespace RatingTime.Logic.Ratings.Impl
             }
             else
             {
+                var movieExists = await context.Movies.AnyAsync(m => m.Id == rating.MovieId);
+                if (movieExists)
+                {
+                    //rating.Movie = null;
+                    rating.Movie.Genres = null;
+                }
+                else
+                {
+                    //Genres are all in the database already
+                    List<MovieGenre> movieGenreList = rating.Movie.Genres.Select(genre => new MovieGenre()
+                    {
+                        GenreId = genre.Id,
+                        MovieId = rating.MovieId
+                    }).ToList();
+                    await context.MovieGenreList.AddRangeAsync(movieGenreList);
+                    rating.Movie.Genres = null;
+                }
                 await context.Ratings.AddAsync(rating);
             }
 
