@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using RatingTime.API.Authentication;
+using RatingTime.API.Authorization;
 using RatingTime.API.Middlewares.Exceptions;
 using RatingTime.API.Options;
+using RatingTime.API.Seed;
 using RatingTime.DataAccess;
 using RatingTime.Domain.Enums;
 using RatingTime.Domain.Models;
@@ -90,14 +92,26 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("User", policy => policy.RequireAuthenticatedUser());
-    options.AddPolicy("Admin", policy => policy.RequireRole(UserRole.Admin.ToString()));
+    options.AddPolicy(IAuthorizationPolicy.AUTHORIZATION_POLICY_USER, policy => policy.RequireAuthenticatedUser());
+    options.AddPolicy(IAuthorizationPolicy.AUTHORIZATION_POLICY_ADMIN, policy => policy.RequireRole(UserRole.Admin.ToString()));
 });
 
 
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+IConfigurationSection seedingSection = builder.Configuration.GetSection("Seeding");
+bool isSeeding = seedingSection.GetValue<bool>("SeedData");
+if (isSeeding)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+    using (var scope = scopedFactory.CreateScope())
+    {
+        var seeder = new Seeder(scope.ServiceProvider.GetRequiredService<RatingTimeContext>(), seedingSection.GetValue<string>("TmdbApiKey"));
+        await seeder.SeedAsync();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

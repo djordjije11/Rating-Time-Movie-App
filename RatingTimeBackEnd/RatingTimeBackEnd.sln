@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RatingTime.DTO", "RatingTim
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RatingTime.Validation", "RatingTime.Validation\RatingTime.Validation.csproj", "{66E8C3A4-E1BB-4920-AE63-53FE5DE07B44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatingTime.Logic", "RatingTime.Logic\RatingTime.Logic.csproj", "{5D3BE907-A60E-4C4B-888E-A0220F15DD2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RatingTime.Logic", "RatingTime.Logic\RatingTime.Logic.csproj", "{5D3BE907-A60E-4C4B-888E-A0220F15DD2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

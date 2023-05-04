@@ -12,5 +12,9 @@
   "AllowedHosts": "*",
   "ConnectionStrings": {
     "Default": "{connection_string_of_your_database}"
+  },
+  "Seeding": {
+    "SeedData": true,
+    "TmdbApiKey": "{tmdb_api_key}"
   }
 }

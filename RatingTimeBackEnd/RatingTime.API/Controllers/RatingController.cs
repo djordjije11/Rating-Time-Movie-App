@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RatingTime.API.Authorization;
 using RatingTime.Domain.Models;
 using RatingTime.DTO.Models.Ratings;
 using RatingTime.Logic.Movies;
@@ -12,7 +13,7 @@ namespace RatingTime.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "User")]
+    [Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_USER)]
     public class RatingController : ControllerBase
     {
         private readonly IRatingLogic ratingLogic;
@@ -73,6 +74,5 @@ namespace RatingTime.API.Controllers
             
             return Ok(new { message = "Rating is deleted." });
         }
-
     }
 }
