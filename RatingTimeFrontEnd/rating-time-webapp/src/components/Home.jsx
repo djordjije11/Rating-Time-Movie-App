@@ -4,6 +4,7 @@ import ZoomedMovie from "./ZoomedMovie.jsx";
 import ListedMovies from "./ListedMovies.jsx";
 import MovieDefinition from "../models/MovieDefinition.js";
 import PropTypes from "prop-types";
+import Movie from "./Movie.jsx";
 
 Home.propTypes = {
   ratedMovies: PropTypes.arrayOf(
@@ -142,10 +143,18 @@ export default function Home(props) {
     newMovie.imageUrl = movie.imageUrl;
     newMovie.averageVote = movie.averageVote;
     newMovie.overview = movie.overview;
+    checkIfMovieIsRated(newMovie);
     setCurrentMovie(newMovie);
     setIsZoomed(true);
   };
 
+  const checkIfMovieIsRated = (movie) => {
+    const ratedMovie = ratedMovies.find((ratedMovie) => ratedMovie.title === movie.title);
+    if (ratedMovie) {
+      movie.rating = ratedMovie.rating;
+    }
+  };
+  
   const closeButtonOnClick = () => {
     setSearchedMovies([]);
   };
@@ -154,19 +163,21 @@ export default function Home(props) {
     setIsZoomed(false);
   };
 
-  const addMovie = function () {
+  const addMovie = () => {
     const movie = currentMovie;
-    let contains = false;
-    ratedMovies.forEach((element) => {
-      if (element.title === movie.title) {
-        contains = true;
-      }
-    });
-    if (!contains) {
-      setRatedMovies((prev) => [...prev, movie]);
+  
+    const existingMovieIndex = ratedMovies.findIndex(
+      (ratedMovie) => ratedMovie.title === movie.title
+    );
+  
+    if (existingMovieIndex !== -1) {
+      const updatedRatedMovies = [...ratedMovies];
+      updatedRatedMovies[existingMovieIndex].rating = movie.rating;
+      setRatedMovies(updatedRatedMovies);
     } else {
-      alert("Movie already rated!");
+      setRatedMovies((prev) => [...prev, movie]);
     }
+  
     handleRatingChange(0);
   };
 

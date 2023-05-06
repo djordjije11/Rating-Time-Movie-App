@@ -26,9 +26,9 @@ export default function Movie(props) {
         className="movieImg"
         src={props.movie.imageUrl}
         alt={props.movie.title}
-        onClick={() => props.handleZoomChange(props.movie)}
+        onClick={props.movie.rating===0? () => props.handleZoomChange(props.movie): undefined}
         style={{
-          cursor: props.isZoomed ? "default" : "pointer",
+          cursor: props.isZoomed || props.movie.rating>0 ? "default" : "pointer",
           marginTop: "10px",
           marginBottom: "10px",
           width: props.isZoomed ? "26rem" : "auto",
