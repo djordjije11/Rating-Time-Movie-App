@@ -11,6 +11,7 @@ namespace RatingTime.Logic.Ratings
         /// <param name="cancellationToken"></param>
         /// <returns>List of ratings by user</returns>
         Task<List<Rating>> GetAllByUserAsync(int userId, CancellationToken cancellationToken);
+        Task<List<Rating>> GetAllByUserAsync(string username, CancellationToken cancellationToken);
         Task SaveAsync(Rating rating);
         Task DeleteAsync(Rating rating);
     }
