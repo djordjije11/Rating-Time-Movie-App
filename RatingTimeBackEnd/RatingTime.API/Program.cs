@@ -23,6 +23,8 @@ using RatingTime.Logic.Users.Impl;
 using RatingTime.Validation.Movies;
 using RatingTime.Validation.Ratings;
 using RatingTime.Validation.Users;
+using Serilog.Context;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +71,22 @@ builder.Services.AddControllers(options => {
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<RatingTimeContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+//builder.Services.AddDbContext<RatingTimeContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+
+var provider = builder.Configuration.GetValue("Provider", "SqlServer");
+
+builder.Services.AddDbContext<RatingTimeContext>(
+    options => _ = provider switch
+    {
+        "MySql" => options.UseMySQL(
+            builder.Configuration.GetConnectionString("MySql"),
+            x => x.MigrationsAssembly("RatingTime.DataAccess.MySql")),
+        "SqlServer" => options.UseSqlServer(
+            builder.Configuration.GetConnectionString("SqlServer"),
+            x => x.MigrationsAssembly("RatingTime.DataAccess")),
+
+        _ => throw new Exception($"Unsupported provider: {provider}")
+    });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
