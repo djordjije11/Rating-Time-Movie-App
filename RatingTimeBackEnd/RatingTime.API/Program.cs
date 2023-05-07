@@ -70,7 +70,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var provider = builder.Configuration.GetValue("Provider", "SqlServer");
-
 builder.Services.AddDbContext<RatingTimeContext>(
     options => _ = provider switch
     {
