@@ -175,3 +175,28 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [migration_id] = N'20230507121144_ChangedPasswordSqlType')
+BEGIN
+    DECLARE @var0 sysname;
+    SELECT @var0 = [d].[name]
+    FROM [sys].[default_constraints] [d]
+    INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+    WHERE ([d].[parent_object_id] = OBJECT_ID(N'[user]') AND [c].[name] = N'password');
+    IF @var0 IS NOT NULL EXEC(N'ALTER TABLE [user] DROP CONSTRAINT [' + @var0 + '];');
+    ALTER TABLE [user] ALTER COLUMN [password] nvarchar(72) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL;
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [migration_id] = N'20230507121144_ChangedPasswordSqlType')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([migration_id], [product_version])
+    VALUES (N'20230507121144_ChangedPasswordSqlType', N'7.0.4');
+END;
+GO
+
+COMMIT;
+GO
+

@@ -56,7 +56,7 @@ namespace RatingTime.DataAccess
                         .HasColumnType("nvarchar(320)");
             modelBuilder.Entity<User>()
                         .Property(u => u.Password)
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(72)");
             modelBuilder.Entity<User>()
                         .Property(u => u.Role)
                         .HasConversion<string>()
