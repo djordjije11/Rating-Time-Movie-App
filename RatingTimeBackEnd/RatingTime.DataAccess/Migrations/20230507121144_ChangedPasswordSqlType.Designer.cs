@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RatingTime.DataAccess;
 
@@ -10,9 +11,11 @@ using RatingTime.DataAccess;
 namespace RatingTime.DataAccess.Migrations
 {
     [DbContext(typeof(RatingTimeContext))]
-    partial class RatingTimeContextModelSnapshot : ModelSnapshot
+    [Migration("20230507121144_ChangedPasswordSqlType")]
+    partial class ChangedPasswordSqlType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
