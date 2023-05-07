@@ -40,6 +40,13 @@ namespace RatingTime.API.Controllers
             return Ok(userRatings);
         }
 
+        [HttpGet("{username}"), Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_ADMIN)]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<RatingInfo>>> GetAllByUserAsnyc(CancellationToken cancellationToken, [FromRoute] string username)
+        {
+            return Ok(mapper.Map<List<RatingInfo>>(await ratingLogic.GetAllByUserAsync(username, cancellationToken)));
+        }
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SaveAsync([FromBody] RatingPost ratingPost)

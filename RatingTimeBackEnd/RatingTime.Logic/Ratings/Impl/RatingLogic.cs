@@ -35,13 +35,15 @@ namespace RatingTime.Logic.Ratings.Impl
             return await context.Ratings.AsNoTracking()
                                         .Include(r => r.Movie)
                                         .Where(r => r.UserId == userId)
-                                        .Select(r => new Rating
-                                        {
-                                            Id = r.Id,
-                                            StarsNumber = r.StarsNumber,
-                                            Movie = r.Movie
-                                        })
                                         .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Rating>> GetAllByUserAsync(string username, CancellationToken cancellationToken)
+        {
+            return await context.Ratings.AsNoTracking()
+                .Include(r => r.Movie)
+                .Where(r => r.User.Username == username)
+                .ToListAsync();
         }
 
         public async Task SaveAsync(Rating rating)

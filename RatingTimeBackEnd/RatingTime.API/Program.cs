@@ -71,8 +71,6 @@ builder.Services.AddControllers(options => {
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddDbContext<RatingTimeContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
-
 var provider = builder.Configuration.GetValue("Provider", "SqlServer");
 
 builder.Services.AddDbContext<RatingTimeContext>(
