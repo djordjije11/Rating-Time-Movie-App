@@ -23,8 +23,6 @@ using RatingTime.Logic.Users.Impl;
 using RatingTime.Validation.Movies;
 using RatingTime.Validation.Ratings;
 using RatingTime.Validation.Users;
-using Serilog.Context;
-using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
