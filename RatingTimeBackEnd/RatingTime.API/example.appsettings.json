@@ -10,8 +10,10 @@
     }
   },
   "AllowedHosts": "*",
+  "Provider": "SqlServer",
   "ConnectionStrings": {
-    "Default": "{connection_string_of_your_database}"
+    "SqlServer": "{connection_string_of_your_database}",
+    "MySql": "Server=localhost; User ID=root; Password=admin; Database=rating_time_schema"
   },
   "Seeding": {
     "SeedData": true,
