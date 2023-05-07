@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using RatingTime.DataAccess;
 using RatingTime.Domain.Models;
 using RatingTime.Domain.Relationships;
@@ -10,12 +9,10 @@ namespace RatingTime.Logic.Movies.Impl
     public class MovieLogic : IMovieLogic
     {
         private readonly RatingTimeContext context;
-        private readonly ILogger<MovieLogic> logger;
 
-        public MovieLogic(RatingTimeContext context, ILogger<MovieLogic> logger)
+        public MovieLogic(RatingTimeContext context)
         {
             this.context = context;
-            this.logger = logger;
         }
 
         public async Task SaveAsync(Movie movie)
@@ -26,22 +23,24 @@ namespace RatingTime.Logic.Movies.Impl
                 return;
             }
 
-            List<MovieGenre> movieGenreList = new();
-            foreach(Genre genre in movie.Genres)
+            foreach (Genre genre in movie.Genres)
             {
                 if (await context.Genres.AnyAsync(g => g.Id == genre.Id))
                 {
-                    movieGenreList.Add(new MovieGenre()
+                    await context.MovieGenreList.AddAsync(new MovieGenre()
                     {
                         GenreId = genre.Id,
                         MovieId = movie.Id
                     });
-                };
+                }
+                else
+                {
+                    throw new LogicException($"The movie's genre is not in the database: {genre}");
+                }
             }
-            movie.Genres = null;
 
+            movie.Genres = null;
             await context.Movies.AddAsync(movie);
-            await context.MovieGenreList.AddRangeAsync(movieGenreList);
 
             var movieSaved = await context.SaveChangesAsync() > 0;
             if (movieSaved == false)
