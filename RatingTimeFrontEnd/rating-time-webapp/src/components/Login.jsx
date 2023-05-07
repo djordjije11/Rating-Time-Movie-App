@@ -21,6 +21,7 @@ export default function Login() {
   };
 
   return (
+    <div className="login-background">
     <div className="login-wrapper">
       <h1>Log In</h1>
       <div>
@@ -46,8 +47,9 @@ export default function Login() {
         </label>
       </div>
       <div>
-        <button onClick={loginAsync}>Submit</button>
+        <button onClick={loginAsync} className="button-28">Submit</button>
       </div>
+    </div>
     </div>
   );
 }

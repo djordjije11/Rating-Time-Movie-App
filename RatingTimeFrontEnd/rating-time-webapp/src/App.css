@@ -1,8 +1,43 @@
+.login-background{
+  height: 100vh;
+  background-image: url("../src/images/login.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+}
 
 .login-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-right: 20%;
+
+}
+
+.login-wrapper h1{
+
+  text-shadow: 200px 2px 8px #000000;
+}
+
+.login-wrapper p{
+  margin-bottom: 0;
+  text-shadow: 200px 2px 5px #000000;
+}
+
+.login-wrapper input{
+  margin-bottom: 20px;
+  box-shadow: 200px 2px 10px #000000
+}
+.login-wrapper button{
+  box-shadow: 200px 2px 10px #000000;
+}
+
+.login-wrapper button:hover{
+  box-shadow: 200px 2px 10px #000000;
 }
 
 /*HOME*/
