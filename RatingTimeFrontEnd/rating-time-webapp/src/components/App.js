@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes,Navigate } from "react-router-dom";
 import React, { useState } from "react";
 import NavBar from "./NavBar";
 import Home from "./Home";
@@ -8,26 +8,44 @@ import RatedMovies from "./RatedMovies";
 
 function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
+  const [isLoggedIn, setLoggedIn]= useState(false);
+
+  const handleLogin =()=>{
+    setLoggedIn(true);
+    
+  }
   return (
     <BrowserRouter>
-      <NavBar />
-      <Routes>
+         {isLoggedIn && <NavBar />}
+         <Routes>
         <Route
+          path="/"
           element={
-            <Home ratedMovies={ratedMovies} setRatedMovies={setRatedMovies} />
+            isLoggedIn ? (
+              <Home ratedMovies={ratedMovies} setRatedMovies={setRatedMovies} />
+            ) : (
+              <Navigate to="/login" />
+            )
           }
-          path={"/"}
         />
         <Route
+          path="/rated-movies"
           element={
-            <RatedMovies
-              ratedMovies={ratedMovies}
-              setRatedMovies={setRatedMovies}
-            />
+            isLoggedIn ? (
+              <RatedMovies
+                ratedMovies={ratedMovies}
+                setRatedMovies={setRatedMovies}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
           }
-          path={"/rated-movies"}
         />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login onLogin={handleLogin} isLoggedIn={isLoggedIn} />}
+        />
+        <Route path="/*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );

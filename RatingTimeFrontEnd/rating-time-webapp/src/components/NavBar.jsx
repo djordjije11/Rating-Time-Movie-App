@@ -4,7 +4,7 @@ import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
 import logo from "../images/logo.png";
 
-export default function NavbarComponent() {
+export default function NavbarComponent({ isLoggedIn }) {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>

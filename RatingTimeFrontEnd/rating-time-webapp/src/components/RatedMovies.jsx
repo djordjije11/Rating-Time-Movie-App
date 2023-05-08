@@ -53,18 +53,14 @@ export default function RatedMovies(props) {
         return movie;
       })
     );
+    console.log(selectedMovie);
+    MovieController.addMovieToDBAsync(selectedMovie);
     setSelectedMovie(null);
   }
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="movieWrapper">
         {ratedMovies.map((ratedMovie, index) => (
           <div
             style={{

@@ -170,8 +170,8 @@ export default function Home(props) {
   };
 
   const addMovie= () =>{
+   
     const movie = currentMovie;
-  
     const existingMovieIndex = ratedMovies.findIndex(
       (ratedMovie) => ratedMovie.title === movie.title
     );

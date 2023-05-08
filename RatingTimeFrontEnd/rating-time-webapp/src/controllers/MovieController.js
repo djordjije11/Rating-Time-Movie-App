@@ -27,7 +27,7 @@ class MovieController {
               result.starsNumber,
               result.movie.overview,
               result.movie.averageRating,
-              
+              result.movie.genres
             );
           });
   
@@ -44,6 +44,7 @@ class MovieController {
     }
 
     static async addMovieToDBAsync(movie){
+      
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -53,7 +54,8 @@ class MovieController {
             title: movie.title,
             imageUrl: movie.imageUrl,
             overview: movie.overview,
-            averageRating: movie.averageVote
+            averageRating: movie.averageVote,
+            genres: movie.genreIds ? (movie.genreIds).map((id) => ({ id })) : undefined
           }
           }),
           credentials: "include",

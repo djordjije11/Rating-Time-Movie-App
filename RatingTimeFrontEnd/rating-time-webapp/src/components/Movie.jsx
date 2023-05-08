@@ -42,6 +42,9 @@ export default function Movie(props) {
       >
         {props.movie.title}
       </p>
+      {props.isZoomed?
+       undefined : <p>Average vote</p> }
+      
       <StarRatings
         rating={props.movie.averageVote}
         starRatedColor="orange"

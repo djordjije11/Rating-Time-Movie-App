@@ -1,25 +1,24 @@
 import React, { useState } from "react";
-
-export default function Login() {
+import { useNavigate } from "react-router-dom";
+import UserController from "../controllers/UserController";
+import { func } from "prop-types";
+export default function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const [role, setRole] = useState("");
+  const navigate = useNavigate();
+  
   const loginAsync = async function () {
-    
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: username, 
-        password: password }),
-      credentials: "include",
-    };
-    console.log("HEJ");
-    const response = await fetch(
-      "http://localhost:5165/api/authentication/login",
-      requestOptions
-    );
-      console.log(response);
-      console.log(await response.json());
+      const response = await UserController.loginAsync({ username, password });
+  
+      if(response.ok){
+        navigate("/");
+      }
+      else{
+        console.error("Error trying to login");
+      }
+      props.onLogin();
+      
   };
 
   return (
