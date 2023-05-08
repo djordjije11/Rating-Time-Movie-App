@@ -4,8 +4,6 @@ import ZoomedMovie from "./ZoomedMovie.jsx";
 import ListedMovies from "./ListedMovies.jsx";
 import MovieDefinition from "../models/MovieDefinition.js";
 import PropTypes from "prop-types";
-import Movie from "./Movie.jsx";
-
 Home.propTypes = {
   ratedMovies: PropTypes.arrayOf(
     PropTypes.oneOfType([
@@ -31,11 +29,11 @@ export default function Home(props) {
   const [genres, setGenres] = useState([]);
   const [isZoomed, setIsZoomed] = useState(false);
 
+ 
+  
   useEffect(() => {
+    getRatedMoviesFromDBAsync();
     getGenresAsync();
-  }, []);
-
-  useEffect(() => {
     getTopMoviesAsync(currentPage);
   }, [currentPage, totalPages, totalResults]);
 
@@ -46,6 +44,7 @@ export default function Home(props) {
       .map(
         (result) =>
           new MovieDefinition(
+            result.id,
             result.title,
             `https://image.tmdb.org/t/p/original/${result.poster_path}`,
             0,
@@ -139,6 +138,7 @@ export default function Home(props) {
 
   const handleZoomChange = (movie) => {
     const newMovie = new MovieDefinition();
+    newMovie.id=movie.id;
     newMovie.title = movie.title;
     newMovie.imageUrl = movie.imageUrl;
     newMovie.averageVote = movie.averageVote;
@@ -163,7 +163,7 @@ export default function Home(props) {
     setIsZoomed(false);
   };
 
-  const addMovie = () => {
+  const addMovie= () =>{
     const movie = currentMovie;
   
     const existingMovieIndex = ratedMovies.findIndex(
@@ -177,10 +177,78 @@ export default function Home(props) {
     } else {
       setRatedMovies((prev) => [...prev, movie]);
     }
-  
+    addMovieToDBAsync(movie);
     handleRatingChange(0);
   };
+  const addMovieToDBAsync= async function(movie){
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify ({starsNumber: movie.rating,
+      movie: {
+        id:movie.id,
+        title: movie.title,
+        imageUrl: movie.imageUrl,
+      }
+      }),
+      credentials: "include",
+    };
+    console.log(movie);
+    try {
+      const response = await fetch(
+        "http://localhost:5165/api/rating",
+        requestOptions
+      );
 
+      if (response.ok) {
+        console.log("Movie added successfully");
+      } else {
+        console.error("Failed to add movie");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+}
+  const getRatedMoviesFromDBAsync = async function () {
+    const requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    };
+  
+    try {
+      const response = await fetch(
+        "http://localhost:5165/api/rating",
+        requestOptions
+      );
+  
+      if (response.ok) {
+        const responseJson = await response.json();
+        const movies= responseJson
+        .map(
+          (result) =>
+            new MovieDefinition(
+              result.movie.id,
+              result.movie.title,
+              result.movie.imageUrl,
+              result.starsNumber,
+            )
+        );
+        console.log("Rated movies retrieved successfully");
+        setRatedMovies(movies);
+        return movies;
+      } else {
+        console.error("Failed to retrieve rated movies");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
+    }
+  };
+  
+  
   return (
     <>
       <div style={{ marginLeft: "10%" }}>

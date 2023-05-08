@@ -5,10 +5,12 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const loginAsync = async function () {
+    
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: username, password: password }),
+      body: JSON.stringify({ username: username, 
+        password: password }),
       credentials: "include",
     };
     console.log("HEJ");
@@ -16,8 +18,8 @@ export default function Login() {
       "http://localhost:5165/api/authentication/login",
       requestOptions
     );
-    //const data = await response.json();
-    console.log(response);
+    const data = await response.json();
+    console.log(data);
   };
 
   return (
