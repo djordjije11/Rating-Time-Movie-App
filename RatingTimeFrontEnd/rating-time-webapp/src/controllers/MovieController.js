@@ -24,12 +24,14 @@ class MovieController {
               result.movie.id,
               result.movie.title,
               result.movie.imageUrl,
-              result.starsNumber
+              result.starsNumber,
+              result.movie.overview,
+              result.movie.averageRating,
+              
             );
           });
   
           console.log("Rated movies retrieved successfully");
-          
           return ratedMovies;
         } else {
           console.error("Failed to retrieve rated movies");
@@ -50,6 +52,8 @@ class MovieController {
             id:movie.id,
             title: movie.title,
             imageUrl: movie.imageUrl,
+            overview: movie.overview,
+            averageRating: movie.averageVote
           }
           }),
           credentials: "include",

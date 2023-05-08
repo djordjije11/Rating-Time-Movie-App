@@ -50,9 +50,12 @@ export default function Home(props) {
             `https://image.tmdb.org/t/p/original/${result.poster_path}`,
             0,
             result.overview,
-            result.vote_average / 2
+            result.vote_average / 2,
+            result.genre_ids
           )
+          
       );
+
   };
 
   const getTopMoviesAsync = async function (pageNumber) {
@@ -63,6 +66,7 @@ export default function Home(props) {
     setTotalPages(responseJson.total_pages);
     setTotalResults(responseJson.total_results);
     const topMovies = getMoviesPerPageFromJSON(responseJson.results);
+    console.log(topMovies);
     setMovies(topMovies);
   };
 
@@ -144,6 +148,7 @@ export default function Home(props) {
     newMovie.imageUrl = movie.imageUrl;
     newMovie.averageVote = movie.averageVote;
     newMovie.overview = movie.overview;
+    newMovie.genreIds = movie.genreIds;
     checkIfMovieIsRated(newMovie);
     setCurrentMovie(newMovie);
     setIsZoomed(true);
@@ -182,6 +187,7 @@ export default function Home(props) {
     handleRatingChange(0);
   };
   const addMovieToDBAsync= async function(movie){
+    console.log(movie);
     MovieController.addMovieToDBAsync(movie);
   }
   const getRatedMoviesFromDBAsync = async function () {
