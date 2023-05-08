@@ -5,18 +5,24 @@ import Home from "./Home";
 import "../App.css";
 import Login from "./Login";
 import RatedMovies from "./RatedMovies";
+import UserController from "../controllers/UserController";
+import Users from "./Users";
 
 function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
   const [isLoggedIn, setLoggedIn]= useState(false);
+  const [role, setRole] = useState("admin");
+  const [users, setUsers] = useState([]);
 
-  const handleLogin =()=>{
+  const handleLogin = async () =>{
     setLoggedIn(true);
-    
+    const users = await UserController.getAllUsersAsync();
+    setUsers(users);
+    console.log(users);
   }
   return (
     <BrowserRouter>
-         {isLoggedIn && <NavBar />}
+         {isLoggedIn && <NavBar role={role}/>}
          <Routes>
         <Route
           path="/"
@@ -41,6 +47,19 @@ function App() {
             )
           }
         />
+        <Route
+          path="/users"
+          element={
+            isLoggedIn ? (
+              <Users
+                users={users}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        
         <Route
           path="/login"
           element={<Login onLogin={handleLogin} isLoggedIn={isLoggedIn} />}

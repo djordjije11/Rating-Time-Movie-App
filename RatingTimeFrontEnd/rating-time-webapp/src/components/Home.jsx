@@ -59,6 +59,7 @@ export default function Home(props) {
   };
 
   const getTopMoviesAsync = async function (pageNumber) {
+    loader(1);
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=${pageNumber}`
     );

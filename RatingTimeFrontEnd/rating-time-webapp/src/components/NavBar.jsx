@@ -4,7 +4,7 @@ import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
 import logo from "../images/logo.png";
 
-export default function NavbarComponent({ isLoggedIn }) {
+export default function NavbarComponent(props) {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -23,9 +23,24 @@ export default function NavbarComponent({ isLoggedIn }) {
             <Link
               className="text-decoration-none text-white"
               to="/rated-movies"
-              style={{ fontSize: "20px"}}
+              style={{marginRight: "30px", fontSize: "20px"}}
             >
               Rated movies
+            </Link>
+            {props.role==="admin" &&  
+            <Link
+              className="text-decoration-none text-white"
+              to="/users"
+              style={{ fontSize: "20px"}}
+            >
+              Users
+            </Link> }
+            <Link
+              className="text-decoration-none text-white"
+              to="/logout"
+              style={{marginLeft: "800px", fontSize: "20px"}}
+            >
+              Logout
             </Link>
           </Nav>
         </Navbar.Collapse>

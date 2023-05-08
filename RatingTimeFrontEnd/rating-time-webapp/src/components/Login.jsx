@@ -1,24 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserController from "../controllers/UserController";
-import { func } from "prop-types";
+
 export default function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
   const navigate = useNavigate();
   
   const loginAsync = async function () {
       const response = await UserController.loginAsync({ username, password });
   
       if(response.ok){
+        props.onLogin();
         navigate("/");
       }
       else{
         console.error("Error trying to login");
       }
-      props.onLogin();
-      
   };
 
   return (
