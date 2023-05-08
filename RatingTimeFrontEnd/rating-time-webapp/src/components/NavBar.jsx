@@ -6,6 +6,7 @@ import logo from "../images/logo.png";
 
 export default function NavbarComponent(props) {
   return (
+    
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand>
@@ -27,7 +28,7 @@ export default function NavbarComponent(props) {
             >
               Rated movies
             </Link>
-            {props.role==="admin" &&  
+            {props.role==="Admin" &&  
             <Link
               className="text-decoration-none text-white"
               to="/users"

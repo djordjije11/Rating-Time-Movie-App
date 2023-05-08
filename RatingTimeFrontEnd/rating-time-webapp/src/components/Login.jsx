@@ -9,14 +9,10 @@ export default function Login(props) {
   
   const loginAsync = async function () {
       const response = await UserController.loginAsync({ username, password });
-  
-      if(response.ok){
-        props.onLogin();
+      
+        props.onLogin(response);
         navigate("/");
-      }
-      else{
-        console.error("Error trying to login");
-      }
+     
   };
 
   return (

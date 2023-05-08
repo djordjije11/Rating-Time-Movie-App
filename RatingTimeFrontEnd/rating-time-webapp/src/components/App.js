@@ -11,14 +11,16 @@ import Users from "./Users";
 function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
   const [isLoggedIn, setLoggedIn]= useState(false);
-  const [role, setRole] = useState("admin");
+  const [role, setRole] = useState("");
   const [users, setUsers] = useState([]);
 
-  const handleLogin = async () =>{
+  const handleLogin = async (response) =>{
     setLoggedIn(true);
+    setRole(response);
     const users = await UserController.getAllUsersAsync();
     setUsers(users);
     console.log(users);
+   
   }
   return (
     <BrowserRouter>

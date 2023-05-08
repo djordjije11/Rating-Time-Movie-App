@@ -18,8 +18,13 @@ class UserController {
         LOGIN_API_URL,
         requestOptions
       );
-      console.log(response);
-      return response;
+      if(response.ok){
+        const data = await response.json();
+        const role = data.role; 
+        return role;
+      }
+      
+      return null;
     }
 
     static async getAllUsersAsync(){
@@ -56,5 +61,36 @@ class UserController {
 
     }
 
+    // static async getUserAsync(){
+    //   const requestOptions = {
+    //     method: "GET",
+    //     headers: {"Content-Type":"application/json"},
+    //     credentials: "include",
+    //   }
+    //   try{
+    //     const response = await fetch(
+    //       USER_API_URL,
+    //       requestOptions
+    //     );
+    //     if(response.ok){
+    //       const responseJson = await response.json();
+    //       const users = responseJson.map((result) => {
+    //         return new UserDefinition(
+    //         result.username,
+    //         result.email,
+    //         result.role
+    //         )
+    //       });
+    //       console.log(users);
+    //       return users;
+    //     } else {
+    //       console.error("Failed to retrieve users");
+    //       return [];
+    //     }
+    //   }catch(error){
+    //     console.error("Error:",error);
+    //     return[];
+    //   }
+    // }
 } export default UserController;
   
