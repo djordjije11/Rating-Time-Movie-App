@@ -16,40 +16,42 @@ export default function Login() {
       "http://localhost:5165/api/authentication/login",
       requestOptions
     );
-    //const data = await response.json();
     console.log(response);
+    console.log(await response.json());
   };
 
   return (
     <div className="login-background">
-    <div className="login-wrapper">
-      <h1>Log In</h1>
-      <div>
-        <label>
-          <p>Username</p>
-          <input
-            name="username"
-            type="text"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </label>
+      <div className="login-wrapper">
+        <h1>Log In</h1>
+        <div>
+          <label>
+            <p>Username</p>
+            <input
+              name="username"
+              type="text"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            <p>Password</p>
+            <input
+              name="password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </label>
+        </div>
+        <div>
+          <button onClick={loginAsync} className="button-28">
+            Submit
+          </button>
+        </div>
       </div>
-      <div>
-        <label>
-          <p>Password</p>
-          <input
-            name="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <button onClick={loginAsync} className="button-28">Submit</button>
-      </div>
-    </div>
     </div>
   );
 }

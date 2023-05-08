@@ -34,16 +34,15 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MY_REACT_CORS_POLICY,
                       policy =>
                       {
-                          policy
-                          //.AllowAnyOrigin()
-                          .WithOrigins("http://localhost:3000")
-                          .WithOrigins("http://127.0.0.1:3000")
-                          .WithOrigins("http://172.25.192.1:3000")
-                          
-                          .AllowAnyMethod()
-                          //.WithMethods("POST", "GET", "OPTIONS")
-                          .AllowAnyHeader()
-                          .AllowCredentials();
+                          string[] origins = builder.Configuration.GetSection("CORS:Origins").Get<string[]>();
+                          foreach (var origin in origins)
+                          {
+                              policy.WithOrigins(origin);
+                          }
+
+                          policy.AllowAnyMethod()
+                                .AllowAnyHeader()
+                                .AllowCredentials();
                       });
 });
 
@@ -58,10 +57,11 @@ builder.Services.AddTransient<IValidator<Movie>, MovieValidator>();
 
 builder.Services.AddAutoMapper(typeof(UserInfo).Assembly, typeof(MovieInfo).Assembly, typeof(GenreInfo).Assembly, typeof(RatingInfo).Assembly);
 
-builder.Services.AddControllers(options => {
+builder.Services.AddControllers(options =>
+{
     options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));    //nece putanja kontrolera biti MovieRating nego movie-rating npr.
     options.ReturnHttpNotAcceptable = true;
-    })
+})
                 .AddXmlDataContractSerializerFormatters()
                 .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 
@@ -80,11 +80,12 @@ builder.Services.AddDbContext<RatingTimeContext>(
             builder.Configuration.GetConnectionString("SqlServer"),
             x => x.MigrationsAssembly("RatingTime.DataAccess")),
 
-        _ => throw new Exception($"Unsupported provider: {provider}")
+        _ => throw new ArgumentOutOfRangeException($"Unsupported provider: {provider}")
     });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options => {
+    .AddCookie(options =>
+    {
         options.LoginPath = "/api/authentication/login";
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
         options.Cookie.Name = "auth-cookie";
@@ -100,7 +101,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             return Task.CompletedTask;
         };
-        });
+    });
 
 builder.Services.AddAuthorization(options =>
 {

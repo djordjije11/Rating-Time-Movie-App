@@ -101,3 +101,43 @@ END;
 
 COMMIT;
 
+START TRANSACTION;
+
+IF NOT EXISTS(SELECT * FROM `__EFMigrationsHistory` WHERE `migration_id` = '20230508083605_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    ALTER TABLE `user` DROP CONSTRAINT `ck_user_role`;
+END;
+
+IF NOT EXISTS(SELECT * FROM `__EFMigrationsHistory` WHERE `migration_id` = '20230508083605_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    ALTER TABLE `movie` ADD `average_rating` double NOT NULL DEFAULT 0.0;
+END;
+
+IF NOT EXISTS(SELECT * FROM `__EFMigrationsHistory` WHERE `migration_id` = '20230508083605_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    ALTER TABLE `movie` ADD `overview` nvarchar(2048) NULL;
+END;
+
+IF NOT EXISTS(SELECT * FROM `__EFMigrationsHistory` WHERE `migration_id` = '20230508083605_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    ALTER TABLE `user` ADD CONSTRAINT `ck_user_role` CHECK (`role` in ('User', 'Admin'));
+END;
+
+IF NOT EXISTS(SELECT * FROM `__EFMigrationsHistory` WHERE `migration_id` = '20230508083605_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    ALTER TABLE `rating` ADD CONSTRAINT `ck_movie_stars_number` CHECK (`stars_number` >= 1 AND `stars_number` <= 5);
+END;
+
+IF NOT EXISTS(SELECT * FROM `__EFMigrationsHistory` WHERE `migration_id` = '20230508083605_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    ALTER TABLE `movie` ADD CONSTRAINT `ck_movie_average_rating` CHECK (`average_rating` >= 1 AND `average_rating` <= 5);
+END;
+
+IF NOT EXISTS(SELECT * FROM `__EFMigrationsHistory` WHERE `migration_id` = '20230508083605_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    INSERT INTO `__EFMigrationsHistory` (`migration_id`, `product_version`)
+    VALUES ('20230508083605_AddedOverviewAndAverageRatingToMovie', '7.0.4');
+END;
+
+COMMIT;
+
