@@ -1,5 +1,6 @@
 export default class MovieDefinition {
-  constructor(title, imageUrl, rating, overview, averageVote) {
+  constructor(id,title, imageUrl, rating, overview, averageVote) {
+    this.id= id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.rating = rating;

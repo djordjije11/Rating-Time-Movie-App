@@ -23,10 +23,35 @@ export default function RatedMovies(props) {
   const [showZoomedFilm, setShowZoomedFilm] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  function removeMovie(index) {
+  function removeMovie(index,ratedMovie) {
+    deleteMovieFromDBAsync(ratedMovie.id)
     setRatedMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
   }
-
+  const deleteMovieFromDBAsync= async function(id) {
+    const requestOptions = {
+      method: "DELETE",
+      body: JSON.stringify ({
+          movieId:id,
+        }),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    };
+  
+    try {
+      const response = await fetch(
+        "http://localhost:5165/api/rating",
+        requestOptions
+      );
+  
+      if (response.ok) {
+        console.log("Rated movie deleted successfully");
+      } else {
+        console.error("Failed to delete rated movie");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
   function updateMovieRating(index) {
     setSelectedMovie(ratedMovies[index]);
     setShowZoomedFilm(true);
@@ -88,7 +113,7 @@ export default function RatedMovies(props) {
                   marginBottom: "1rem",
                   marginTop: "1rem",
                 }}
-                onClick={() => removeMovie(index)}
+                onClick={() => removeMovie(index,ratedMovie)}
               >
                 Remove the rating
               </button>
