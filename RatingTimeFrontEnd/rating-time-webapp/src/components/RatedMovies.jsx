@@ -4,6 +4,7 @@ import StarRatings from "react-star-ratings";
 import { useState } from "react";
 import PropTypes from "prop-types";
 import MovieDefinition from "../models/MovieDefinition";
+import MovieController from "../controllers/MovieController";
 
 RatedMovies.propTypes = {
   ratedMovies: PropTypes.arrayOf(
@@ -28,29 +29,7 @@ export default function RatedMovies(props) {
     setRatedMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
   }
   const deleteMovieFromDBAsync= async function(id) {
-    const requestOptions = {
-      method: "DELETE",
-      body: JSON.stringify ({
-          movieId:id,
-        }),
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    };
-  
-    try {
-      const response = await fetch(
-        "http://localhost:5165/api/rating",
-        requestOptions
-      );
-  
-      if (response.ok) {
-        console.log("Rated movie deleted successfully");
-      } else {
-        console.error("Failed to delete rated movie");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    MovieController.deleteMovieFromDBAsync(id);
   }
   function updateMovieRating(index) {
     setSelectedMovie(ratedMovies[index]);

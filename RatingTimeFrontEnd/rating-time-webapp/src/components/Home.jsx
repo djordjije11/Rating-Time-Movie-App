@@ -4,6 +4,7 @@ import ZoomedMovie from "./ZoomedMovie.jsx";
 import ListedMovies from "./ListedMovies.jsx";
 import MovieDefinition from "../models/MovieDefinition.js";
 import PropTypes from "prop-types";
+import MovieController  from "../controllers/MovieController.js";
 Home.propTypes = {
   ratedMovies: PropTypes.arrayOf(
     PropTypes.oneOfType([
@@ -31,7 +32,7 @@ export default function Home(props) {
 
  
   
-  useEffect(() => {
+  useEffect( () => {
     getRatedMoviesFromDBAsync();
     getGenresAsync();
     getTopMoviesAsync(currentPage);
@@ -181,71 +182,11 @@ export default function Home(props) {
     handleRatingChange(0);
   };
   const addMovieToDBAsync= async function(movie){
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify ({starsNumber: movie.rating,
-      movie: {
-        id:movie.id,
-        title: movie.title,
-        imageUrl: movie.imageUrl,
-      }
-      }),
-      credentials: "include",
-    };
-    console.log(movie);
-    try {
-      const response = await fetch(
-        "http://localhost:5165/api/rating",
-        requestOptions
-      );
-
-      if (response.ok) {
-        console.log("Movie added successfully");
-      } else {
-        console.error("Failed to add movie");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-
-}
+    MovieController.addMovieToDBAsync(movie);
+  }
   const getRatedMoviesFromDBAsync = async function () {
-    const requestOptions = {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    };
-  
-    try {
-      const response = await fetch(
-        "http://localhost:5165/api/rating",
-        requestOptions
-      );
-  
-      if (response.ok) {
-        const responseJson = await response.json();
-        const movies= responseJson
-        .map(
-          (result) =>
-            new MovieDefinition(
-              result.movie.id,
-              result.movie.title,
-              result.movie.imageUrl,
-              result.starsNumber,
-            )
-        );
-        console.log("Rated movies retrieved successfully");
-        setRatedMovies(movies);
-        return movies;
-      } else {
-        console.error("Failed to retrieve rated movies");
-        return [];
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      return [];
-    }
+   const movies= await MovieController.getRatedMoviesFromDBAsync();
+   setRatedMovies(movies);
   };
   
   
