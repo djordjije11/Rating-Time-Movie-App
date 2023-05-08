@@ -8,6 +8,30 @@ namespace RatingTime.DataAccess
 {
     public class RatingTimeContext : DbContext
     {
+        private const string PROVIDER = "SqlServer";
+
+        private string CK_USER_ROLE => PROVIDER switch
+        {
+            "SqlServer" => "[role] in ('User', 'Admin')",
+            "MySql" => "`role` in ('User', 'Admin')",
+
+            _ => throw new ArgumentOutOfRangeException($"Unsupported provider: {PROVIDER}")
+        };
+        private string CK_MOVIE_AVERAGE_RATING => PROVIDER switch
+        {
+            "SqlServer" => "[average_rating] >= 1 AND [average_rating] <= 5",
+            "MySql" => "`average_rating` >= 1 AND `average_rating` <= 5",
+
+            _ => throw new ArgumentOutOfRangeException($"Unsupported provider: {PROVIDER}")
+        };
+        private string CK_MOVIE_STARS_NUMBER => PROVIDER switch
+        {
+            "SqlServer" => "[stars_number] >= 1 AND [stars_number] <= 5",
+            "MySql" => "`stars_number` >= 1 AND `stars_number` <= 5",
+
+            _ => throw new ArgumentOutOfRangeException($"Unsupported provider: {PROVIDER}")
+        };
+
         public RatingTimeContext(DbContextOptions<RatingTimeContext> options) : base(options)
         {
         }
@@ -56,6 +80,7 @@ namespace RatingTime.DataAccess
                         .HasColumnType("nvarchar(320)");
             modelBuilder.Entity<User>()
                         .Property(u => u.Password)
+                        .HasMaxLength(72)
                         .HasColumnType("nvarchar(72)");
             modelBuilder.Entity<User>()
                         .Property(u => u.Role)
@@ -65,8 +90,11 @@ namespace RatingTime.DataAccess
 
             modelBuilder.Entity<User>()
                         .Metadata
-                        .AddCheckConstraint("ck_user_role", "[role] in ('User', 'Admin')");
+                        .AddCheckConstraint("ck_user_role", CK_USER_ROLE);
 
+            modelBuilder.Entity<Movie>()
+                        .Property(m => m.Id)
+                        .ValueGeneratedNever();
             modelBuilder.Entity<Movie>()
                         .Property(m => m.Title)
                         .HasMaxLength(255)
@@ -76,8 +104,17 @@ namespace RatingTime.DataAccess
                         .IsRequired(false)
                         .HasColumnType("varchar(2048)");
             modelBuilder.Entity<Movie>()
-                        .Property(m => m.Id)
-                        .ValueGeneratedNever();
+                        .Property(m => m.Overview)
+                        .IsRequired(false)
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+            modelBuilder.Entity<Movie>()
+                        .Property(m => m.AverageRating)
+                        .HasPrecision(1, 1);
+
+            modelBuilder.Entity<Movie>()
+                        .Metadata
+                        .AddCheckConstraint("ck_movie_average_rating", CK_MOVIE_AVERAGE_RATING);
 
             modelBuilder.Entity<Genre>()
                         .Property(g => g.Name)
@@ -90,6 +127,10 @@ namespace RatingTime.DataAccess
             modelBuilder.Entity<Rating>()
                         .Property(r => r.StarsNumber)
                         .HasColumnType("tinyint");
+
+            modelBuilder.Entity<Rating>()
+                        .Metadata
+                        .AddCheckConstraint("ck_movie_stars_number", CK_MOVIE_STARS_NUMBER);
 
             modelBuilder.Entity<Rating>()
                         .HasOne(r => r.Movie)

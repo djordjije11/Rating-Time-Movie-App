@@ -45,9 +45,19 @@ namespace RatingTime.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    b.Property<double>("AverageRating")
+                        .HasPrecision(1, 1)
+                        .HasColumnType("float(1)")
+                        .HasColumnName("average_rating");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("varchar(2048)")
                         .HasColumnName("image_url");
+
+                    b.Property<string>("Overview")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasColumnName("overview");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -58,7 +68,10 @@ namespace RatingTime.DataAccess.Migrations
                     b.HasKey("Id")
                         .HasName("pk_movie");
 
-                    b.ToTable("movie", (string)null);
+                    b.ToTable("movie", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_movie_average_rating", "[average_rating] >= 1 AND [average_rating] <= 5");
+                        });
                 });
 
             modelBuilder.Entity("RatingTime.Domain.Models.Rating", b =>
@@ -92,7 +105,10 @@ namespace RatingTime.DataAccess.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_rating_user_id_movie_id");
 
-                    b.ToTable("rating", (string)null);
+                    b.ToTable("rating", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_movie_stars_number", "[stars_number] >= 1 AND [stars_number] <= 5");
+                        });
                 });
 
             modelBuilder.Entity("RatingTime.Domain.Models.User", b =>
@@ -113,6 +129,7 @@ namespace RatingTime.DataAccess.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasMaxLength(72)
                         .HasColumnType("nvarchar(72)")
                         .HasColumnName("password")
                         .UseCollation("SQL_Latin1_General_CP1_CS_AS");

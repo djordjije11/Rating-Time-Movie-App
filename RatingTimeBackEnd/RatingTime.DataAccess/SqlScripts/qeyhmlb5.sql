@@ -200,3 +200,40 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [migration_id] = N'20230508082937_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    ALTER TABLE [movie] ADD [average_rating] float(1) NOT NULL DEFAULT 0.0E0;
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [migration_id] = N'20230508082937_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    ALTER TABLE [movie] ADD [overview] nvarchar(2048) NULL;
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [migration_id] = N'20230508082937_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    EXEC(N'ALTER TABLE [rating] ADD CONSTRAINT [ck_movie_stars_number] CHECK ([stars_number] >= 1 AND [stars_number] <= 5)');
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [migration_id] = N'20230508082937_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    EXEC(N'ALTER TABLE [movie] ADD CONSTRAINT [ck_movie_average_rating] CHECK ([average_rating] >= 1 AND [average_rating] <= 5)');
+END;
+GO
+
+IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [migration_id] = N'20230508082937_AddedOverviewAndAverageRatingToMovie')
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([migration_id], [product_version])
+    VALUES (N'20230508082937_AddedOverviewAndAverageRatingToMovie', N'7.0.4');
+END;
+GO
+
+COMMIT;
+GO
+

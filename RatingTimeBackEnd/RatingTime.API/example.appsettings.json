@@ -10,6 +10,9 @@
     }
   },
   "AllowedHosts": "*",
+  "CORS": {
+    "Origins": [ "http://localhost:3000", "http://127.0.0.1:3000", "http://172.25.192.1:3000", "http://192.168.0.22:3000" ]
+  },
   "Provider": "SqlServer",
   "ConnectionStrings": {
     "SqlServer": "{connection_string_of_your_database}",
