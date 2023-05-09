@@ -1,7 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RatingTime.API.Authentication;
+using RatingTime.API.Authorization;
 using RatingTime.Domain.Enums;
 using RatingTime.Domain.Models;
 using RatingTime.DTO.Models.Users;
@@ -24,6 +27,13 @@ namespace RatingTime.API.Controllers
             this.mapper = mapper;
             this.userValidator = userValidator;
             this.authenticationService = authenticationService;
+        }
+
+        [HttpGet, Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_USER)]
+        [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Check()
+        {
+            return Ok(new { role = User.FindFirstValue(ClaimTypes.Role) });
         }
 
         [HttpPost("register")]
