@@ -6,7 +6,6 @@ import logo from "../images/logo.png";
 
 export default function NavbarComponent(props) {
   return (
-    
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand>
@@ -15,31 +14,33 @@ export default function NavbarComponent(props) {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <Link className="text-decoration-none text-white"
-            to="/"
-            style={{marginRight: "30px", fontSize: "20px"}}
+            <Link
+              className="text-decoration-none text-white"
+              to="/"
+              style={{ marginRight: "30px", fontSize: "20px" }}
             >
               Home
             </Link>
             <Link
               className="text-decoration-none text-white"
               to="/rated-movies"
-              style={{marginRight: "30px", fontSize: "20px"}}
+              style={{ marginRight: "30px", fontSize: "20px" }}
             >
               Rated movies
             </Link>
-            {props.role==="Admin" &&  
-            <Link
-              className="text-decoration-none text-white"
-              to="/users"
-              style={{ fontSize: "20px"}}
-            >
-              Users
-            </Link> }
+            {props.isAdmin && (
+              <Link
+                className="text-decoration-none text-white"
+                to="/users"
+                style={{ fontSize: "20px" }}
+              >
+                Users
+              </Link>
+            )}
             <Link
               className="text-decoration-none text-white"
               to="/logout"
-              style={{marginLeft: "800px", fontSize: "20px"}}
+              style={{ marginLeft: "800px", fontSize: "20px" }}
             >
               Logout
             </Link>

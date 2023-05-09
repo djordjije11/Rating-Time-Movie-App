@@ -1,12 +1,42 @@
-
+import { useEffect } from "react";
 import "../App.css";
+import UserService from "../services/UserService";
+import UserDefinition from "../models/UserDefinition";
+
 export default function Users(props) {
-  
-  if (!Array.isArray(props.users)) {
+  const [users, setUsers] = [props.users, props.setUsers];
+
+  const getAllUsers = async () => {
+    try {
+      if (props.isAdmin) {
+        const response = await UserService.getAllUsersAsync();
+        const dbUsers = [];
+        if (response.ok) {
+          const responseJson = await response.json();
+          dbUsers = responseJson.map((result) => {
+            return new UserDefinition(
+              result.username,
+              result.email,
+              result.role
+            );
+          });
+        } else {
+          console.error("Failed to retrieve users");
+        }
+        setUsers(dbUsers);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => getAllUsers, users);
+
+  if (Array.isArray(users) === false) {
     return <p>No users available.</p>;
   }
+
   return (
-    <>
     <div>
       <table className="table-container">
         <thead>
@@ -17,7 +47,7 @@ export default function Users(props) {
           </tr>
         </thead>
         <tbody>
-          {props.users.map((user, index) => (
+          {users.map((user, index) => (
             <tr key={index}>
               <td>{user.username}</td>
               <td>{user.email}</td>
@@ -27,6 +57,5 @@ export default function Users(props) {
         </tbody>
       </table>
     </div>
-    </>
   );
 }

@@ -4,7 +4,7 @@ import ZoomedMovie from "./ZoomedMovie.jsx";
 import ListedMovies from "./ListedMovies.jsx";
 import MovieDefinition from "../models/MovieDefinition.js";
 import PropTypes from "prop-types";
-import MovieController  from "../controllers/MovieController.js";
+import MovieService from "../services/MovieService.js";
 Home.propTypes = {
   ratedMovies: PropTypes.arrayOf(
     PropTypes.oneOfType([
@@ -30,9 +30,7 @@ export default function Home(props) {
   const [genres, setGenres] = useState([]);
   const [isZoomed, setIsZoomed] = useState(false);
 
- 
-  
-  useEffect( () => {
+  useEffect(() => {
     getRatedMoviesFromDBAsync();
     getGenresAsync();
     getTopMoviesAsync(currentPage);
@@ -53,9 +51,7 @@ export default function Home(props) {
             result.vote_average / 2,
             result.genre_ids
           )
-          
       );
-
   };
 
   const getTopMoviesAsync = async function (pageNumber) {
@@ -88,10 +84,9 @@ export default function Home(props) {
     const searchedMovies = getMoviesPerPageFromJSON(responseJson.results);
     setSearchedMovies(searchedMovies);
     setTxtState("");
-    
   };
 
-  const loader = function(type){
+  const loader = function (type) {
     let movies = document.querySelector(".movieWrapper");
     if (type === 2) {
       movies = document.querySelector(".movieWrapperSearched");
@@ -107,8 +102,8 @@ export default function Home(props) {
       loading.style.display = "none";
       movies.classList.remove("blur");
     }, 2000);
-  }
- 
+  };
+
   const handlePageChange = async (pageNumber) => {
     loader(1);
     window.scrollTo(0, 0);
@@ -144,7 +139,7 @@ export default function Home(props) {
 
   const handleZoomChange = (movie) => {
     const newMovie = new MovieDefinition();
-    newMovie.id=movie.id;
+    newMovie.id = movie.id;
     newMovie.title = movie.title;
     newMovie.imageUrl = movie.imageUrl;
     newMovie.averageVote = movie.averageVote;
@@ -156,12 +151,14 @@ export default function Home(props) {
   };
 
   const checkIfMovieIsRated = (movie) => {
-    const ratedMovie = ratedMovies.find((ratedMovie) => ratedMovie.title === movie.title);
+    const ratedMovie = ratedMovies.find(
+      (ratedMovie) => ratedMovie.title === movie.title
+    );
     if (ratedMovie) {
       movie.rating = ratedMovie.rating;
     }
   };
-  
+
   const closeButtonOnClick = () => {
     setSearchedMovies([]);
   };
@@ -170,13 +167,12 @@ export default function Home(props) {
     setIsZoomed(false);
   };
 
-  const addMovie= () =>{
-   
+  const addMovie = () => {
     const movie = currentMovie;
     const existingMovieIndex = ratedMovies.findIndex(
       (ratedMovie) => ratedMovie.title === movie.title
     );
-  
+
     if (existingMovieIndex !== -1) {
       const updatedRatedMovies = [...ratedMovies];
       updatedRatedMovies[existingMovieIndex].rating = movie.rating;
@@ -187,16 +183,15 @@ export default function Home(props) {
     addMovieToDBAsync(movie);
     handleRatingChange(0);
   };
-  const addMovieToDBAsync= async function(movie){
+  const addMovieToDBAsync = async function (movie) {
     console.log(movie);
-    MovieController.addMovieToDBAsync(movie);
-  }
-  const getRatedMoviesFromDBAsync = async function () {
-   const movies= await MovieController.getRatedMoviesFromDBAsync();
-   setRatedMovies(movies);
+    MovieService.addMovieToDBAsync(movie);
   };
-  
-  
+  const getRatedMoviesFromDBAsync = async function () {
+    const movies = await MovieService.getRatedMoviesFromDBAsync();
+    setRatedMovies(movies);
+  };
+
   return (
     <>
       <div style={{ marginLeft: "10%" }}>
@@ -227,7 +222,6 @@ export default function Home(props) {
             </option>
           ))}
         </select>
-        
       </div>
       {searchedMovies.length > 0 && (
         <div>

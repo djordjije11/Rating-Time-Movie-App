@@ -31,11 +31,11 @@ namespace RatingTime.Logic.Users.Impl
 
         public async Task<User> GetUserAndCheckPasswordAsync(User user, CancellationToken cancellationToken)
         {
-            var dbUser = await context.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Username == user.Username || u.Email == user.Email, cancellationToken);
+            var dbUser = await context.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Username == user.Username, cancellationToken);
 
             if (dbUser == null)
             {
-                throw new LogicException("Wrong username or e-mail.");
+                throw new LogicException("Wrong username.");
             }
             if (BCrypt.Net.BCrypt.Verify(user.Password, dbUser.Password) == false)
             {
@@ -52,7 +52,7 @@ namespace RatingTime.Logic.Users.Impl
             {
                 throw new LogicException("The username or email is already being used by an active user.");
             }
-            
+
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
             await context.Users.AddAsync(user);

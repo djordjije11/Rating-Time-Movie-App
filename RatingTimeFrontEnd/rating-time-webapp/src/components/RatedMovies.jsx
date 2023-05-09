@@ -4,7 +4,7 @@ import StarRatings from "react-star-ratings";
 import { useState } from "react";
 import PropTypes from "prop-types";
 import MovieDefinition from "../models/MovieDefinition";
-import MovieController from "../controllers/MovieController";
+import MovieService from "../services/MovieService";
 
 RatedMovies.propTypes = {
   ratedMovies: PropTypes.arrayOf(
@@ -24,13 +24,13 @@ export default function RatedMovies(props) {
   const [showZoomedFilm, setShowZoomedFilm] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  function removeMovie(index,ratedMovie) {
-    deleteMovieFromDBAsync(ratedMovie.id)
+  function removeMovie(index, ratedMovie) {
+    deleteMovieFromDBAsync(ratedMovie.id);
     setRatedMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
   }
-  const deleteMovieFromDBAsync= async function(id) {
-    MovieController.deleteMovieFromDBAsync(id);
-  }
+  const deleteMovieFromDBAsync = async function (id) {
+    MovieService.deleteMovieFromDBAsync(id);
+  };
   function updateMovieRating(index) {
     setSelectedMovie(ratedMovies[index]);
     setShowZoomedFilm(true);
@@ -54,7 +54,7 @@ export default function RatedMovies(props) {
       })
     );
     console.log(selectedMovie);
-    MovieController.addMovieToDBAsync(selectedMovie);
+    MovieService.addMovieToDBAsync(selectedMovie);
     setSelectedMovie(null);
   }
 
@@ -88,7 +88,7 @@ export default function RatedMovies(props) {
                   marginBottom: "1rem",
                   marginTop: "1rem",
                 }}
-                onClick={() => removeMovie(index,ratedMovie)}
+                onClick={() => removeMovie(index, ratedMovie)}
               >
                 Remove the rating
               </button>

@@ -1,18 +1,30 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UserController from "../controllers/UserController";
+import UserService from "../services/UserService";
 
 export default function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  
+
   const loginAsync = async function () {
-      const response = await UserController.loginAsync({ username, password });
-      
-        props.onLogin(response);
-        navigate("/");
-     
+    if (username.length < 3 || username.length > 40) {
+      //ispod username-a
+    }
+    if (password.length < 8 || password.length > 40) {
+      //ispod password-a
+    }
+    const response = await UserService.loginAsync({ username, password });
+    const responseJson = await response.json();
+    const role = responseJson.role;
+    if (response.status === 404) {
+      // pop up message - pokusajte ponovo
+    }
+    if (response.status === 400 || role === null) {
+      // pop up message - losi kredencijali
+    }
+    props.onLogin(role);
+    navigate("/");
   };
 
   return (
