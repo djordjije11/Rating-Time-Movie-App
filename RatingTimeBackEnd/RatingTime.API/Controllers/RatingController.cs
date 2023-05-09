@@ -42,7 +42,7 @@ namespace RatingTime.API.Controllers
 
         [HttpGet("{username}"), Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_ADMIN)]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<RatingInfo>>> GetAllByUserAsnyc(CancellationToken cancellationToken, [FromRoute] string username)
+        public async Task<ActionResult<List<RatingInfo>>> GetAllByUsernameAsnyc(CancellationToken cancellationToken, [FromRoute] string username)
         {
             return Ok(mapper.Map<List<RatingInfo>>(await ratingLogic.GetAllByUserAsync(username, cancellationToken)));
         }
@@ -55,7 +55,7 @@ namespace RatingTime.API.Controllers
             rating.UserId = int.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var movie = rating.Movie;
             var movieValidationResult = await movieValidator.ValidateAsync(movie);
-            if(movieValidationResult.IsValid == true) 
+            if (movieValidationResult.IsValid == true)
             {
                 await movieLogic.SaveAsync(movie);
             }
@@ -78,7 +78,7 @@ namespace RatingTime.API.Controllers
             rating.UserId = int.Parse(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             await ratingLogic.DeleteAsync(rating);
-            
+
             return Ok(new { message = "Rating is deleted." });
         }
     }

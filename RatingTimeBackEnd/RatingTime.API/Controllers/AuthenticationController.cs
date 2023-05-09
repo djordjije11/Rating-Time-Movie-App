@@ -31,7 +31,7 @@ namespace RatingTime.API.Controllers
 
         [HttpGet, Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_USER)]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Check()
+        public IActionResult CheckRole()
         {
             return Ok(new { role = User.FindFirstValue(ClaimTypes.Role) });
         }

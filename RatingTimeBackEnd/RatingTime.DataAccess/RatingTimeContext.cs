@@ -110,7 +110,7 @@ namespace RatingTime.DataAccess
                         .HasColumnType("nvarchar(2048)");
             modelBuilder.Entity<Movie>()
                         .Property(m => m.AverageRating)
-                        .HasPrecision(1, 1);
+                        .HasPrecision(3, 2);
 
             modelBuilder.Entity<Movie>()
                         .Metadata

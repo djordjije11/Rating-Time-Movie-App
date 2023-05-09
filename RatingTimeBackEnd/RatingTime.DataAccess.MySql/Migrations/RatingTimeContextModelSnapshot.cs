@@ -42,9 +42,9 @@ namespace RatingTime.DataAccess.MySql.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<double>("AverageRating")
-                        .HasPrecision(1, 1)
-                        .HasColumnType("double")
+                    b.Property<decimal>("AverageRating")
+                        .HasPrecision(3, 2)
+                        .HasColumnType("decimal(3,2)")
                         .HasColumnName("average_rating");
 
                     b.Property<string>("ImageUrl")

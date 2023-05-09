@@ -4,13 +4,14 @@ import UserService from "../services/UserService";
 import UserDefinition from "../models/UserDefinition";
 
 export default function Users(props) {
+  const isAdmin = props.isAdmin;
   const [users, setUsers] = [props.users, props.setUsers];
 
   const getAllUsers = async () => {
     try {
-      if (props.isAdmin) {
+      if (isAdmin) {
         const response = await UserService.getAllUsersAsync();
-        const dbUsers = [];
+        var dbUsers = [];
         if (response.ok) {
           const responseJson = await response.json();
           dbUsers = responseJson.map((result) => {
@@ -21,6 +22,7 @@ export default function Users(props) {
             );
           });
         } else {
+          //hendlovati error...
           console.error("Failed to retrieve users");
         }
         setUsers(dbUsers);
@@ -30,7 +32,11 @@ export default function Users(props) {
     }
   };
 
-  useEffect(() => getAllUsers, users);
+  useEffect(() => {
+    (async () => {
+      await getAllUsers();
+    })();
+  }, []);
 
   if (Array.isArray(users) === false) {
     return <p>No users available.</p>;

@@ -6,6 +6,8 @@ import Login from "./Login";
 import RatedMovies from "./RatedMovies";
 import Users from "./Users";
 import NavbarComponent from "./NavBarComponent";
+import UserService from "../services/UserService";
+import MovieService from "../services/MovieService";
 
 export default function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
@@ -13,23 +15,46 @@ export default function App() {
   const [isAdmin, setAdmin] = useState(false);
   const [users, setUsers] = useState([]);
 
+  const checkAuth = async () => {
+    const response = await UserService.checkAuth();
+    if (response.ok) {
+      setLoggedIn(true);
+      const responseJson = await response.json();
+      if (responseJson.role === "Admin") {
+        setAdmin(true);
+      }
+    }
+  };
+
   useEffect(() => {
-    //proveriti na osnovu cookie-a da li je korisnik loggedin
-    //poslati api da trazi ulogu korisnika
-  });
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (isLoggedIn) {
+        setRatedMovies(await MovieService.getRatedMoviesFromDBAsync());
+      }
+    })();
+  }, [isLoggedIn]);
 
   const handleLogin = async (role) => {
-    console.log(role);
     if (role === "Admin") {
       setAdmin(true);
     }
     setLoggedIn(true);
   };
 
+  const handleLogout = async () => {
+    await UserService.logoutAsync();
+    setAdmin(false);
+    setLoggedIn(false);
+  };
+
   if (isLoggedIn) {
     return (
       <BrowserRouter>
-        <NavbarComponent isAdmin={isAdmin} />
+        <NavbarComponent isAdmin={isAdmin} onLogout={handleLogout} />
         <Routes>
           <Route
             path="/"

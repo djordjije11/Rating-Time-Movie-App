@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import logo from "../images/logo.png";
 
 export default function NavbarComponent(props) {
+  const onLogout = props.onLogout;
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -39,7 +40,8 @@ export default function NavbarComponent(props) {
             )}
             <Link
               className="text-decoration-none text-white"
-              to="/logout"
+              to="/"
+              onClick={onLogout}
               style={{ marginLeft: "800px", fontSize: "20px" }}
             >
               Logout

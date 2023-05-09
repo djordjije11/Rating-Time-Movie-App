@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace RatingTime.DataAccess.Migrations
+namespace RatingTime.DataAccess.MySql.Migrations
 {
     /// <inheritdoc />
     public partial class AddedOverviewAndAverageRatingToMovie : Migration
@@ -10,14 +10,18 @@ namespace RatingTime.DataAccess.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<double>(
+            migrationBuilder.DropCheckConstraint(
+                name: "ck_user_role",
+                table: "user");
+
+            migrationBuilder.AddColumn<decimal>(
                 name: "average_rating",
                 table: "movie",
-                type: "float(1)",
-                precision: 1,
-                scale: 1,
+                type: "decimal(3,2)",
+                precision: 3,
+                scale: 2,
                 nullable: false,
-                defaultValue: 0.0);
+                defaultValue: 0m);
 
             migrationBuilder.AddColumn<string>(
                 name: "overview",
@@ -27,19 +31,28 @@ namespace RatingTime.DataAccess.Migrations
                 nullable: true);
 
             migrationBuilder.AddCheckConstraint(
+                name: "ck_user_role",
+                table: "user",
+                sql: "`role` in ('User', 'Admin')");
+
+            migrationBuilder.AddCheckConstraint(
                 name: "ck_movie_stars_number",
                 table: "rating",
-                sql: "[stars_number] >= 1 AND [stars_number] <= 5");
+                sql: "`stars_number` >= 1 AND `stars_number` <= 5");
 
             migrationBuilder.AddCheckConstraint(
                 name: "ck_movie_average_rating",
                 table: "movie",
-                sql: "[average_rating] >= 1 AND [average_rating] <= 5");
+                sql: "`average_rating` >= 1 AND `average_rating` <= 5");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropCheckConstraint(
+                name: "ck_user_role",
+                table: "user");
+
             migrationBuilder.DropCheckConstraint(
                 name: "ck_movie_stars_number",
                 table: "rating");
@@ -55,6 +68,11 @@ namespace RatingTime.DataAccess.Migrations
             migrationBuilder.DropColumn(
                 name: "overview",
                 table: "movie");
+
+            migrationBuilder.AddCheckConstraint(
+                name: "ck_user_role",
+                table: "user",
+                sql: "[role] in ('User', 'Admin')");
         }
     }
 }

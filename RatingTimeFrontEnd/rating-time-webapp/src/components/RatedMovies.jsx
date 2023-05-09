@@ -45,79 +45,81 @@ export default function RatedMovies(props) {
   }
 
   function addMovie() {
+    MovieService.addMovieToDBAsync(selectedMovie);
+    // PROVERITI DA LI SE SACUVALO USPESNO
+    // AKO JESTE - IZVRSI DALJE KOD, SACUVAJ I U REACTU
+    // AKO NIJE - PRIKAZI GRESKU, NEKAKO JE OBRADI I NE CUVAJ U REACTU
+    // treba proci ceo kod jos par puta i sagledati ovako svaki slucaj...
+
     setRatedMovies((prevMovies) =>
       prevMovies.map((movie) => {
-        if (movie.title === selectedMovie.title) {
+        if (movie.id === selectedMovie.id) {
           return selectedMovie;
         }
         return movie;
       })
     );
-    console.log(selectedMovie);
-    MovieService.addMovieToDBAsync(selectedMovie);
     setSelectedMovie(null);
   }
 
   return (
-    <>
-      <div className="movieWrapper">
-        {ratedMovies.map((ratedMovie, index) => (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              margin: "20px",
-              padding: "50px",
-              alignItems: "center",
-            }}
-          >
-            <Movie key={index} movie={ratedMovie} />
-            <StarRatings
-              rating={ratedMovie.rating}
-              starRatedColor="orange"
-              numberOfStars={5}
-              starDimension="30px"
-              starSpacing="10px"
-            />
-            <div className="btnRatedMovies">
-              <button
-                className="button-28"
-                style={{
-                  width: "10rem",
-                  height: "3rem",
-                  marginBottom: "1rem",
-                  marginTop: "1rem",
-                }}
-                onClick={() => removeMovie(index, ratedMovie)}
-              >
-                Remove the rating
-              </button>
-              <button
-                className="button-28"
-                style={{
-                  width: "10rem",
-                  height: "3rem",
-                  marginBottom: "1rem",
-                  marginTop: "1rem",
-                }}
-                onClick={() => updateMovieRating(index)}
-              >
-                Update the rating
-              </button>
-            </div>
-          </div>
-        ))}
-
-        {showZoomedFilm && selectedMovie && (
-          <ZoomedMovie
-            movie={selectedMovie}
-            handleRatingChange={handleRatingChange}
-            addMovie={addMovie}
-            setIsZoomed={setShowZoomedFilm}
-            closeZoomedMovie={closeZoomedMovie}
+    <div className="movieWrapper">
+      {ratedMovies.map((ratedMovie, index) => (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            margin: "20px",
+            padding: "50px",
+            alignItems: "center",
+          }}
+        >
+          <Movie key={index} movie={ratedMovie} />
+          <StarRatings
+            rating={ratedMovie.rating}
+            starRatedColor="orange"
+            numberOfStars={5}
+            starDimension="30px"
+            starSpacing="10px"
           />
-        )}
-      </div>
-    </>
+          <div className="btnRatedMovies">
+            <button
+              className="button-28"
+              style={{
+                width: "10rem",
+                height: "3rem",
+                marginBottom: "1rem",
+                marginTop: "1rem",
+              }}
+              onClick={() => removeMovie(index, ratedMovie)}
+            >
+              Remove the rating
+            </button>
+            <button
+              className="button-28"
+              style={{
+                width: "10rem",
+                height: "3rem",
+                marginBottom: "1rem",
+                marginTop: "1rem",
+              }}
+              onClick={() => updateMovieRating(index)}
+            >
+              Update the rating
+            </button>
+          </div>
+        </div>
+      ))}
+
+      {showZoomedFilm && selectedMovie && (
+        <ZoomedMovie
+          movie={selectedMovie}
+          handleRatingChange={handleRatingChange}
+          addMovie={addMovie}
+          setIsZoomed={setShowZoomedFilm}
+          closeZoomedMovie={closeZoomedMovie}
+        />
+      )}
+    </div>
   );
 }

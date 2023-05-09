@@ -1,4 +1,5 @@
 import MovieDefinition from "../models/MovieDefinition";
+
 const RATING_API_URL = "http://localhost:5165/api/rating";
 
 export default class MovieService {
@@ -11,7 +12,6 @@ export default class MovieService {
 
     try {
       const response = await fetch(RATING_API_URL, requestOptions);
-
       if (response.ok) {
         const responseJson = await response.json();
         const ratedMovies = responseJson.map((result) => {
@@ -26,7 +26,7 @@ export default class MovieService {
           );
         });
 
-        console.log("Rated movies retrieved successfully");
+        console.log("Rated movies retrieved successfully", ratedMovies);
         return ratedMovies;
       } else {
         console.error("Failed to retrieve rated movies");
@@ -83,7 +83,6 @@ export default class MovieService {
 
     try {
       const response = await fetch(RATING_API_URL, requestOptions);
-
       if (response.ok) {
         console.log("Rated movie deleted successfully");
       } else {

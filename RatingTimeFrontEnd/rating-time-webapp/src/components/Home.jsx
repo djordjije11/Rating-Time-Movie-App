@@ -31,7 +31,6 @@ export default function Home(props) {
   const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
-    getRatedMoviesFromDBAsync();
     getGenresAsync();
     getTopMoviesAsync(currentPage);
   }, [currentPage, totalPages, totalResults]);
@@ -63,7 +62,6 @@ export default function Home(props) {
     setTotalPages(responseJson.total_pages);
     setTotalResults(responseJson.total_results);
     const topMovies = getMoviesPerPageFromJSON(responseJson.results);
-    console.log(topMovies);
     setMovies(topMovies);
   };
 
@@ -152,7 +150,7 @@ export default function Home(props) {
 
   const checkIfMovieIsRated = (movie) => {
     const ratedMovie = ratedMovies.find(
-      (ratedMovie) => ratedMovie.title === movie.title
+      (ratedMovie) => ratedMovie.id === movie.id
     );
     if (ratedMovie) {
       movie.rating = ratedMovie.rating;
@@ -170,7 +168,7 @@ export default function Home(props) {
   const addMovie = () => {
     const movie = currentMovie;
     const existingMovieIndex = ratedMovies.findIndex(
-      (ratedMovie) => ratedMovie.title === movie.title
+      (ratedMovie) => ratedMovie.id === movie.id
     );
 
     if (existingMovieIndex !== -1) {
@@ -186,10 +184,6 @@ export default function Home(props) {
   const addMovieToDBAsync = async function (movie) {
     console.log(movie);
     MovieService.addMovieToDBAsync(movie);
-  };
-  const getRatedMoviesFromDBAsync = async function () {
-    const movies = await MovieService.getRatedMoviesFromDBAsync();
-    setRatedMovies(movies);
   };
 
   return (
