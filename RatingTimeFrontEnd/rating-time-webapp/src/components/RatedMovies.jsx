@@ -6,6 +6,9 @@ import PropTypes from "prop-types";
 import MovieDefinition from "../models/MovieDefinition";
 import MovieService from "../services/MovieService";
 import Swal from "sweetalert2";
+import Modal from 'react-modal';
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 RatedMovies.propTypes = {
   ratedMovies: PropTypes.arrayOf(
@@ -16,7 +19,6 @@ RatedMovies.propTypes = {
   ),
   setRatedMovies: PropTypes.func,
 };
-
 export default function RatedMovies(props) {
   const [ratedMovies, setRatedMovies] = [
     props.ratedMovies,
@@ -24,6 +26,8 @@ export default function RatedMovies(props) {
   ];
   const [showZoomedFilm, setShowZoomedFilm] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const navigate= useNavigate();
   const swalOptions = {
     customClass: {
       container: 'custom-container-class',
@@ -109,58 +113,76 @@ export default function RatedMovies(props) {
     }
     setSelectedMovie(null);
   }
-
+  useEffect(() => {
+    if(ratedMovies.length===0){
+      setShowPopup(true);
+    }
+  }, [ratedMovies]);
   return (
     <div className="movieWrapper">
-      {ratedMovies.map((ratedMovie, index) => (
-        <div className="movies">
-          <Movie key={index} movie={ratedMovie} />
-          <StarRatings
-            rating={ratedMovie.rating}
-            starRatedColor="orange"
-            numberOfStars={5}
-            starDimension="30px"
-            starSpacing="10px"
-          /> 
-          <div className="btnRatedMovies">
-            <button
-              className="button-28"
-              style={{
-                width: "10rem",
-                height: "3rem",
-                marginBottom: "1rem",
-                marginTop: "1rem",
-              }}
-              onClick={() => removeMovie(index, ratedMovie)}
-            >
-              Remove the rating
-            </button>
-            <button
-              className="button-28"
-              style={{
-                width: "10rem",
-                height: "3rem",
-                marginBottom: "1rem",
-                marginTop: "1rem",
-              }}
-              onClick={() => updateMovieRating(index)}
-            >
-              Update the rating
-            </button>
-            
-          </div>
+          {ratedMovies.map((ratedMovie, index) => (
+            <div className="movies">
+              <Movie key={index} movie={ratedMovie} />
+              <StarRatings
+                rating={ratedMovie.rating}
+                starRatedColor="orange"
+                numberOfStars={5}
+                starDimension="30px"
+                starSpacing="10px"
+              /> 
+              <div className="btnRatedMovies">
+                <button
+                  className="button-28"
+                  style={{
+                    width: "10rem",
+                    height: "3rem",
+                    marginBottom: "1rem",
+                    marginTop: "1rem",
+                  }}
+                  onClick={() => removeMovie(index, ratedMovie)}
+                >
+                  Remove the rating
+                </button>
+                <button
+                  className="button-28"
+                  style={{
+                    width: "10rem",
+                    height: "3rem",
+                    marginBottom: "1rem",
+                    marginTop: "1rem",
+                  }}
+                  onClick={() => updateMovieRating(index)}
+                >
+                  Update the rating
+                </button>
+              </div>
+            </div>
+          ))}
+          {showZoomedFilm && selectedMovie && (
+            <ZoomedMovie
+              movie={selectedMovie}
+              handleRatingChange={handleRatingChange}
+              addMovie={addMovie}
+              setIsZoomed={setShowZoomedFilm}
+              closeZoomedMovie={closeZoomedMovie}
+            />
+          )}
+      <Modal
+        isOpen={showPopup}
+        onRequestClose={() => setShowPopup(false)}
+        className="popupModal"
+        overlayClassName="popupOverlay"
+      >
+        <div className="popupContent">
+          <h3 className="popupTitle">No rated movies found!</h3>
+          <button className="popupButton" 
+              onClick={() => {
+                setShowPopup(false);
+                navigate("/")}}>
+            Close
+          </button>
         </div>
-      ))}
-
-      {showZoomedFilm && selectedMovie && (
-        <ZoomedMovie
-          movie={selectedMovie}
-          handleRatingChange={handleRatingChange}
-          addMovie={addMovie}
-          setIsZoomed={setShowZoomedFilm}
-          closeZoomedMovie={closeZoomedMovie}
-        />
-      )}
+      </Modal>
     </div>
   );
-}
+}  
