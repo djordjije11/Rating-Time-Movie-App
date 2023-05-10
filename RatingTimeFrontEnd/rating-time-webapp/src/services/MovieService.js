@@ -57,14 +57,14 @@ export default class MovieService {
       }),
       credentials: "include",
     };
-    console.log(movie);
     try {
       const response = await fetch(RATING_API_URL, requestOptions);
-
       if (response.ok) {
         console.log("Movie added successfully");
+        return response;
       } else {
         console.error("Failed to add movie");
+        return response;
       }
     } catch (error) {
       console.error("Error:", error);

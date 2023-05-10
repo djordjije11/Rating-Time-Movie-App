@@ -20,10 +20,7 @@ export default function Login(props) {
       toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
   })
-  
-  
   const swalOptions = {
-    
     customClass: {
       container: 'custom-container-class',
       title: 'custom-title-class',

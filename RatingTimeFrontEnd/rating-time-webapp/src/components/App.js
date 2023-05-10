@@ -27,7 +27,15 @@ export default function App() {
       toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
   })
-  
+  const swalOptions = {
+    
+    customClass: {
+      container: 'custom-container-class',
+      title: 'custom-title-class',
+      content: 'custom-content-class',
+      confirmButton: 'custom-confirm-button-class',
+    },
+  };
   const checkAuth = async () => {
     const response = await UserService.checkAuth();
     if (response.ok) {
@@ -59,6 +67,7 @@ export default function App() {
   };
   const handleLogout = async () => {
     const { value: shouldLogout } = await Swal.fire({
+      ...swalOptions,
       title: 'Log Out',
       text: 'Are you sure you want to log out?',
       icon: 'question',

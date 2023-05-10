@@ -5,6 +5,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import MovieDefinition from "../models/MovieDefinition";
 import MovieService from "../services/MovieService";
+import Swal from "sweetalert2";
 
 RatedMovies.propTypes = {
   ratedMovies: PropTypes.arrayOf(
@@ -23,10 +24,45 @@ export default function RatedMovies(props) {
   ];
   const [showZoomedFilm, setShowZoomedFilm] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
-
+  const swalOptions = {
+    customClass: {
+      container: 'custom-container-class',
+      title: 'custom-title-class',
+      content: 'custom-content-class',
+      confirmButton: 'custom-confirm-button-class',
+    },
+  };
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'btn btn-success',
+      cancelButton: 'btn btn-danger'
+    },
+    buttonsStyling: false
+  });
   function removeMovie(index, ratedMovie) {
-    deleteMovieFromDBAsync(ratedMovie.id);
-    setRatedMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure you want to delete the movie?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteMovieFromDBAsync(ratedMovie.id);
+        setRatedMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
+        swalWithBootstrapButtons.fire(
+          'Deleted!',
+           ratedMovie.title+' has been deleted.',
+          'success'
+        )
+      } else if (
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+      }
+    })
+   
   }
   const deleteMovieFromDBAsync = async function (id) {
     MovieService.deleteMovieFromDBAsync(id);
@@ -35,23 +71,25 @@ export default function RatedMovies(props) {
     setSelectedMovie(ratedMovies[index]);
     setShowZoomedFilm(true);
   }
-
   function closeZoomedMovie() {
     setShowZoomedFilm(false);
   }
-
   function handleRatingChange(newRating) {
     setSelectedMovie({ ...selectedMovie, rating: newRating });
   }
-
   async function addMovie() {
     const response= await MovieService.addMovieToDBAsync(selectedMovie);
     // PROVERITI DA LI SE SACUVALO USPESNO
     // AKO JESTE - IZVRSI DALJE KOD, SACUVAJ I U REACTU
     // AKO NIJE - PRIKAZI GRESKU, NEKAKO JE OBRADI I NE CUVAJ U REACTU
     // treba proci ceo kod jos par puta i sagledati ovako svaki slucaj...
-
-    setRatedMovies((prevMovies) =>
+    if (response.ok ) {
+      Swal.fire({
+        ...swalOptions,
+        icon: "success",
+        title: 'You successfully rated '+selectedMovie.title +' with '+selectedMovie.rating+' stars!',
+      })
+      setRatedMovies((prevMovies) =>
       prevMovies.map((movie) => {
         if (movie.id === selectedMovie.id) {
           return selectedMovie;
@@ -59,6 +97,16 @@ export default function RatedMovies(props) {
         return movie;
       })
     );
+    }
+    else{
+      Swal.fire({
+        ...swalOptions,
+        icon: "error",
+        title: 'Error occurred',
+        text: 'Please try again',
+      });
+      return;
+    }
     setSelectedMovie(null);
   }
 

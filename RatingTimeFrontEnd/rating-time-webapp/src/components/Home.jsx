@@ -5,6 +5,7 @@ import ListedMovies from "./ListedMovies.jsx";
 import MovieDefinition from "../models/MovieDefinition.js";
 import PropTypes from "prop-types";
 import MovieService from "../services/MovieService.js";
+import Swal from "sweetalert2";
 Home.propTypes = {
   ratedMovies: PropTypes.arrayOf(
     PropTypes.oneOfType([
@@ -29,7 +30,15 @@ export default function Home(props) {
   const [txtState, setTxtState] = useState("");
   const [genres, setGenres] = useState([]);
   const [isZoomed, setIsZoomed] = useState(false);
-
+  const swalOptions = {
+    
+    customClass: {
+      container: 'custom-container-class',
+      title: 'custom-title-class',
+      content: 'custom-content-class',
+      confirmButton: 'custom-confirm-button-class',
+    },
+  };
   useEffect(() => {
     getGenresAsync();
     getTopMoviesAsync(currentPage);
@@ -182,8 +191,24 @@ export default function Home(props) {
     handleRatingChange(0);
   };
   const addMovieToDBAsync = async function (movie) {
-    console.log(movie);
-    MovieService.addMovieToDBAsync(movie);
+    const response= await MovieService.addMovieToDBAsync(movie);
+    if (response.ok) {
+      Swal.fire({
+        ...swalOptions,
+        icon: "success",
+        title: 'You successfully rated '+movie.title+' with '+movie.rating+' stars!',
+      });
+      return;
+    }
+    else{
+      Swal.fire({
+        ...swalOptions,
+        icon: "error",
+        title: 'Error occurred',
+        text: 'Please try again',
+      });
+      return;
+    }
   };
 
   return (

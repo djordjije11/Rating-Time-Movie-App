@@ -323,3 +323,6 @@ td {
   padding: 50px;
   align-items: center;
 }
+.btn-success{
+  margin-left: 10px !important;
+} 
