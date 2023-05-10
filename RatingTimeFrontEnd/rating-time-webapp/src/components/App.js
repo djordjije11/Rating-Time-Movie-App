@@ -8,6 +8,7 @@ import Users from "./Users";
 import NavbarComponent from "./NavBarComponent";
 import UserService from "../services/UserService";
 import MovieService from "../services/MovieService";
+import Swal from 'sweetalert2';
 
 export default function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
@@ -15,6 +16,18 @@ export default function App() {
   const [isAdmin, setAdmin] = useState(false);
   const [users, setUsers] = useState([]);
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
+  
   const checkAuth = async () => {
     const response = await UserService.checkAuth();
     if (response.ok) {
@@ -45,10 +58,27 @@ export default function App() {
     setLoggedIn(true);
   };
 
+  
+
   const handleLogout = async () => {
-    await UserService.logoutAsync();
-    setAdmin(false);
-    setLoggedIn(false);
+    const { value: shouldLogout } = await Swal.fire({
+      title: 'Log Out',
+      text: 'Are you sure you want to log out?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Log Out',
+      cancelButtonText: 'Cancel',
+    });
+
+    if (shouldLogout) {
+      await UserService.logoutAsync();
+      setAdmin(false);
+      setLoggedIn(false);
+      Toast.fire({
+        icon: 'success',
+        title: 'Logout successfully'
+      })
+    }
   };
 
   if (isLoggedIn) {
