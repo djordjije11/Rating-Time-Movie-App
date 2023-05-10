@@ -20,35 +20,30 @@ export default function Users(props) {
     },
   };
 
-  useEffect(() => {
-    const getAllUsers = async () => {
-      try {
-        if (isAdmin) {
-          const response = await UserService.getAllUsersAsync();
-          var dbUsers = [];
-          if (response.ok) {
-            const responseJson = await response.json();
-            dbUsers = responseJson.map((result) => {
-              return new UserDefinition(
-                result.username,
-                result.email,
-                result.role
-              );
-            });
-          } else {
-            console.error("Failed to retrieve users");
-          }
-          setUsers(dbUsers);
+  const getAllUsers = async () => {
+    try {
+      if (isAdmin) {
+        const response = await UserService.getAllUsersAsync();
+        var dbUsers = [];
+        if (response.ok) {
+          const responseJson = await response.json();
+          dbUsers = responseJson.map((result) => {
+            return new UserDefinition(
+              result.username,
+              result.email,
+              result.role
+            );
+          });
+        } else {
+          //hendlovati error...
+          console.error("Failed to retrieve users");
         }
-      } catch (error) {
-        console.log(error);
+        setUsers(dbUsers);
       }
-    };
-  
-    (async () => {
-      await getAllUsers();
-    })();
-  }, []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleUserClick = async (user) => {
     const ratedMoviesResponse = await MovieService.getUserRatedMoviesAsync(user.username);
@@ -67,7 +62,12 @@ export default function Users(props) {
     }
   };
 
- 
+  useEffect(() => {
+    (async () => {
+      await getAllUsers();
+    })();
+  }, []);
+
   if (Array.isArray(users) === false) {
     return <p>No users available.</p>;
   }

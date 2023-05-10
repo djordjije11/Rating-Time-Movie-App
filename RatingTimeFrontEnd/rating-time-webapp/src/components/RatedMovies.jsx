@@ -44,8 +44,8 @@ export default function RatedMovies(props) {
     setSelectedMovie({ ...selectedMovie, rating: newRating });
   }
 
-  function addMovie() {
-    MovieService.addMovieToDBAsync(selectedMovie);
+  async function addMovie() {
+    const response= await MovieService.addMovieToDBAsync(selectedMovie);
     // PROVERITI DA LI SE SACUVALO USPESNO
     // AKO JESTE - IZVRSI DALJE KOD, SACUVAJ I U REACTU
     // AKO NIJE - PRIKAZI GRESKU, NEKAKO JE OBRADI I NE CUVAJ U REACTU
@@ -74,7 +74,6 @@ export default function RatedMovies(props) {
             starDimension="30px"
             starSpacing="10px"
           /> 
-          {props.isAdmin===false?  (
           <div className="btnRatedMovies">
             <button
               className="button-28"
@@ -102,7 +101,6 @@ export default function RatedMovies(props) {
             </button>
             
           </div>
-          ): (undefined)}
         </div>
       ))}
 

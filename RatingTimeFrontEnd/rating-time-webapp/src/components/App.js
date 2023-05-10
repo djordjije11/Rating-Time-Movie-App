@@ -95,7 +95,6 @@ export default function App() {
               <RatedMovies
                 ratedMovies={ratedMovies}
                 setRatedMovies={setRatedMovies}
-                isAdmin={isAdmin}
               />
             }
           /> 
