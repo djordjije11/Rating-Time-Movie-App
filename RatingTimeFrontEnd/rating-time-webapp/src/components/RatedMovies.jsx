@@ -65,15 +65,7 @@ export default function RatedMovies(props) {
   return (
     <div className="movieWrapper">
       {ratedMovies.map((ratedMovie, index) => (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            margin: "20px",
-            padding: "50px",
-            alignItems: "center",
-          }}
-        >
+        <div className="movies">
           <Movie key={index} movie={ratedMovie} />
           <StarRatings
             rating={ratedMovie.rating}
@@ -81,7 +73,8 @@ export default function RatedMovies(props) {
             numberOfStars={5}
             starDimension="30px"
             starSpacing="10px"
-          />
+          /> 
+          {props.isAdmin===false?  (
           <div className="btnRatedMovies">
             <button
               className="button-28"
@@ -107,7 +100,9 @@ export default function RatedMovies(props) {
             >
               Update the rating
             </button>
+            
           </div>
+          ): (undefined)}
         </div>
       ))}
 

@@ -9,7 +9,7 @@ import NavbarComponent from "./NavBarComponent";
 import UserService from "../services/UserService";
 import MovieService from "../services/MovieService";
 import Swal from 'sweetalert2';
-
+import UserRatedMovies from "./UserRatedMovies";
 export default function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -57,9 +57,6 @@ export default function App() {
     }
     setLoggedIn(true);
   };
-
-  
-
   const handleLogout = async () => {
     const { value: shouldLogout } = await Swal.fire({
       title: 'Log Out',
@@ -98,9 +95,10 @@ export default function App() {
               <RatedMovies
                 ratedMovies={ratedMovies}
                 setRatedMovies={setRatedMovies}
+                isAdmin={isAdmin}
               />
             }
-          />
+          /> 
           <Route
             path="/users"
             element={
@@ -109,6 +107,12 @@ export default function App() {
               )
             }
           />
+          <Route
+           path="/rated-movies/:username" 
+           element={
+            <UserRatedMovies />
+           } 
+           />
           <Route path="/*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

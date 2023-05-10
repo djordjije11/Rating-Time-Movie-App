@@ -92,4 +92,38 @@ export default class MovieService {
       console.error("Error:", error);
     }
   }
+
+  static async getUserRatedMoviesAsync(username) {
+    const requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    };
+    try {
+      const response = await fetch("http://localhost:5165/api/rating/"+username, requestOptions);
+      if (response.ok) {
+        const responseJson = await response.json();
+        const ratedMovies = responseJson.map((result) => {
+          return new MovieDefinition(
+            result.movie.id,
+            result.movie.title,
+            result.movie.imageUrl,
+            result.starsNumber,
+            result.movie.overview,
+            result.movie.averageRating,
+            result.movie.genres
+          );
+        });
+
+        console.log("Rated movies retrieved successfully HAHAH", ratedMovies);
+        return ratedMovies;
+      } else {
+        console.error("Failed to retrieve rated movies");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
+    }
+  }
 }

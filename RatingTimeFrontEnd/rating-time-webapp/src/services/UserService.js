@@ -2,7 +2,6 @@ const AUTH_API_URL = "http://localhost:5165/api/authentication";
 const LOGIN_API_URL = "http://localhost:5165/api/authentication/login";
 const LOGOUT_API_URL = "http://localhost:5165/api/authentication/logout";
 const USER_API_URL = "http://localhost:5165/api/user";
-
 export default class UserService {
   static async checkAuth() {
     const requestOptions = {
@@ -46,4 +45,5 @@ export default class UserService {
     const response = await fetch(USER_API_URL, requestOptions);
     return response;
   }
+
 }
