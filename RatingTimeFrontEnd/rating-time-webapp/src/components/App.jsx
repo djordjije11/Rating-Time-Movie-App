@@ -8,34 +8,16 @@ import Users from "./Users";
 import NavbarComponent from "./NavBarComponent";
 import UserService from "../services/UserService";
 import MovieService from "../services/MovieService";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
+import { Toast, swalOptions } from "../helper/SwalPopUp";
 import UserRatedMovies from "./UserRatedMovies";
+
 export default function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isAdmin, setAdmin] = useState(false);
   const [users, setUsers] = useState([]);
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      toast.addEventListener('mouseenter', Swal.stopTimer)
-      toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-  })
-  const swalOptions = {
-    
-    customClass: {
-      container: 'custom-container-class',
-      title: 'custom-title-class',
-      content: 'custom-content-class',
-      confirmButton: 'custom-confirm-button-class',
-    },
-  };
   const checkAuth = async () => {
     const response = await UserService.checkAuth();
     if (response.ok) {
@@ -68,12 +50,12 @@ export default function App() {
   const handleLogout = async () => {
     const { value: shouldLogout } = await Swal.fire({
       ...swalOptions,
-      title: 'Log Out',
-      text: 'Are you sure you want to log out?',
-      icon: 'question',
+      title: "Log Out",
+      text: "Are you sure you want to log out?",
+      icon: "question",
       showCancelButton: true,
-      confirmButtonText: 'Log Out',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: "Log Out",
+      cancelButtonText: "Cancel",
     });
 
     if (shouldLogout) {
@@ -81,9 +63,9 @@ export default function App() {
       setAdmin(false);
       setLoggedIn(false);
       Toast.fire({
-        icon: 'success',
-        title: 'Logout successfully'
-      })
+        icon: "success",
+        title: "Logout successfully",
+      });
     }
   };
 
@@ -106,21 +88,12 @@ export default function App() {
                 setRatedMovies={setRatedMovies}
               />
             }
-          /> 
-          <Route
-            path="/users"
-            element={
-              isAdmin && (
-                <Users users={users} setUsers={setUsers} isAdmin={isAdmin} />
-              )
-            }
           />
           <Route
-           path="/rated-movies/:username" 
-           element={
-            <UserRatedMovies />
-           } 
-           />
+            path="/users"
+            element={isAdmin && <Users users={users} setUsers={setUsers} />}
+          />
+          <Route path="/rated-movies/:username" element={<UserRatedMovies />} />
           <Route path="/*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

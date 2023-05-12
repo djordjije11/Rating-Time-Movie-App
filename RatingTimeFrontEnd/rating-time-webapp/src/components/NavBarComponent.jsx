@@ -6,6 +6,7 @@ import logo from "../images/logo.png";
 
 export default function NavbarComponent(props) {
   const onLogout = props.onLogout;
+
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>

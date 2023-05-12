@@ -8,21 +8,18 @@ export default function UserRatedMovies() {
 
   return (
     <div className="movieWrapper">
-    {ratedMovies.map((ratedMovie, index) => (
-      <div className="movies">
-        <Movie key={index} movie={ratedMovie} />
-        <StarRatings
-          rating={ratedMovie.rating}
-          starRatedColor="orange"
-          numberOfStars={5}
-          starDimension="30px"
-          starSpacing="10px"
-        /> 
-        
-      </div>
-    ))}
-
-   
-  </div>
+      {ratedMovies.map((ratedMovie, index) => (
+        <div className="movies">
+          <Movie key={index} movie={ratedMovie} />
+          <StarRatings
+            rating={ratedMovie.rating}
+            starRatedColor="orange"
+            numberOfStars={5}
+            starDimension="30px"
+            starSpacing="10px"
+          />
+        </div>
+      ))}
+    </div>
   );
 }
