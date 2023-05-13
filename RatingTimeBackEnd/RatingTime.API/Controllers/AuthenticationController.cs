@@ -51,7 +51,7 @@ namespace RatingTime.API.Controllers
             await userLogic.SaveAsync(user);
             await authenticationService.LoginAsync(user, HttpContext);
 
-            return Ok(new { message = "The user is registered and logged in.", role = UserRole.User.ToString() });
+            return Ok(mapper.Map<UserInfo>(user));
         }
 
         [HttpPost("login")]
@@ -63,7 +63,7 @@ namespace RatingTime.API.Controllers
             var dbUser = await userLogic.GetUserAndCheckPasswordAsync(user, cancellationToken);
             await authenticationService.LoginAsync(dbUser, HttpContext);
 
-            return Ok(new { message = "The user is logged in.", role = dbUser.Role.ToString() });
+            return Ok(mapper.Map<UserInfo>(dbUser));
         }
 
         [HttpPost("logout")]

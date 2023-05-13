@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UserService from "../services/UserService";
 import Swal from "sweetalert2";
-import { Toast, swalOptions } from "../helper/SwalPopUp";
-import "../App.css";
+import { Toast, swalOptions } from "../../popups/SwalPopUp";
+import "../../css/App.css";
+import UserService from "../../services/rating_time/UserService";
 
 export default function Login(props) {
   const [username, setUsername] = useState("");

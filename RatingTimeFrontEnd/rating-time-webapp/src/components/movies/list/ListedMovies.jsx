@@ -1,5 +1,5 @@
-import MovieDefinition from "../models/MovieDefinition";
-import Movie from "./Movie";
+import MovieDefinition from "../../../models/MovieDefinition";
+import Movie from "../single/Movie";
 import PropTypes from "prop-types";
 
 ListedMovies.propTypes = {
@@ -20,7 +20,6 @@ export default function ListedMovies(props) {
         <Movie
           key={index}
           movie={movie}
-          isSearchedMovie={false}
           handleZoomChange={props.handleZoomChange}
         />
       ))}

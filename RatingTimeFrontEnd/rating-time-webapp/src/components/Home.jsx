@@ -1,66 +1,50 @@
 import { useState, useEffect } from "react";
-import { API_KEY } from "../constants.js";
-import ZoomedMovie from "./ZoomedMovie.jsx";
-import ListedMovies from "./ListedMovies.jsx";
+import ZoomedMovie from "./movies/single/ZoomedMovie.jsx";
+import ListedMovies from "./movies/list/ListedMovies.jsx";
 import MovieDefinition from "../models/MovieDefinition.js";
-import PropTypes from "prop-types";
-import MovieService from "../services/MovieService.js";
-import Swal from "sweetalert2";
-import { swalOptions } from "../helper/SwalPopUp";
-
-Home.propTypes = {
-  ratedMovies: PropTypes.arrayOf(
-    PropTypes.oneOfType([
-      PropTypes.instanceOf(MovieDefinition).isRequired,
-      PropTypes.any,
-    ])
-  ),
-  setRatedMovies: PropTypes.func,
-};
+import TmdbService from "../services/tmdb/TmdbService.js";
+import Pagination, { loader } from "./Pagination";
 
 export default function Home(props) {
   const [ratedMovies, setRatedMovies] = [
     props.ratedMovies,
     props.setRatedMovies,
   ];
-  const [currentMovie, setCurrentMovie] = useState(new MovieDefinition());
+  const [currentMovie, setCurrentMovie] = [
+    props.currentMovie,
+    props.setCurrentMovie,
+  ];
+  const [isZoomed, setIsZoomed] = [props.isZoomed, props.setIsZoomed];
+  const addMovieAsync = props.addMovieAsync;
+  const handleRatingChange = props.handleRatingChange;
+
   const [movies, setMovies] = useState([]);
   const [searchedMovies, setSearchedMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
-  const [txtState, setTxtState] = useState("");
+  const [searchTextField, setSearchTextField] = useState("");
   const [genres, setGenres] = useState([]);
-  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     getGenresAsync();
     getTopMoviesAsync(currentPage);
   }, [currentPage, totalPages, totalResults]);
 
+  const getGenresAsync = async function () {
+    const response = await TmdbService.getGenresAsync();
+    const responseJson = await response.json();
+    setGenres(responseJson.genres);
+  };
+
   const getMoviesPerPageFromJSON = function (results) {
     const numberOfMoviesPerPage = Math.ceil(totalResults / totalPages);
-    return results
-      .slice(0, numberOfMoviesPerPage)
-      .map(
-        (result) =>
-          new MovieDefinition(
-            result.id,
-            result.title,
-            `https://image.tmdb.org/t/p/original/${result.poster_path}`,
-            0,
-            result.overview,
-            result.vote_average / 2,
-            result.genre_ids
-          )
-      );
+    return TmdbService.getMoviesPerPageFromJSON(results, numberOfMoviesPerPage);
   };
 
   const getTopMoviesAsync = async function (pageNumber) {
     loader(1);
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=${pageNumber}`
-    );
+    const response = await TmdbService.getTopMoviesAsync(pageNumber);
     const responseJson = await response.json();
     setTotalPages(responseJson.total_pages);
     setTotalResults(responseJson.total_results);
@@ -68,41 +52,24 @@ export default function Home(props) {
     setMovies(topMovies);
   };
 
-  const getGenresAsync = async function () {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`
+  const getTopMoviesWithGenreAsync = async function (genre, pageNumber) {
+    const response = await TmdbService.getTopMoviesWithGenreAsync(
+      genre,
+      pageNumber
     );
     const responseJson = await response.json();
-    setGenres(responseJson.genres);
+    const moviesByGenre = getMoviesPerPageFromJSON(responseJson.results);
+    setMovies(moviesByGenre);
   };
 
   const getMovieFromSearchAsync = async function (title) {
     loader(2);
-    const response = await fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${title}`
-    );
+    const response = await TmdbService.getMovieFromSearchAsync(title);
     const responseJson = await response.json();
     const searchedMovies = getMoviesPerPageFromJSON(responseJson.results);
+    console.log("HEJ", searchedMovies);
     setSearchedMovies(searchedMovies);
-    setTxtState("");
-  };
-
-  const loader = function (type) {
-    let movies = document.querySelector(".movieWrapper");
-    if (type === 2) {
-      movies = document.querySelector(".movieWrapperSearched");
-    }
-    const loading = document.querySelector(".loading");
-    if (!movies || !loading) {
-      console.error("Required DOM elements not found.");
-      return;
-    }
-    loading.style.display = "flex";
-    movies.classList.add("blur");
-    setTimeout(() => {
-      loading.style.display = "none";
-      movies.classList.remove("blur");
-    }, 2000);
+    setSearchTextField("");
   };
 
   const handlePageChange = async (pageNumber) => {
@@ -110,32 +77,18 @@ export default function Home(props) {
     window.scrollTo(0, 0);
     setCurrentPage(pageNumber);
     const selectedGenre = document.getElementById("genreSelect").value;
-    const response = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${selectedGenre}&page=${pageNumber}`
-    );
-    const responseJson = await response.json();
-    const moviesByGenre = getMoviesPerPageFromJSON(responseJson.results);
-    setMovies(moviesByGenre);
+    getTopMoviesWithGenreAsync(selectedGenre, pageNumber);
   };
 
   const handleGenreChange = async (event) => {
     loader(1);
     const selectedGenre = event.target.value;
-    const response = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${selectedGenre}`
-    );
-    const responseJson = await response.json();
-    const moviesByGenre = getMoviesPerPageFromJSON(responseJson.results);
-    setMovies(moviesByGenre);
+    getTopMoviesWithGenreAsync(selectedGenre);
   };
 
   const handleClose = () => {
     setCurrentMovie((prevMovie) => ({ ...prevMovie, title: "", imageUrl: "" }));
-    setTxtState("");
-  };
-
-  const handleRatingChange = (newRating) => {
-    setCurrentMovie((prevMovie) => ({ ...prevMovie, rating: newRating }));
+    setSearchTextField("");
   };
 
   const handleZoomChange = (movie) => {
@@ -160,54 +113,6 @@ export default function Home(props) {
     }
   };
 
-  const closeButtonOnClick = () => {
-    setSearchedMovies([]);
-  };
-
-  const closeZoomedMovie = () => {
-    setIsZoomed(false);
-  };
-
-  const addMovie = () => {
-    const movie = currentMovie;
-    const existingMovieIndex = ratedMovies.findIndex(
-      (ratedMovie) => ratedMovie.id === movie.id
-    );
-    if (existingMovieIndex !== -1) {
-      const updatedRatedMovies = [...ratedMovies];
-      updatedRatedMovies[existingMovieIndex].rating = movie.rating;
-      setRatedMovies(updatedRatedMovies);
-    } else {
-      setRatedMovies((prev) => [...prev, movie]);
-    }
-    addMovieToDBAsync(movie);
-    handleRatingChange(0);
-  };
-  const addMovieToDBAsync = async function (movie) {
-    const response = await MovieService.addMovieToDBAsync(movie);
-    if (response.ok) {
-      Swal.fire({
-        ...swalOptions,
-        icon: "success",
-        title:
-          "You successfully rated " +
-          movie.title +
-          " with " +
-          movie.rating +
-          " stars!",
-      });
-      return;
-    } else {
-      Swal.fire({
-        ...swalOptions,
-        icon: "error",
-        title: "Error occurred",
-        text: "Please try again",
-      });
-      return;
-    }
-  };
-
   return (
     <>
       <div style={{ marginLeft: "10%" }}>
@@ -215,13 +120,13 @@ export default function Home(props) {
           id="txtInput"
           onClick={handleClose}
           type="text"
-          value={txtState}
-          onChange={(event) => setTxtState(event.target.value)}
+          value={searchTextField}
+          onChange={(event) => setSearchTextField(event.target.value)}
         />
         <button
           id="searchbtn"
           className="button-28"
-          onClick={() => getMovieFromSearchAsync(txtState)}
+          onClick={() => getMovieFromSearchAsync(searchTextField)}
         >
           Search
         </button>
@@ -249,7 +154,7 @@ export default function Home(props) {
               top: "20%",
               right: "5%",
             }}
-            onClick={closeButtonOnClick}
+            onClick={() => setSearchedMovies([])}
           >
             X
           </button>
@@ -273,46 +178,17 @@ export default function Home(props) {
       {isZoomed && (
         <ZoomedMovie
           movie={currentMovie}
-          addMovie={addMovie}
-          closeZoomedMovie={closeZoomedMovie}
+          addMovieAsync={addMovieAsync}
           setIsZoomed={setIsZoomed}
           handleRatingChange={handleRatingChange}
         />
       )}
-      <div className="pagination">
-        <button
-          className="button-28"
-          style={{ visibility: currentPage > 1 ? "visible" : "hidden" }}
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          BACK
-        </button>
-        <span
-          style={{
-            marginLeft: "10px",
-            marginRight: "10px",
-            fontSize: "25px",
-            visibility:
-              Array.isArray(movies) === true && movies.length > 0
-                ? "visible"
-                : "hidden",
-          }}
-        >
-          {currentPage}
-        </span>
-        <button
-          className="button-28"
-          style={{
-            visibility: currentPage < totalPages ? "visible" : "hidden",
-          }}
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          NEXT
-        </button>
-        <div className="loading">
-          <div className="spinner"></div>
-        </div>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        handlePageChange={handlePageChange}
+        totalPages={totalPages}
+        toShow={Array.isArray(movies) === true && movies.length > 0}
+      />
     </>
   );
 }

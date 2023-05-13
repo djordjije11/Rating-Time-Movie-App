@@ -1,11 +1,10 @@
 import { useEffect } from "react";
-import "../App.css";
-import UserService from "../services/UserService";
-import UserDefinition from "../models/UserDefinition";
-import MovieService from "../services/MovieService";
 import Swal from "sweetalert2";
-import { swalOptions } from "../helper/SwalPopUp";
+import { errorRefreshPagePopUp, swalOptions } from "../../popups/SwalPopUp";
 import { useNavigate } from "react-router-dom";
+import UserDefinition from "../../models/UserDefinition";
+import UserService from "../../services/rating_time/UserService";
+import MovieService from "../../services/rating_time/MovieService";
 
 export default function Users(props) {
   const [users, setUsers] = [props.users, props.setUsers];
@@ -20,50 +19,48 @@ export default function Users(props) {
         dbUsers = responseJson.map((result) => {
           return new UserDefinition(result.username, result.email, result.role);
         });
+        setUsers(dbUsers);
       } else {
-        Swal.fire({
-          ...swalOptions,
-          icon: "warning",
-          title: "Please try again.",
-          text: "Refresh the page.",
-        });
-        return;
+        errorRefreshPagePopUp();
       }
-      setUsers(dbUsers);
     } catch (error) {
-      Swal.fire({
-        ...swalOptions,
-        icon: "warning",
-        title: "Please try again.",
-        text: "Refresh the page.",
-      });
-      return;
-    }
-  };
-
-  const handleUserClick = async (user) => {
-    const userRatedMovies = await MovieService.getUserRatedMoviesAsync(
-      user.username
-    );
-    if (userRatedMovies.length === 0) {
-      Swal.fire({
-        ...swalOptions,
-        icon: "warning",
-        title: `User ${user.username} has not rated any movies yet!`,
-      });
-      return;
-    } else {
-      navigate(`/rated-movies/${user.username}`, {
-        state: { ratedMovies: userRatedMovies },
-      });
+      errorRefreshPagePopUp();
+      console.log(
+        "Error while calling rating_time API to get all users!",
+        error
+      );
     }
   };
 
   useEffect(() => {
-    (async () => {
-      await getAllUsers();
-    })();
+    getAllUsers();
   }, []);
+
+  const handleUserClick = async (user) => {
+    try {
+      const userRatedMovies = await MovieService.getUserRatedMoviesAsync(
+        user.username
+      );
+      if (userRatedMovies.length === 0) {
+        Swal.fire({
+          ...swalOptions,
+          icon: "warning",
+          title: `User ${user.username} has not rated any movies yet!`,
+        });
+        return;
+      } else {
+        navigate(`/rated-movies/${user.username}`, {
+          state: { ratedMovies: userRatedMovies },
+        });
+      }
+    } catch (error) {
+      errorRefreshPagePopUp();
+      console.log(
+        "Error while calling rating_time API to get all ratings from a user!",
+        error
+      );
+    }
+  };
 
   if (Array.isArray(users) === false || users.length === 0) {
     return <p>No users available.</p>;

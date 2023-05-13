@@ -28,3 +28,29 @@ export const swalWithBootstrapButtons = Swal.mixin({
   },
   buttonsStyling: false,
 });
+
+export function ratedSuccessfullyPopUp(title, rating) {
+  Swal.fire({
+    ...swalOptions,
+    icon: "success",
+    title: `You successfully rated ${title} with ${rating} stars!`,
+  });
+}
+
+export function errorOccurredPopUp() {
+  Swal.fire({
+    ...swalOptions,
+    icon: "error",
+    title: "Error occurred",
+    text: "Please try again",
+  });
+}
+
+export function errorRefreshPagePopUp() {
+  Swal.fire({
+    ...swalOptions,
+    icon: "error",
+    title: "Error occurred",
+    text: "Refresh the page.",
+  });
+}
