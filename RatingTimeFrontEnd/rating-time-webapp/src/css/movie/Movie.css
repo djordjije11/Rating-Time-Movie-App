@@ -1,0 +1,18 @@
+.movie-img {
+    margin-bottom: 2%;
+}
+
+.single-movie {
+    flex-basis: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1%;
+}
+
+.movie-title {
+    font-size: 18px;
+    text-align: center;
+    max-width: 250px;
+    height: 60px;
+}

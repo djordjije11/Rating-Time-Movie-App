@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import MovieDefinition from "../../../models/MovieDefinition";
 import RatingStars from "../stars/RatingStars";
+import "../../../css/movie/Movie.css";
 
 Movie.propTypes = {
   movie: PropTypes.oneOfType([
@@ -13,16 +14,8 @@ Movie.propTypes = {
 
 export default function Movie(props) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        margin: "1%",
-      }}
-    >
-      <img
-        className="movieImg"
+    <div className="single-movie">
+      <img className="movie-img"
         {...(props.movie.imageUrl.endsWith("null")
           ? null
           : { src: props.movie.imageUrl })}
@@ -35,14 +28,12 @@ export default function Movie(props) {
         style={{
           cursor:
             props.isZoomed || props.movie.rating > 0 ? "default" : "pointer",
-          marginTop: "10px",
-          marginBottom: "10px",
           width: props.isZoomed ? "26rem" : "auto",
           height: props.isZoomed ? "38rem" : "28rem",
         }}
       />
       <p
-        className="movieTitle"
+        className="movie-title"
         style={{ height: props.isZoomed ? "40px" : "60px" }}
       >
         {props.movie.title}

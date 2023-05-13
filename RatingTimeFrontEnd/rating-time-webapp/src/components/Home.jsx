@@ -4,7 +4,8 @@ import ListedMovies from "./movies/list/ListedMovies.jsx";
 import MovieDefinition from "../models/MovieDefinition.js";
 import TmdbService from "../services/tmdb/TmdbService.js";
 import Pagination, { loader } from "./Pagination";
-
+import "../css/Home.css";
+import "../css/SwalPopUp.css";
 export default function Home(props) {
   const [ratedMovies, setRatedMovies] = [
     props.ratedMovies,
@@ -115,16 +116,16 @@ export default function Home(props) {
 
   return (
     <>
-      <div style={{ marginLeft: "10%" }}>
+      <div style={{ marginLeft: "10vw" }}>
         <input
-          id="txtInput"
+          id="txt-input"
           onClick={handleClose}
           type="text"
           value={searchTextField}
           onChange={(event) => setSearchTextField(event.target.value)}
         />
         <button
-          id="searchbtn"
+          id="search-button"
           className="button-28"
           onClick={() => getMovieFromSearchAsync(searchTextField)}
         >
@@ -132,7 +133,6 @@ export default function Home(props) {
         </button>
 
         <select
-          id="genreSelect"
           className="button-28"
           onChange={handleGenreChange}
         >
@@ -147,20 +147,14 @@ export default function Home(props) {
       {searchedMovies.length > 0 && (
         <div>
           <button
-            id="closeButton"
-            style={{
-              alignSelf: "flex-end",
-              position: "absolute",
-              top: "20%",
-              right: "5%",
-            }}
+            id="close-button"
             onClick={() => setSearchedMovies([])}
           >
             X
           </button>
           <ListedMovies
             movies={searchedMovies}
-            styleClassName={"movieWrapperSearched"}
+            styleClassName={"movie-wrapper-searched"}
             handleZoomChange={handleZoomChange}
           />
           <hr
@@ -172,7 +166,7 @@ export default function Home(props) {
       )}
       <ListedMovies
         movies={movies}
-        styleClassName={"movieWrapper"}
+        styleClassName={"movie-wrapper"}
         handleZoomChange={handleZoomChange}
       />
       {isZoomed && (

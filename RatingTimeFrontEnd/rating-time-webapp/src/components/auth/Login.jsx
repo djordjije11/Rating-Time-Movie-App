@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Toast, swalOptions } from "../../popups/SwalPopUp";
-import "../../css/App.css";
+import "../../css/auth/Login.css";
 import UserService from "../../services/rating_time/UserService";
 
 export default function Login(props) {

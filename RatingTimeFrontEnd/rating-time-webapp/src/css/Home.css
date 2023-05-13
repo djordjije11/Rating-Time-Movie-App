@@ -1,0 +1,92 @@
+.current-page{
+    margin-left: 1vh ;
+    margin-right: 1vh;
+    font-size: 25px;
+  }
+  
+  #txt-input{
+    border-radius: 5px;
+    margin: 2vw;
+    margin-left: 3vw;
+  }
+  #search-button{
+    margin-right: 1vw;
+  }
+  #close-button{
+    align-self: flex-end;
+    position: absolute;
+    top: 20%;
+    right: 10%;
+    background-color: #fff;
+    border: 2px solid #263238;
+    border-radius: 15px;
+    cursor: pointer;
+    width: 30px;
+  }
+
+  .pagination{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 50px;
+  }
+
+  .movie-wrapper-searched{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-left: 10%;
+    margin-right: 10%;
+   }
+  .searched-movies{
+    background: rgb(255,255,255);
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(187,210,222,1) 22%, rgba(158,190,207,1) 41%, rgba(157,190,207,1) 53%, rgba(183,207,218,1) 67%, rgba(212,230,236,1) 80%, rgba(255,255,255,1) 100%);
+  }
+
+  .movie-wrapper{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+  .single-movie {
+    flex:20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+ 
+}
+
+.spinner {
+  border: 7px solid #ffffff;
+  border-top: 7px solid #3498dbc7;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin-top: 10%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.blur {
+  filter: blur(8px);
+}

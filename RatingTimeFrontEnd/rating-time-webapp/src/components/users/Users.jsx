@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import UserDefinition from "../../models/UserDefinition";
 import UserService from "../../services/rating_time/UserService";
 import MovieService from "../../services/rating_time/MovieService";
-
+import "../../css/users/Users.css";
+import "../../css/SwalPopUp.css";
 export default function Users(props) {
   const [users, setUsers] = [props.users, props.setUsers];
   const navigate = useNavigate();
