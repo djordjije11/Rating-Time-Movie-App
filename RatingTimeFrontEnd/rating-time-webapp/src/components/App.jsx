@@ -19,6 +19,7 @@ export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isAdmin, setAdmin] = useState(false);
   const [users, setUsers] = useState([]);
+  const [loggedUser, setLoggedUser] = useState("");
 
   const addMovieAsync = async function () {
     const movie = { ...currentMovie };
@@ -73,10 +74,11 @@ export default function App() {
     }
   };
 
-  const handleLogin = async (role) => {
+  const handleLogin = async (role,loggedUser) => {
     if (role === "Admin") {
       setAdmin(true);
     }
+    setLoggedUser(loggedUser);
     setLoggedIn(true);
   };
 
@@ -89,7 +91,7 @@ export default function App() {
   if (isLoggedIn) {
     return (
       <BrowserRouter>
-        <NavbarComponent isAdmin={isAdmin} onLogout={handleLogout} />
+        <NavbarComponent isAdmin={isAdmin} onLogout={handleLogout} loggedUser={loggedUser} />
         <Routes>
           <Route
             path="/"

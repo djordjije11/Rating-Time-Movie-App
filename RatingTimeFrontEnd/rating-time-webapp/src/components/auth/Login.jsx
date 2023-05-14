@@ -11,9 +11,11 @@ export default function Login(props) {
   const onLogin= props.onLogin;
 
   const loginAsync = async function () {
-    const role = await UserService.loginAsync({ username, password });
+    const responseJson = await UserService.loginAsync({ username, password });
+    const role= responseJson.role;
+    const loggedUser= responseJson.username;
     if(role !=null){
-      onLogin(role);
+      onLogin(role, loggedUser);
       navigate("/");
     }
   };

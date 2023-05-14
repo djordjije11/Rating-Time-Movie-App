@@ -6,7 +6,8 @@ import logo from "../../images/logo.png";
 
 export default function NavbarComponent(props) {
   const onLogout = props.onLogout;
-
+  const loggedUser= props.loggedUser;
+  
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -19,14 +20,14 @@ export default function NavbarComponent(props) {
             <Link
               className="text-decoration-none text-white"
               to="/"
-              style={{ marginRight: "30px", fontSize: "20px" }}
+              style={{ marginRight: "30px"}}
             >
               Home
             </Link>
             <Link
               className="text-decoration-none text-white"
               to="/rated-movies"
-              style={{ marginRight: "30px", fontSize: "20px" }}
+              style={{ marginRight: "30px"}}
             >
               Rated movies
             </Link>
@@ -34,19 +35,21 @@ export default function NavbarComponent(props) {
               <Link
                 className="text-decoration-none text-white"
                 to="/users"
-                style={{ fontSize: "20px" }}
+                style={{ marginRight: "auto"}}
               >
                 Users
               </Link>
             )}
-            <Link
-              className="text-decoration-none text-white"
-              to="/"
-              onClick={onLogout}
-              style={{ marginLeft: "800px", fontSize: "20px" }}
-            >
-              Logout
-            </Link>
+              <span className="text-decoration-none text-white" id="logged-user">
+                {loggedUser}
+              </span>
+              <Link
+                className="text-decoration-none text-white"
+                to="/"
+                onClick={onLogout}
+              >
+                Logout
+              </Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
