@@ -44,20 +44,27 @@
     background: rgb(255,255,255);
     background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(187,210,222,1) 22%, rgba(158,190,207,1) 41%, rgba(157,190,207,1) 53%, rgba(183,207,218,1) 67%, rgba(212,230,236,1) 80%, rgba(255,255,255,1) 100%);
   }
-
+  .movie-img {
+    margin-bottom: 2%;
+  }
+  .movie-title {
+      font-size: 18px;
+      text-align: center;
+      max-width: 250px;
+      height: 60px;
+  }
   .movie-wrapper{
     margin-top: 30px;
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
     margin-left: 10%;
-    margin-right: 10%;
   }
   .single-movie {
     flex: 0 0 0 25%;
     display: flex;
+    margin: 5px;
     flex-direction: column;
-    align-items: flex-start;
     place-items: center;
 }
 

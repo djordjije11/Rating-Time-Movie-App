@@ -7,11 +7,14 @@ export default function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const onLogin= props.onLogin;
 
   const loginAsync = async function () {
     const role = await UserService.loginAsync({ username, password });
-    props.onLogin(role);
-    navigate("/");
+    if(role !=null){
+      onLogin(role);
+      navigate("/");
+    }
   };
 
   return (

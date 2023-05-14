@@ -1,11 +1,11 @@
 import RatingStars from "../stars/RatingStars";
-import "../../../css/movie/Movie.css";
+
 
 export default function Movie(props) {
   const {movie, isZoomed, handleZoomChange} = props;
   
   return (
-    <div className="rated-movie">
+    <div className="single-movie">
       <img className="movie-img"
         {...(movie.imageUrl.endsWith("null")
           ? null

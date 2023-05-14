@@ -31,7 +31,7 @@ export default class UserService {
         title: "Invalid Username",
         text: "Username must be between 3 and 40 characters",
       });
-      return;
+      return null;
     }
     if (password.length < 8 || password.length > 40) {
       Swal.fire({
@@ -40,7 +40,7 @@ export default class UserService {
         title: "Invalid Password",
         text: "Password must be between 8 and 40 characters",
       });
-      return;
+      return null;
     }
     const requestOptions = {
       method: "POST",
@@ -59,7 +59,7 @@ export default class UserService {
         title: "Try again!",
         text: "Something went wrong",
       });
-      return;
+      return null; 
     }
     const responseJson = await response.json();
     const role = responseJson.role;
@@ -70,15 +70,16 @@ export default class UserService {
         title: "Invalid credentials",
         text: "Please check your username and password.",
       });
-      return;
+      return null; 
     }
     if (response.status === 200) {
       Toast.fire({
         icon: "success",
         title: "Login successfully",
       });
+      return role;
     }
-    return role;
+    
   }
 
   static async logoutAsync() {

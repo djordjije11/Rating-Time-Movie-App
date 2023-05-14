@@ -1,7 +1,6 @@
 import Movie from "./Movie";
 import RatingStars from "../stars/RatingStars";
 import "../../../css/movie/ZoomedMovie.css";
-import "../../../css/movie/Movie.css";
 
 export default function ZoomedMovie(props) {
   const {movie, addMovieAsync, handleRatingChange, setIsZoomed} = props;

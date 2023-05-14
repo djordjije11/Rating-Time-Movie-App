@@ -1,5 +1,5 @@
 import Movie from "../single/Movie";
-
+import "../../../css/Home.css";
 export default function ListedMovies(props) {
   const {movies, styleClassName, handleZoomChange} = props;
   return (
