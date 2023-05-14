@@ -1,13 +1,5 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import {
-  Toast,
-  errorOccurredPopUp,
-  errorRefreshPagePopUp,
-  ratedSuccessfullyPopUp,
-  swalOptions,
-} from "../popups/SwalPopUp";
 import Home from "./Home";
 import Login from "./auth/Login";
 import RatedMovies from "./movies/list/RatedMovies";
@@ -22,20 +14,15 @@ export default function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
   const [currentMovie, setCurrentMovie] = useState(new MovieDefinition());
   const [isZoomed, setIsZoomed] = useState(false);
-
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isAdmin, setAdmin] = useState(false);
   const [users, setUsers] = useState([]);
 
   const addMovieAsync = async function () {
-    console.log(currentMovie);
     const movie = { ...currentMovie };
-    const response = await MovieService.addMovieToDBAsync(movie);
-    if (response.ok) {
-      ratedSuccessfullyPopUp(movie.title, movie.rating);
+    const isSaved = await MovieService.addMovieToDBAsync(movie);
+    if(isSaved){
       updateInMemoryRatedMovies(movie);
-    } else {
-      errorOccurredPopUp();
     }
     setCurrentMovie(null);
   };
@@ -45,11 +32,10 @@ export default function App() {
   };
 
   const checkAuthAsync = async () => {
-    const response = await UserService.checkAuth();
-    if (response.ok) {
+    const role = await UserService.checkAuthAsync();
+    if(role !== null){
       setLoggedIn(true);
-      const responseJson = await response.json();
-      if (responseJson.role === "Admin") {
+      if(role === "Admin"){
         setAdmin(true);
       }
     }
@@ -57,15 +43,9 @@ export default function App() {
 
   const getRatedMoviesAsync = async () => {
     if (isLoggedIn) {
-      try {
-        const ratedMovies = await MovieService.getRatedMoviesFromDBAsync();
+      const ratedMovies = await MovieService.getRatedMoviesFromDBAsync();
+      if(ratedMovies !== null){
         setRatedMovies(ratedMovies);
-      } catch (error) {
-        errorRefreshPagePopUp();
-        console.log(
-          "Error while calling rating_time API to get rated movies!",
-          error
-        );
       }
     }
   };
@@ -99,25 +79,9 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    const { value: shouldLogout } = await Swal.fire({
-      ...swalOptions,
-      title: "Log Out",
-      text: "Are you sure you want to log out?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Log Out",
-      cancelButtonText: "Cancel",
-    });
-
-    if (shouldLogout) {
-      await UserService.logoutAsync();
-      setAdmin(false);
-      setLoggedIn(false);
-      Toast.fire({
-        icon: "success",
-        title: "Logout successfully",
-      });
-    }
+    await UserService.logoutAsync();
+    setAdmin(false);
+    setLoggedIn(false);
   };
 
   if (isLoggedIn) {

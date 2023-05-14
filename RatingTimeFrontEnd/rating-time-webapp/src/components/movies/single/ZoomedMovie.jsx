@@ -1,19 +1,9 @@
 import Movie from "./Movie";
-import PropTypes from "prop-types";
-import MovieDefinition from "../../../models/MovieDefinition";
 import RatingStars from "../stars/RatingStars";
 
-ZoomedMovie.propTypes = {
-  movie: PropTypes.oneOfType([
-    PropTypes.instanceOf(MovieDefinition).isRequired,
-    PropTypes.any,
-  ]).isRequired,
-  addMovieAsync: PropTypes.func,
-  handleRatingChange: PropTypes.func,
-  setIsZoomed: PropTypes.func,
-};
-
 export default function ZoomedMovie(props) {
+  const {movie, addMovieAsync, handleRatingChange, setIsZoomed} = props;
+
   return (
     <div className="zoomedWrapper">
       <div className="movieZoomed">
@@ -21,25 +11,25 @@ export default function ZoomedMovie(props) {
           <button
             id="closeButton"
             style={{ alignSelf: "flex-end" }}
-            onClick={() => props.setIsZoomed(false)}
+            onClick={() => setIsZoomed(false)}
           >
             X
           </button>
-          <Movie movie={props.movie} isZoomed={true} />
+          <Movie movie={movie} isZoomed={true} />
         </div>
         <div className="zoomedRate">
-          <p className="zoomedOverview">{props.movie.overview}</p>
+          <p className="zoomedOverview">{movie.overview}</p>
           <p style={{ color: "#FFFDFA" }}>Rate this movie:</p>
           <RatingStars
-            rating={props.movie.rating}
-            changeRating={props.handleRatingChange}
+            rating={movie.rating}
+            changeRating={handleRatingChange}
           />
           <button
             className="button-28"
             style={{ marginTop: "1rem" }}
             onClick={() => {
-              props.addMovieAsync();
-              props.setIsZoomed(false);
+              addMovieAsync();
+              setIsZoomed(false);
             }}
           >
             Save rating

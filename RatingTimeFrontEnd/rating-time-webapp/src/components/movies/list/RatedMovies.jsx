@@ -1,8 +1,4 @@
 import { useState } from "react";
-import {
-  errorOccurredPopUp,
-  swalWithBootstrapButtons,
-} from "../../../popups/SwalPopUp";
 import Modal from "react-modal";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -11,18 +7,7 @@ import MovieService from "../../../services/rating_time/MovieService";
 import RatedMovie from "../single/RatedMovie";
 
 export default function RatedMovies(props) {
-  const [ratedMovies, setRatedMovies] = [
-    props.ratedMovies,
-    props.setRatedMovies,
-  ];
-  const [currentMovie, setCurrentMovie] = [
-    props.currentMovie,
-    props.setCurrentMovie,
-  ];
-  const [isZoomed, setIsZoomed] = [props.isZoomed, props.setIsZoomed];
-  const addMovieAsync = props.addMovieAsync;
-  const handleRatingChange = props.handleRatingChange;
-
+  const {ratedMovies, setRatedMovies, currentMovie, setCurrentMovie, isZoomed, setIsZoomed, addMovieAsync, handleRatingChange} = props;
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
@@ -33,29 +18,9 @@ export default function RatedMovies(props) {
   }, [ratedMovies]);
 
   async function removeMovieAsync(index, ratedMovie) {
-    const result = await swalWithBootstrapButtons.fire({
-      title: "Are you sure you want to delete the movie?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
-      reverseButtons: true,
-    });
-    if (result.isConfirmed) {
-      const response = await MovieService.deleteMovieFromDBAsync(ratedMovie.id);
-      if (response.ok) {
-        setRatedMovies((prevMovies) =>
-          prevMovies.filter((_, i) => i !== index)
-        );
-        swalWithBootstrapButtons.fire(
-          "Deleted!",
-          `${ratedMovie.title} has been deleted.`,
-          "success"
-        );
-      } else {
-        errorOccurredPopUp();
-      }
+    const isRemoved = await MovieService.deleteMovieFromDBAsync(ratedMovie.id);
+    if(isRemoved){
+      setRatedMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
     }
   }
 
@@ -64,7 +29,7 @@ export default function RatedMovies(props) {
       {ratedMovies.map((ratedMovie, index) => (
         <div className="movies">
           <RatedMovie
-            key={index}
+            key={ratedMovie.id}
             movie={ratedMovie}
             rating={ratedMovie.rating}
           />

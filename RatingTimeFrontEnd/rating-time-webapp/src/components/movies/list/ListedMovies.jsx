@@ -1,26 +1,14 @@
-import MovieDefinition from "../../../models/MovieDefinition";
 import Movie from "../single/Movie";
-import PropTypes from "prop-types";
-
-ListedMovies.propTypes = {
-  movies: PropTypes.arrayOf(
-    PropTypes.oneOfType([
-      PropTypes.instanceOf(MovieDefinition).isRequired,
-      PropTypes.any,
-    ])
-  ).isRequired,
-  styleClassName: PropTypes.string,
-  handleZoomChange: PropTypes.func.isRequired,
-};
 
 export default function ListedMovies(props) {
+  const {movies, styleClassName, handleZoomChange} = props;
   return (
-    <div className={props.styleClassName ?? ""}>
-      {props.movies.map((movie, index) => (
+    <div className={styleClassName ?? ""}>
+      {movies.map((movie) => (
         <Movie
-          key={index}
+          key={movie.id}
           movie={movie}
-          handleZoomChange={props.handleZoomChange}
+          handleZoomChange={handleZoomChange}
         />
       ))}
     </div>

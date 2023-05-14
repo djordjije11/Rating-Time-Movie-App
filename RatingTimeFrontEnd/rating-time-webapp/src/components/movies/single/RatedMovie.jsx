@@ -2,8 +2,8 @@ import Movie from "./Movie";
 import RatingStars from "../stars/RatingStars";
 
 export default function RatedMovie(props) {
-  const movie = props.movie;
-  const rating = props.rating;
+  const {movie, rating} = props;
+  
   return (
     <>
       <Movie movie={movie} />

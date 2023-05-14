@@ -10,27 +10,39 @@ const TMDB_API_SEARCH_MOVIE_LINK = "https://api.themoviedb.org/3/search/movie";
 const TMDB_API_MOVIE_IMAGE_URL_BASE = "https://image.tmdb.org/t/p/original/";
 
 export default class TmdbService {
-  static getGenresAsync() {
-    return fetch(`${TMDB_API_GENRES_LINK}?api_key=${TMDB_API_KEY}`);
+  static async getGenresAsync() {
+    const response = await fetch(`${TMDB_API_GENRES_LINK}?api_key=${TMDB_API_KEY}`);
+    const responseJson = await response.json();
+    return responseJson.genres;
   }
-  static getTopMoviesAsync(pageNumber) {
-    return fetch(
+  static async getTopMoviesAsync(pageNumber) {
+    const response = await fetch(
       `${TMDB_API_POPULAR_MOVIES_LINK}?api_key=${TMDB_API_KEY}&page=${pageNumber}`
     );
+    const responseJson = await response.json();
+    return {
+      total_pages,
+      total_results,
+      results
+    } = responseJson;
   }
-  static getMovieFromSearchAsync(title) {
-    return fetch(
+  static async getMovieFromSearchAsync(title) {
+    const response = await fetch(
       `${TMDB_API_SEARCH_MOVIE_LINK}?api_key=${TMDB_API_KEY}&query=${title}`
     );
+    const responseJson = await response.json();
+    return responseJson.results;
   }
-  static getTopMoviesWithGenreAsync(genre, pageNumber) {
+  static async getTopMoviesWithGenreAsync(genre, pageNumber) {
     const pageNumberQuery = "";
     if (pageNumber !== undefined && pageNumber > 0) {
       pageNumberQuery = `&page=${pageNumber}`;
     }
-    return fetch(
+    const response = await fetch(
       `${TMDB_API_POPULAR_MOVIES_WITH_GENRES_LINK}?api_key=${TMDB_API_KEY}&with_genres=${genre}${pageNumberQuery}`
     );
+    const responseJson = await response.json();
+    return responseJson.results;
   }
   static getMoviesPerPageFromJSON(results, numberOfMoviesPerPage) {
     return results

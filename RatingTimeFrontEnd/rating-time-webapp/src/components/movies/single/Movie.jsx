@@ -1,17 +1,8 @@
-import PropTypes from "prop-types";
-import MovieDefinition from "../../../models/MovieDefinition";
 import RatingStars from "../stars/RatingStars";
 
-Movie.propTypes = {
-  movie: PropTypes.oneOfType([
-    PropTypes.instanceOf(MovieDefinition).isRequired,
-    PropTypes.any,
-  ]).isRequired,
-  isZoomed: PropTypes.bool,
-  handleZoomChange: PropTypes.func,
-};
-
 export default function Movie(props) {
+  const {movie, isZoomed, handleZoomChange} = props;
+  
   return (
     <div
       style={{
@@ -23,34 +14,34 @@ export default function Movie(props) {
     >
       <img
         className="movieImg"
-        {...(props.movie.imageUrl.endsWith("null")
+        {...(movie.imageUrl.endsWith("null")
           ? null
-          : { src: props.movie.imageUrl })}
-        alt={props.movie.title}
+          : { src: movie.imageUrl })}
+        alt={movie.title}
         onClick={
-          props.movie.rating === 0
-            ? () => props.handleZoomChange(props.movie)
+          movie.rating === 0
+            ? () => handleZoomChange(movie)
             : undefined
         }
         style={{
           cursor:
-            props.isZoomed || props.movie.rating > 0 ? "default" : "pointer",
+            isZoomed || movie.rating > 0 ? "default" : "pointer",
           marginTop: "10px",
           marginBottom: "10px",
-          width: props.isZoomed ? "26rem" : "auto",
-          height: props.isZoomed ? "38rem" : "28rem",
+          width: isZoomed ? "26rem" : "auto",
+          height: isZoomed ? "38rem" : "28rem",
         }}
       />
       <p
         className="movieTitle"
-        style={{ height: props.isZoomed ? "40px" : "60px" }}
+        style={{ height: isZoomed ? "40px" : "60px" }}
       >
-        {props.movie.title}
+        {movie.title}
       </p>
-      {props.isZoomed ? undefined : <p>Average vote</p>}
+      {isZoomed ? undefined : <p>Average vote</p>}
 
-      <RatingStars rating={props.movie.averageVote} />
-      <p>{props.movie.averageVote}</p>
+      <RatingStars rating={movie.averageVote} />
+      <p>{movie.averageVote}</p>
     </div>
   );
 }

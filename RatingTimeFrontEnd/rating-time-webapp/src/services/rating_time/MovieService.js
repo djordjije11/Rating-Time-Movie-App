@@ -1,3 +1,8 @@
+import {
+  errorOccurredPopUp,
+  errorRefreshPagePopUp,
+  ratedSuccessfullyPopUp,
+} from "../popups/SwalPopUp";
 import MovieDefinition from "../../models/MovieDefinition";
 
 const RATING_API_URL = "http://localhost:5165/api/rating";
@@ -29,9 +34,9 @@ export default class MovieService {
     const response = await fetch(RATING_API_URL, requestOptions);
     if (response.ok) {
       return this.getRatedMoviesFromJSON(response);
-    } else {
-      throw Error("Failed to retrieve rated movies from rating_time API!");
     }
+    errorRefreshPagePopUp();
+    return null;
   }
 
   static async getUserRatedMoviesAsync(username) {
@@ -46,15 +51,12 @@ export default class MovieService {
     );
     if (response.ok) {
       return this.getRatedMoviesFromJSON(response);
-    } else {
-      throw Error(
-        "Failed to retrieve user's rated movies from rating_time API!"
-      );
     }
+    errorRefreshPagePopUp();
+    return null;
   }
 
-  static addMovieToDBAsync(movie) {
-    console.log(movie);
+  static async addMovieToDBAsync(movie) {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -73,19 +75,45 @@ export default class MovieService {
       }),
       credentials: "include",
     };
-    console.log(requestOptions.body);
-    return fetch(RATING_API_URL, requestOptions);
+    const response = await fetch(RATING_API_URL, requestOptions);
+    if(response.ok){
+      ratedSuccessfullyPopUp(movie.title, movie.rating);
+      return true;
+    }
+    errorOccurredPopUp();
+    return false;
   }
 
-  static deleteMovieFromDBAsync(id) {
-    const requestOptions = {
-      method: "DELETE",
-      body: JSON.stringify({
-        movieId: id,
-      }),
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    };
-    return fetch(RATING_API_URL, requestOptions);
+  static async deleteMovieFromDBAsync(id) {
+    const result = await swalWithBootstrapButtons.fire({
+      title: "Are you sure you want to delete the movie?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      reverseButtons: true,
+    });
+    if(result.isConfirmed){
+      const requestOptions = {
+        method: "DELETE",
+        body: JSON.stringify({
+          movieId: id,
+        }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      };
+      const response = await fetch(RATING_API_URL, requestOptions);
+      if (response.ok) {
+        swalWithBootstrapButtons.fire(
+          "Deleted!",
+          `${ratedMovie.title} has been deleted.`,
+          "success"
+        );
+        return true;
+      }
+      errorOccurredPopUp();
+      return false;
+    }
   }
 }

@@ -6,18 +6,7 @@ import TmdbService from "../services/tmdb/TmdbService.js";
 import Pagination, { loader } from "./Pagination";
 
 export default function Home(props) {
-  const [ratedMovies, setRatedMovies] = [
-    props.ratedMovies,
-    props.setRatedMovies,
-  ];
-  const [currentMovie, setCurrentMovie] = [
-    props.currentMovie,
-    props.setCurrentMovie,
-  ];
-  const [isZoomed, setIsZoomed] = [props.isZoomed, props.setIsZoomed];
-  const addMovieAsync = props.addMovieAsync;
-  const handleRatingChange = props.handleRatingChange;
-
+  const {ratedMovies, currentMovie, setCurrentMovie, isZoomed, setIsZoomed, addMovieAsync, handleRatingChange} = props;
   const [movies, setMovies] = useState([]);
   const [searchedMovies, setSearchedMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,9 +21,8 @@ export default function Home(props) {
   }, [currentPage, totalPages, totalResults]);
 
   const getGenresAsync = async function () {
-    const response = await TmdbService.getGenresAsync();
-    const responseJson = await response.json();
-    setGenres(responseJson.genres);
+    const genres = await TmdbService.getGenresAsync();
+    setGenres(dgenres);
   };
 
   const getMoviesPerPageFromJSON = function (results) {
@@ -44,30 +32,30 @@ export default function Home(props) {
 
   const getTopMoviesAsync = async function (pageNumber) {
     loader(1);
-    const response = await TmdbService.getTopMoviesAsync(pageNumber);
-    const responseJson = await response.json();
-    setTotalPages(responseJson.total_pages);
-    setTotalResults(responseJson.total_results);
-    const topMovies = getMoviesPerPageFromJSON(responseJson.results);
+    const {
+      total_pages,
+      total_results,
+      results
+    } = await TmdbService.getTopMoviesAsync(pageNumber);
+    setTotalPages(total_pages);
+    setTotalResults(total_results);
+    const topMovies = getMoviesPerPageFromJSON(results);
     setMovies(topMovies);
   };
 
   const getTopMoviesWithGenreAsync = async function (genre, pageNumber) {
-    const response = await TmdbService.getTopMoviesWithGenreAsync(
+    const results = await TmdbService.getTopMoviesWithGenreAsync(
       genre,
       pageNumber
     );
-    const responseJson = await response.json();
-    const moviesByGenre = getMoviesPerPageFromJSON(responseJson.results);
+    const moviesByGenre = getMoviesPerPageFromJSON(results);
     setMovies(moviesByGenre);
   };
 
   const getMovieFromSearchAsync = async function (title) {
     loader(2);
-    const response = await TmdbService.getMovieFromSearchAsync(title);
-    const responseJson = await response.json();
-    const searchedMovies = getMoviesPerPageFromJSON(responseJson.results);
-    console.log("HEJ", searchedMovies);
+    const results = await TmdbService.getMovieFromSearchAsync(title);
+    const searchedMovies = getMoviesPerPageFromJSON(results);
     setSearchedMovies(searchedMovies);
     setSearchTextField("");
   };
