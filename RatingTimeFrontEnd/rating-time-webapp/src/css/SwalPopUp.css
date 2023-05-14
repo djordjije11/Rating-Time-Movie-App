@@ -1,0 +1,22 @@
+
+.custom-confirm-button-class {
+    background-color: #263238 !important;
+    color: #fff !important;
+  }
+  
+  .custom-confirm-button-class:hover {
+    background-color: #455761 !important;
+  }
+  
+  .custom-confirm-button-class:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  .custom-content-class{
+    border-radius: 50px !important;
+    height: 200px !important;
+  }
+  
+  .btn-success{
+    margin-left: 10px !important;
+  } 

@@ -1,19 +1,26 @@
-import { useState } from "react";
-import Modal from "react-modal";
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
 import ZoomedMovie from "../single/ZoomedMovie";
 import MovieService from "../../../services/rating_time/MovieService";
 import RatedMovie from "../single/RatedMovie";
+import "../../../css/movie/RatedMovies.css";
+import Swal from "sweetalert2";
+import {swalOptions } from "../../../popups/SwalPopUp";
+import { useNavigate } from "react-router";
+import "../../../css/SwalPopUp.css";
 
 export default function RatedMovies(props) {
   const {ratedMovies, setRatedMovies, currentMovie, setCurrentMovie, isZoomed, setIsZoomed, addMovieAsync, handleRatingChange} = props;
-  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (ratedMovies.length === 0) {
-      setShowPopup(true);
+      Swal.fire({
+        ...swalOptions,
+        icon: "warning",
+        title: "No rated movies found!",
+      }).then(() => {
+        navigate('/'); 
+      });
     }
   }, [ratedMovies]);
 
@@ -25,35 +32,22 @@ export default function RatedMovies(props) {
   }
 
   return (
-    <div className="movieWrapper">
+    <div className="movie-wrapper-rated">
       {ratedMovies.map((ratedMovie, index) => (
-        <div className="movies">
+        <div className="single-movie">
           <RatedMovie
             key={ratedMovie.id}
             movie={ratedMovie}
             rating={ratedMovie.rating}
           />
-          <div className="btnRatedMovies">
-            <button
-              className="button-28"
-              style={{
-                width: "10rem",
-                height: "3rem",
-                marginBottom: "1rem",
-                marginTop: "1rem",
-              }}
+          <div className="btn-rated-movies">
+            <button className="button-28" id="button-rated"
               onClick={() => removeMovieAsync(index, ratedMovie)}
             >
               Remove rating
             </button>
             <button
-              className="button-28"
-              style={{
-                width: "10rem",
-                height: "3rem",
-                marginBottom: "1rem",
-                marginTop: "1rem",
-              }}
+              className="button-28" id="button-rated"
               onClick={() => {
                 setCurrentMovie(ratedMovies[index]);
                 setIsZoomed(true);
@@ -72,25 +66,6 @@ export default function RatedMovies(props) {
           setIsZoomed={setIsZoomed}
         />
       )}
-      <Modal
-        isOpen={showPopup}
-        onRequestClose={() => setShowPopup(false)}
-        className="popupModal"
-        overlayClassName="popupOverlay"
-      >
-        <div className="popupContent">
-          <h3 className="popupTitle">No rated movies found!</h3>
-          <button
-            className="popupButton"
-            onClick={() => {
-              setShowPopup(false);
-              navigate("/");
-            }}
-          >
-            Close
-          </button>
-        </div>
-      </Modal>
     </div>
   );
 }

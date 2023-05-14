@@ -4,7 +4,8 @@ import { swalOptions } from "../popups/SwalPopUp";
 import Swal from "sweetalert2";
 import UserService from "../../services/rating_time/UserService";
 import MovieService from "../../services/rating_time/MovieService";
-
+import "../../css/users/Users.css";
+import "../../css/SwalPopUp.css";
 export default function Users(props) {
   const {users, setUsers} = props;
   const navigate = useNavigate();

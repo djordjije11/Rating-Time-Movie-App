@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../css/App.css";
+import "../../css/auth/Login.css";
 import UserService from "../../services/rating_time/UserService";
 
 export default function Login(props) {

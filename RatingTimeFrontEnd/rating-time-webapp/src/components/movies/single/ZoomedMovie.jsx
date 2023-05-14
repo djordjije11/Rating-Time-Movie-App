@@ -1,32 +1,32 @@
 import Movie from "./Movie";
 import RatingStars from "../stars/RatingStars";
+import "../../../css/movie/ZoomedMovie.css";
+import "../../../css/movie/Movie.css";
 
 export default function ZoomedMovie(props) {
   const {movie, addMovieAsync, handleRatingChange, setIsZoomed} = props;
 
   return (
-    <div className="zoomedWrapper">
-      <div className="movieZoomed">
-        <div className="movieImage">
-          <button
-            id="closeButton"
-            style={{ alignSelf: "flex-end" }}
+    <div className="zoomed-wrapper">
+      <div className="movie-zoomed">
+        <div className="movie-img">
+          <button id="button-close"
             onClick={() => setIsZoomed(false)}
           >
             X
           </button>
           <Movie movie={movie} isZoomed={true} />
         </div>
-        <div className="zoomedRate">
-          <p className="zoomedOverview">{movie.overview}</p>
-          <p style={{ color: "#FFFDFA" }}>Rate this movie:</p>
+        <div className="zoomed-rate">
+          <p className="zoomed-overview">{movie.overview}</p>
+          <p >Rate this movie:</p>
           <RatingStars
             rating={movie.rating}
             changeRating={handleRatingChange}
           />
           <button
             className="button-28"
-            style={{ marginTop: "1rem" }}
+            id="button-save"
             onClick={() => {
               addMovieAsync();
               setIsZoomed(false);

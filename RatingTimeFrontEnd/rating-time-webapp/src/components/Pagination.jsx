@@ -1,7 +1,8 @@
+import "../css/Home.css";
 export const loader = function (type) {
-  let movies = document.querySelector(".movieWrapper");
+  let movies = document.querySelector(".movie-wrapper");
   if (type === 2) {
-    movies = document.querySelector(".movieWrapperSearched");
+    movies = document.querySelector(".movie-wrapper-searched");
   }
   const loading = document.querySelector(".loading");
   if (!movies || !loading) {
@@ -36,13 +37,7 @@ export default function Pagination(props) {
       >
         BACK
       </button>
-      <span
-        style={{
-          marginLeft: "10px",
-          marginRight: "10px",
-          fontSize: "25px",
-        }}
-      >
+      <span className="current-page">
         {currentPage}
       </span>
       <button

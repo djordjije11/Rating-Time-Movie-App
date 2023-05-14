@@ -1,0 +1,25 @@
+.btn-rated-movies{
+  display: flex;
+  justify-content: center;
+  gap: 5%;
+}
+
+#button-rated{
+  width: 10rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+.movie-wrapper-rated{
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.single-movie {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
