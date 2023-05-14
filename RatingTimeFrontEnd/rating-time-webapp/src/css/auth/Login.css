@@ -79,3 +79,7 @@
     box-shadow: none;
     transform: translateY(0);
   }
+
+  .register-p{
+    margin-top: 20px;
+  }
