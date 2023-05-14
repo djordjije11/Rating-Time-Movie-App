@@ -21,12 +21,12 @@ export default class TmdbService {
     );
     const responseJson = await response.json();
     const {
-      total_page,
+      total_pages,
       total_results,
       results
     } = responseJson;
     return {
-      total_page,
+      total_pages,
       total_results,
       results
     };

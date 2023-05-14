@@ -6,6 +6,7 @@ import TmdbService from "../services/tmdb/TmdbService.js";
 import Pagination, { loader } from "./Pagination";
 import "../css/Home.css";
 import "../css/SwalPopUp.css";
+
 export default function Home(props) {
   const {ratedMovies, currentMovie, setCurrentMovie, isZoomed, setIsZoomed, addMovieAsync, handleRatingChange} = props;
   const [movies, setMovies] = useState([]);
