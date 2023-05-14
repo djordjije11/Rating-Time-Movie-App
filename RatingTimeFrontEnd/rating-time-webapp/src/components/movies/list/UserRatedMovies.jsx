@@ -9,7 +9,7 @@ export default function UserRatedMovies() {
   return (
     <div className="movie-wrapper">
       {ratedMovies.map((ratedMovie, index) => (
-        <div className="single-movie">
+        <div className="rated-movie">
           <RatedMovie
             key={index}
             movie={ratedMovie}

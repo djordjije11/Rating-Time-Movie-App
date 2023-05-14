@@ -70,7 +70,7 @@ export default function RatedMovies(props) {
   return (
     <div className="movie-wrapper-rated">
       {ratedMovies.map((ratedMovie, index) => (
-        <div className="single-movie">
+        <div className="rated-movie">
           <RatedMovie
             key={index}
             movie={ratedMovie}

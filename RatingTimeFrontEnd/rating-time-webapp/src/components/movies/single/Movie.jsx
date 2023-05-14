@@ -14,7 +14,7 @@ Movie.propTypes = {
 
 export default function Movie(props) {
   return (
-    <div className="single-movie">
+    <div className="rated-movie">
       <img className="movie-img"
         {...(props.movie.imageUrl.endsWith("null")
           ? null

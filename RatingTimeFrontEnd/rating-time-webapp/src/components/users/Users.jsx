@@ -20,6 +20,16 @@ export default function Users(props) {
         dbUsers = responseJson.map((result) => {
           return new UserDefinition(result.username, result.email, result.role);
         });
+        if(dbUsers.length===0){
+          Swal.fire({
+            ...swalOptions,
+            icon: "warning",
+            title: "No users to display!",
+          }).then(() => {
+          navigate('/'); 
+        });
+          return;
+        }
         setUsers(dbUsers);
       } else {
         errorRefreshPagePopUp();
@@ -63,10 +73,7 @@ export default function Users(props) {
     }
   };
 
-  if (Array.isArray(users) === false || users.length === 0) {
-    return <p>No users available.</p>;
-  }
-
+ 
   return (
     <div>
       <table className="table-container">

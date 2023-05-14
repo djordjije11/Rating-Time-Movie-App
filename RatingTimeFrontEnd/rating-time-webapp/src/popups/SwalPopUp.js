@@ -54,3 +54,4 @@ export function errorRefreshPagePopUp() {
     text: "Refresh the page.",
   });
 }
+
