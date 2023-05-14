@@ -39,10 +39,7 @@ export default function Users(props) {
     });
   };
 
-  if (Array.isArray(users) === false || users.length === 0) {
-    return <p>No users available.</p>;
-  }
-
+ 
   return (
     <div>
       <table className="table-container">

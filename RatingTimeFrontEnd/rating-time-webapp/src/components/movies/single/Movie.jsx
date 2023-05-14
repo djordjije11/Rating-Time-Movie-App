@@ -5,7 +5,7 @@ export default function Movie(props) {
   const {movie, isZoomed, handleZoomChange} = props;
   
   return (
-    <div className="single-movie">
+    <div className="rated-movie">
       <img className="movie-img"
         {...(movie.imageUrl.endsWith("null")
           ? null
