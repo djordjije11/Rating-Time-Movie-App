@@ -20,11 +20,16 @@ export default class TmdbService {
       `${TMDB_API_POPULAR_MOVIES_LINK}?api_key=${TMDB_API_KEY}&page=${pageNumber}`
     );
     const responseJson = await response.json();
-    return {
-      total_pages,
+    const {
+      total_page,
       total_results,
       results
     } = responseJson;
+    return {
+      total_page,
+      total_results,
+      results
+    };
   }
   static async getMovieFromSearchAsync(title) {
     const response = await fetch(

@@ -23,7 +23,7 @@ export default function Home(props) {
 
   const getGenresAsync = async function () {
     const genres = await TmdbService.getGenresAsync();
-    setGenres(dgenres);
+    setGenres(genres);
   };
 
   const getMoviesPerPageFromJSON = function (results) {

@@ -1,8 +1,9 @@
 import {
+  swalWithBootstrapButtons,
   errorOccurredPopUp,
   errorRefreshPagePopUp,
   ratedSuccessfullyPopUp,
-} from "../popups/SwalPopUp";
+} from "../../popups/SwalPopUp";
 import MovieDefinition from "../../models/MovieDefinition";
 
 const RATING_API_URL = "http://localhost:5165/api/rating";
@@ -84,7 +85,7 @@ export default class MovieService {
     return false;
   }
 
-  static async deleteMovieFromDBAsync(id) {
+  static async deleteMovieFromDBAsync(ratedMovie) {
     const result = await swalWithBootstrapButtons.fire({
       title: "Are you sure you want to delete the movie?",
       text: "You won't be able to revert this!",
@@ -98,7 +99,7 @@ export default class MovieService {
       const requestOptions = {
         method: "DELETE",
         body: JSON.stringify({
-          movieId: id,
+          movieId: ratedMovie.id,
         }),
         headers: { "Content-Type": "application/json" },
         credentials: "include",

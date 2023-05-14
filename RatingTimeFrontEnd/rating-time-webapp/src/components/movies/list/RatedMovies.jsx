@@ -25,7 +25,7 @@ export default function RatedMovies(props) {
   }, [ratedMovies]);
 
   async function removeMovieAsync(index, ratedMovie) {
-    const isRemoved = await MovieService.deleteMovieFromDBAsync(ratedMovie.id);
+    const isRemoved = await MovieService.deleteMovieFromDBAsync(ratedMovie);
     if(isRemoved){
       setRatedMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
     }

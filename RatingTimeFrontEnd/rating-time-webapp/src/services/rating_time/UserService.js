@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
-import { Toast, swalOptions } from "../../popups/SwalPopUp";
+import { Toast, swalOptions, errorRefreshPagePopUp } from "../../popups/SwalPopUp";
+import UserDefinition from "../../models/UserDefinition";
 
 const AUTH_API_URL = "http://localhost:5165/api/authentication";
 const LOGIN_API_URL = "http://localhost:5165/api/authentication/login";
