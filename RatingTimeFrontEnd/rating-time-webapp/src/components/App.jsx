@@ -10,6 +10,7 @@ import MovieService from "../services/rating_time/MovieService";
 import UserRatedMovies from "./movies/list/UserRatedMovies";
 import MovieDefinition from "../models/MovieDefinition";
 import "../css/SwalPopUp.css";
+
 export default function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
   const [currentMovie, setCurrentMovie] = useState(new MovieDefinition());
