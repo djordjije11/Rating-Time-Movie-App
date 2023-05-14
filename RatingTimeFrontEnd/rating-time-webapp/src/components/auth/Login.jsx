@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/auth/Login.css";
 import UserService from "../../services/rating_time/UserService";
+import { func } from "prop-types";
 
 export default function Login(props) {
   const [username, setUsername] = useState("");
@@ -16,6 +17,10 @@ export default function Login(props) {
       navigate("/");
     }
   };
+
+  const openRegister = function () {
+    navigate("/registration");
+  }
 
   return (
     <div className="login-background">
@@ -46,6 +51,12 @@ export default function Login(props) {
         <div>
           <button onClick={loginAsync} className="button-28">
             Submit
+          </button>
+        </div>
+        <div>
+          <p className="register-p">Don't have an account?</p>
+          <button onClick={openRegister} className="button-28">
+            Register
           </button>
         </div>
       </div>

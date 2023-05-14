@@ -10,6 +10,7 @@ import MovieService from "../services/rating_time/MovieService";
 import UserRatedMovies from "./movies/list/UserRatedMovies";
 import MovieDefinition from "../models/MovieDefinition";
 import "../css/SwalPopUp.css";
+import Register from "./auth/Registration";
 
 export default function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
@@ -136,6 +137,10 @@ export default function App() {
           <Route
             path="/login"
             element={<Login onLogin={handleLogin} isLoggedIn={isLoggedIn} />}
+          />
+          <Route
+            path="/registration"
+            element={<Register/>}
           />
           <Route path="/*" element={<Navigate to="/login" />} />
         </Routes>

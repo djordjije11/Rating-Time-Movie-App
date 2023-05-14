@@ -1,0 +1,40 @@
+.registration-body{
+    height: 100vh;
+    background-image: url("../../images/registration.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.popcorn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 20%;
+    background-image: url("../../images/popcorn.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.registration-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 5px solid #263238;
+    background-color: rgba(96, 125, 139, 0.85);
+    padding: 50px;
+    border-radius: 10%;
+}
+
+.registration-wrapper p{
+    margin-bottom: 0;
+}
+
+.registration-wrapper input{ 
+    margin-bottom: 20px;
+}
