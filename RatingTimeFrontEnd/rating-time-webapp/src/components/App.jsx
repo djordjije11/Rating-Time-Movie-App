@@ -82,10 +82,16 @@ export default function App() {
     setLoggedIn(true);
   };
 
+  const handleRegistration = async (loggedUser) => {
+    setLoggedUser(loggedUser);
+    setLoggedIn(true);
+  };
+
   const handleLogout = async () => {
-    await UserService.logoutAsync();
-    setAdmin(false);
-    setLoggedIn(false);
+    if (await UserService.logoutAsync()){
+      setAdmin(false);
+      setLoggedIn(false);
+    } 
   };
 
   if (isLoggedIn) {
@@ -138,11 +144,11 @@ export default function App() {
         <Routes>
           <Route
             path="/login"
-            element={<Login onLogin={handleLogin} isLoggedIn={isLoggedIn} />}
+            element={<Login onLogin={handleLogin}/>}
           />
           <Route
             path="/registration"
-            element={<Register/>}
+            element={<Register onRegister={handleRegistration}/>}
           />
           <Route path="/*" element={<Navigate to="/login" />} />
         </Routes>
