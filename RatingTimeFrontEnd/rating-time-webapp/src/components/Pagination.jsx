@@ -19,10 +19,7 @@ export const loader = function (type) {
 };
 
 export default function Pagination(props) {
-  const currentPage = props.currentPage;
-  const handlePageChange = props.handlePageChange;
-  const totalPages = props.totalPages;
-  const toShow = props.toShow;
+  const { currentPage, handlePageChange, totalPages, toShow } = props;
 
   return (
     <div

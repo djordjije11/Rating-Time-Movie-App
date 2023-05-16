@@ -121,11 +121,11 @@ export default class UserService {
     }
     successToastPopUp("Registered successfully");
     const responseJson = await response.json();
-    const user = {
+    const dbUser = {
       username: responseJson.username,
       role: responseJson.role,
     };
-    return user;
+    return dbUser;
   }
 
   static async logoutAsync() {

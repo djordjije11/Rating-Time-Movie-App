@@ -27,39 +27,32 @@ export default function Login(props) {
     <div className="login-background">
       <div className="login-wrapper">
         <h1>Log In</h1>
-        <div>
-          <label>
-            <p>Username</p>
-            <input
-              name="username"
-              type="text"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            <p>Password</p>
-            <input
-              name="password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <button onClick={loginAsync} className="button-28">
-            Submit
-          </button>
-        </div>
-        <div>
-          <p className="register-p">Don't have an account?</p>
-          <button onClick={openRegister} className="button-28">
-            Register
-          </button>
-        </div>
+        <label>
+          <p>Username</p>
+          <input
+            name="username"
+            type="text"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+          />
+        </label>
+        <label>
+          <p>Password</p>
+          <input
+            name="password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
+        </label>
+        <button onClick={loginAsync} className="button-28">
+          Submit
+        </button>
+
+        <p className="register-p">Don't have an account?</p>
+        <button onClick={openRegister} className="button-28">
+          Register
+        </button>
       </div>
     </div>
   );

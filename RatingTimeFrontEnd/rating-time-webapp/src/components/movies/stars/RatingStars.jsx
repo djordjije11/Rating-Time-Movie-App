@@ -1,8 +1,8 @@
 import StarRatings from "react-star-ratings";
 
 export default function RatingStars(props) {
-  const rating = props.rating;
-  const changeRating = props.changeRating;
+  const { rating, changeRating } = props;
+
   return (
     <StarRatings
       rating={rating}
