@@ -2,27 +2,26 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/auth/Login.css";
 import UserService from "../../services/rating_time/UserService";
-import { func } from "prop-types";
 
 export default function Login(props) {
+  const onLogin = props.onLogin;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const onLogin= props.onLogin;
 
   const loginAsync = async function () {
     const responseJson = await UserService.loginAsync({ username, password });
-    const role= responseJson.role;
-    const loggedUser= responseJson.username;
-    if(role !=null){
+    const role = responseJson.role;
+    const loggedUser = responseJson.username;
+    if (role != null) {
       onLogin(role, loggedUser);
       navigate("/");
     }
   };
 
   const openRegister = function () {
-    navigate("/registration");
-  }
+    navigate("/register");
+  };
 
   return (
     <div className="login-background">

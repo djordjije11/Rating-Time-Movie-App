@@ -5,9 +5,8 @@ import { Link } from "react-router-dom";
 import logo from "../../images/logo.png";
 
 export default function NavbarComponent(props) {
-  const onLogout = props.onLogout;
-  const loggedUser= props.loggedUser;
-  
+  const { onLogout, loggedUser, isAdmin } = props;
+
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -20,36 +19,36 @@ export default function NavbarComponent(props) {
             <Link
               className="text-decoration-none text-white"
               to="/"
-              style={{ marginRight: "30px"}}
+              style={{ marginRight: "30px" }}
             >
               Home
             </Link>
             <Link
               className="text-decoration-none text-white"
               to="/rated-movies"
-              style={{ marginRight: "30px"}}
+              style={{ marginRight: "30px" }}
             >
               Rated movies
             </Link>
-            {props.isAdmin && (
+            {isAdmin && (
               <Link
                 className="text-decoration-none text-white"
                 to="/users"
-                style={{ marginRight: "auto"}}
+                style={{ marginRight: "auto" }}
               >
                 Users
               </Link>
             )}
-              <span className="text-decoration-none text-white" id="logged-user">
-                {loggedUser}
-              </span>
-              <Link
-                className="text-decoration-none text-white"
-                to="/"
-                onClick={onLogout}
-              >
-                Logout
-              </Link>
+            <span className="text-decoration-none text-white" id="logged-user">
+              {loggedUser}
+            </span>
+            <Link
+              className="text-decoration-none text-white"
+              to="/"
+              onClick={onLogout}
+            >
+              Logout
+            </Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

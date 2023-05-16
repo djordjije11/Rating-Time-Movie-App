@@ -12,6 +12,13 @@ export const Toast = Swal.mixin({
   },
 });
 
+export function successToastPopUp(title) {
+  Toast.fire({
+    icon: "success",
+    title,
+  });
+}
+
 export const swalOptions = {
   customClass: {
     container: "custom-container-class",
@@ -55,3 +62,60 @@ export function errorRefreshPagePopUp() {
   });
 }
 
+export function invalidUsernamePopUp() {
+  Swal.fire({
+    ...swalOptions,
+    icon: "warning",
+    title: "Invalid Username",
+    text: "Username must be between 3 and 40 characters",
+  });
+}
+
+export function invalidPasswordPopUp() {
+  Swal.fire({
+    ...swalOptions,
+    icon: "warning",
+    title: "Invalid Password",
+    text: "Password must be between 8 and 40 characters",
+  });
+}
+
+export function invalidConfirmPasswordPopUp() {
+  Swal.fire({
+    ...swalOptions,
+    icon: "warning",
+    title: "Invalid Password",
+    text: "Password and confirmed password are not the same.",
+  });
+}
+
+export function invalidEmailPopUp() {
+  Swal.fire({
+    ...swalOptions,
+    icon: "warning",
+    title: "Invalid Email",
+    text: "Email must be in the next format: _____@____.____",
+  });
+}
+
+export function invalidLoginCredentials() {
+  Swal.fire({
+    ...swalOptions,
+    icon: "error",
+    title: "Invalid credentials",
+    text: "Please check your username and password.",
+  });
+}
+
+export async function logoutQuestionPopUpAsync() {
+  const { value: shouldLogout } = await Swal.fire({
+    ...swalOptions,
+    title: "Log Out",
+    text: "Are you sure you want to log out?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Log Out",
+    cancelButtonText: "Cancel",
+  });
+  return shouldLogout;
+}

@@ -1,4 +1,5 @@
 import "../css/Home.css";
+
 export const loader = function (type) {
   let movies = document.querySelector(".movie-wrapper");
   if (type === 2) {
@@ -37,9 +38,7 @@ export default function Pagination(props) {
       >
         BACK
       </button>
-      <span className="current-page">
-        {currentPage}
-      </span>
+      <span className="current-page">{currentPage}</span>
       <button
         className="button-28"
         style={{

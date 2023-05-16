@@ -9,8 +9,9 @@ import UserService from "../services/rating_time/UserService";
 import MovieService from "../services/rating_time/MovieService";
 import UserRatedMovies from "./movies/list/UserRatedMovies";
 import MovieDefinition from "../models/MovieDefinition";
-import "../css/SwalPopUp.css";
 import Register from "./auth/Registration";
+import { USER_ROLE_ADMIN } from "../models/UserRoles";
+import "../css/SwalPopUp.css";
 
 export default function App() {
   const [ratedMovies, setRatedMovies] = useState([]);
@@ -24,7 +25,7 @@ export default function App() {
   const addMovieAsync = async function () {
     const movie = { ...currentMovie };
     const isSaved = await MovieService.addMovieToDBAsync(movie);
-    if(isSaved){
+    if (isSaved) {
       updateInMemoryRatedMovies(movie);
     }
     setCurrentMovie(null);
@@ -36,9 +37,9 @@ export default function App() {
 
   const checkAuthAsync = async () => {
     const role = await UserService.checkAuthAsync();
-    if(role !== null){
+    if (role !== null) {
       setLoggedIn(true);
-      if(role === "Admin"){
+      if (role === USER_ROLE_ADMIN) {
         setAdmin(true);
       }
     }
@@ -47,7 +48,7 @@ export default function App() {
   const getRatedMoviesAsync = async () => {
     if (isLoggedIn) {
       const ratedMovies = await MovieService.getRatedMoviesFromDBAsync();
-      if(ratedMovies !== null){
+      if (ratedMovies !== null) {
         setRatedMovies(ratedMovies);
       }
     }
@@ -74,30 +75,35 @@ export default function App() {
     }
   };
 
-  const handleLogin = async (role,loggedUser) => {
-    if (role === "Admin") {
+  const handleLogin = async (role, username) => {
+    if (role === USER_ROLE_ADMIN) {
       setAdmin(true);
     }
-    setLoggedUser(loggedUser);
+    setLoggedUser(username);
     setLoggedIn(true);
   };
 
-  const handleRegistration = async (loggedUser) => {
-    setLoggedUser(loggedUser);
+  const handleRegistration = async (username) => {
+    setLoggedUser(username);
     setLoggedIn(true);
   };
 
   const handleLogout = async () => {
-    if (await UserService.logoutAsync()){
+    const isLoggedOut = await UserService.logoutAsync();
+    if (isLoggedOut) {
       setAdmin(false);
       setLoggedIn(false);
-    } 
+    }
   };
 
   if (isLoggedIn) {
     return (
       <BrowserRouter>
-        <NavbarComponent isAdmin={isAdmin} onLogout={handleLogout} loggedUser={loggedUser} />
+        <NavbarComponent
+          isAdmin={isAdmin}
+          onLogout={handleLogout}
+          loggedUser={loggedUser}
+        />
         <Routes>
           <Route
             path="/"
@@ -142,13 +148,10 @@ export default function App() {
     return (
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route
-            path="/login"
-            element={<Login onLogin={handleLogin}/>}
-          />
-          <Route
-            path="/registration"
-            element={<Register onRegister={handleRegistration}/>}
+            path="/register"
+            element={<Register onRegister={handleRegistration} />}
           />
           <Route path="/*" element={<Navigate to="/login" />} />
         </Routes>
