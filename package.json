@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "react-modal": "^3.16.1",
-    "react-star-ratings": "^2.3.0",
-    "sweetalert2": "^11.7.5"
-  }
-}
