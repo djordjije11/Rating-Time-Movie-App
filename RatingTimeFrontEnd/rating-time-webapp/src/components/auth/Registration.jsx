@@ -68,6 +68,10 @@ export default function Register(props) {
           <button onClick={registerAsync} className="button-28">
             Register
           </button>
+          <p className="register-p">Already have an account?</p>
+          <button onClick={() => navigate("/login")} className="button-28">
+            Login
+          </button>
         </div>
       </div>
     </div>

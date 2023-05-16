@@ -45,7 +45,8 @@ export default class UserService {
     const response = await fetch(AUTH_API_URL, requestOptions);
     if (response.ok) {
       const responseJson = await response.json();
-      return responseJson.role;
+      const { username, email, role } = responseJson;
+      return { username, email, role };
     }
     return null;
   }

@@ -36,9 +36,10 @@ export default function App() {
   };
 
   const checkAuthAsync = async () => {
-    const role = await UserService.checkAuthAsync();
+    const { username, role } = await UserService.checkAuthAsync();
     if (role !== null) {
       setLoggedIn(true);
+      setLoggedUser(username);
       if (role === USER_ROLE_ADMIN) {
         setAdmin(true);
       }

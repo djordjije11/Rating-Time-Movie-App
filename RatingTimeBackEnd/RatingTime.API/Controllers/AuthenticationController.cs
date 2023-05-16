@@ -31,9 +31,9 @@ namespace RatingTime.API.Controllers
 
         [HttpGet, Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_USER)]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CheckRole()
+        public ActionResult<UserInfo> CheckUserInfo()
         {
-            return Ok(new { role = User.FindFirstValue(ClaimTypes.Role) });
+            return Ok(new UserInfo(User.FindFirstValue(ClaimTypes.Name), User.FindFirstValue(ClaimTypes.Email), User.FindFirstValue(ClaimTypes.Role)));
         }
 
         [HttpPost("register")]

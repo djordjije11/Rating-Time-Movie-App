@@ -50,7 +50,7 @@ export default function Login(props) {
         </button>
 
         <p className="register-p">Don't have an account?</p>
-        <button onClick={openRegister} className="button-28">
+        <button onClick={() => navigate("/register")} className="button-28">
           Register
         </button>
       </div>
