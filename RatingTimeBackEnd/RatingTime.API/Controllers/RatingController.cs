@@ -13,7 +13,7 @@ namespace RatingTime.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_USER)]
+    [Authorize(Policy = ICookieAuthorization.AUTHORIZATION_POLICY_USER)]
     public class RatingController : ControllerBase
     {
         private readonly IRatingLogic ratingLogic;
@@ -40,7 +40,7 @@ namespace RatingTime.API.Controllers
             return Ok(userRatings);
         }
 
-        [HttpGet("{username}"), Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_ADMIN)]
+        [HttpGet("{username}"), Authorize(Policy = ICookieAuthorization.AUTHORIZATION_POLICY_ADMIN)]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<RatingInfo>>> GetAllByUsernameAsnyc(CancellationToken cancellationToken, [FromRoute] string username)
         {

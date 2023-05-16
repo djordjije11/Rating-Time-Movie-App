@@ -10,7 +10,7 @@ using System.Text.Json;
 namespace RatingTime.API.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_USER)]
+    [Authorize(Policy = ICookieAuthorization.AUTHORIZATION_POLICY_USER)]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -23,14 +23,14 @@ namespace RatingTime.API.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet("all"), Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_ADMIN)]
+        [HttpGet("all"), Authorize(Policy = ICookieAuthorization.AUTHORIZATION_POLICY_ADMIN)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<UserInfo>>> GetAllAsync(CancellationToken cancellationToken)
         {
             return Ok(mapper.Map<List<UserInfo>>(await userLogic.GetAllAsync(cancellationToken)));
         }
 
-        [HttpGet, Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_ADMIN)]
+        [HttpGet, Authorize(Policy = ICookieAuthorization.AUTHORIZATION_POLICY_ADMIN)]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<UserInfo>>> GetAllAsync(CancellationToken cancellationToken, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 40)
         {

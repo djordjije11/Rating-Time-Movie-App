@@ -88,7 +88,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/api/authentication/login";
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
-        options.Cookie.Name = "auth-cookie";
+        options.Cookie.Name = ICookieAuthorization.AUTHORIZATION_COOKIE_NAME;
         options.Cookie.SameSite = SameSiteMode.Strict;
         options.Events.OnRedirectToLogin = context =>
         {
@@ -105,8 +105,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy(IAuthorizationPolicy.AUTHORIZATION_POLICY_USER, policy => policy.RequireAuthenticatedUser());
-    options.AddPolicy(IAuthorizationPolicy.AUTHORIZATION_POLICY_ADMIN, policy => policy.RequireRole(UserRole.Admin.ToString()));
+    options.AddPolicy(ICookieAuthorization.AUTHORIZATION_POLICY_USER, policy => policy.RequireAuthenticatedUser());
+    options.AddPolicy(ICookieAuthorization.AUTHORIZATION_POLICY_ADMIN, policy => policy.RequireRole(UserRole.Admin.ToString()));
 });
 
 

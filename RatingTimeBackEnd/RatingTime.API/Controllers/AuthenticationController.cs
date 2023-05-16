@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RatingTime.API.Authentication;
 using RatingTime.API.Authorization;
-using RatingTime.Domain.Enums;
 using RatingTime.Domain.Models;
 using RatingTime.DTO.Models.Users;
 using RatingTime.Logic.Users;
@@ -29,7 +28,7 @@ namespace RatingTime.API.Controllers
             this.authenticationService = authenticationService;
         }
 
-        [HttpGet, Authorize(Policy = IAuthorizationPolicy.AUTHORIZATION_POLICY_USER)]
+        [HttpGet, Authorize(Policy = ICookieAuthorization.AUTHORIZATION_POLICY_USER)]
         [ProducesResponseType(StatusCodes.Status200OK), ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<UserInfo> CheckUserInfo()
         {
