@@ -12,14 +12,14 @@ export default function Register(props) {
   const navigate = useNavigate();
 
   const registerAsync = async function () {
-    const { username, role } = await UserService.registerAsync({
+    const dbUser = await UserService.registerAsync({
       username,
       email,
       password,
       confirmedPassword,
     });
-    if (role !== null) {
-      onRegister(username);
+    if (dbUser.role !== null) {
+      onRegister(dbUser.username);
       navigate("/");
     }
   };
