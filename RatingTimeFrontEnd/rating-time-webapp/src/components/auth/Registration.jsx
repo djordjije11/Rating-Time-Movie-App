@@ -18,7 +18,7 @@ export default function Register(props) {
       password,
       confirmedPassword,
     });
-    if (dbUser.role !== null) {
+    if (dbUser !== null && dbUser.role !== null) {
       onRegister(dbUser.username);
       navigate("/");
     }

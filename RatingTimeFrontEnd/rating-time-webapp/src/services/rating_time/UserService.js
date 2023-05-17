@@ -28,6 +28,15 @@ export default class UserService {
     if (password.length < 8 || password.length > 40) {
       return false;
     }
+    if (/[A-Z]/.test(password) === false) {
+      return false;
+    }
+    if (/[a-z]/.test(password) === false) {
+      return false;
+    }
+    if (/\d/.test(password) === false) {
+      return false;
+    }
     return true;
   }
   static validateEmail(email) {
@@ -93,16 +102,16 @@ export default class UserService {
       invalidUsernamePopUp();
       return null;
     }
+    if (password !== confirmedPassword) {
+      invalidConfirmPasswordPopUp();
+      return null;
+    }
     if (this.validatePassword(password) === false) {
       invalidPasswordPopUp();
       return null;
     }
     if (this.validateEmail(email) === false) {
       invalidEmailPopUp();
-      return null;
-    }
-    if (password !== confirmedPassword) {
-      invalidConfirmPasswordPopUp();
       return null;
     }
     const requestOptions = {
@@ -116,12 +125,12 @@ export default class UserService {
       credentials: "include",
     };
     const response = await fetch(REGISTER_API_URL, requestOptions);
+    const responseJson = await response.json();
     if (response.ok === false) {
-      errorOccurredPopUp();
+      errorOccurredPopUp(responseJson.message);
       return null;
     }
     successToastPopUp("Registered successfully");
-    const responseJson = await response.json();
     const dbUser = {
       username: responseJson.username,
       role: responseJson.role,

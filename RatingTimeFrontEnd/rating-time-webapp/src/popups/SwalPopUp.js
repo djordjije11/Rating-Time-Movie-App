@@ -44,12 +44,15 @@ export function ratedSuccessfullyPopUp(title, rating) {
   });
 }
 
-export function errorOccurredPopUp() {
+export function errorOccurredPopUp(text) {
+  if (!text) {
+    text = "Please try again";
+  }
   Swal.fire({
     ...swalOptions,
     icon: "error",
     title: "Error occurred",
-    text: "Please try again",
+    text,
   });
 }
 
@@ -76,7 +79,7 @@ export function invalidPasswordPopUp() {
     ...swalOptions,
     icon: "warning",
     title: "Invalid Password",
-    text: "Password must be between 8 and 40 characters",
+    text: "Password must be between 8 and 40 characters. Password must contain at least one uppercase letter, at least one lowercase letter and at least one digit.",
   });
 }
 
