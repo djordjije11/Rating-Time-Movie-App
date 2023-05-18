@@ -1,19 +1,18 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { swalOptions } from "../../popups/SwalPopUp";
-import Swal from "sweetalert2";
+import { warningPopUp } from "../../popups/SwalPopUp";
 import UserService from "../../services/rating_time/UserService";
 import MovieService from "../../services/rating_time/MovieService";
 import "../../css/users/Users.css";
-import "../../css/SwalPopUp.css"
+import "../../css/SwalPopUp.css";
 
 export default function Users(props) {
-  const {users, setUsers} = props;
+  const { users, setUsers } = props;
   const navigate = useNavigate();
 
   const getAllUsers = async () => {
     const dbUsers = await UserService.getAllUsersAsync();
-    if(dbUsers !== null){
+    if (dbUsers !== null) {
       setUsers(dbUsers);
     }
   };
@@ -27,11 +26,7 @@ export default function Users(props) {
       user.username
     );
     if (userRatedMovies === null || userRatedMovies.length === 0) {
-      Swal.fire({
-        ...swalOptions,
-        icon: "warning",
-        title: `User ${user.username} has not rated any movies yet!`,
-      });
+      warningPopUp(`User ${user.username} has not rated any movies yet!`);
       return;
     }
     navigate(`/rated-movies/${user.username}`, {
@@ -39,7 +34,6 @@ export default function Users(props) {
     });
   };
 
- 
   return (
     <div>
       <table className="table-container">

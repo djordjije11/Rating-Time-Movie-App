@@ -1,8 +1,9 @@
 import {
-  swalWithBootstrapButtons,
   errorOccurredPopUp,
   errorRefreshPagePopUp,
   ratedSuccessfullyPopUp,
+  deleteRatedMovieQuestionPopUpAsync,
+  deletedRatedMovieSuccessfullyPopUp,
 } from "../../popups/SwalPopUp";
 import MovieDefinition from "../../models/MovieDefinition";
 
@@ -77,7 +78,7 @@ export default class MovieService {
       credentials: "include",
     };
     const response = await fetch(RATING_API_URL, requestOptions);
-    if(response.ok){
+    if (response.ok) {
       ratedSuccessfullyPopUp(movie.title, movie.rating);
       return true;
     }
@@ -86,35 +87,24 @@ export default class MovieService {
   }
 
   static async deleteMovieFromDBAsync(ratedMovie) {
-    const result = await swalWithBootstrapButtons.fire({
-      title: "Are you sure you want to delete the movie?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
-      reverseButtons: true,
-    });
-    if(result.isConfirmed){
-      const requestOptions = {
-        method: "DELETE",
-        body: JSON.stringify({
-          movieId: ratedMovie.id,
-        }),
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      };
-      const response = await fetch(RATING_API_URL, requestOptions);
-      if (response.ok) {
-        swalWithBootstrapButtons.fire(
-          "Deleted!",
-          `${ratedMovie.title} has been deleted.`,
-          "success"
-        );
-        return true;
-      }
+    const isConfirmed = await deleteRatedMovieQuestionPopUpAsync();
+    if (isConfirmed === false) {
+      return;
+    }
+    const requestOptions = {
+      method: "DELETE",
+      body: JSON.stringify({
+        movieId: ratedMovie.id,
+      }),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    };
+    const response = await fetch(RATING_API_URL, requestOptions);
+    if (response.ok === false) {
       errorOccurredPopUp();
       return false;
     }
+    deletedRatedMovieSuccessfullyPopUp(ratedMovie.title);
+    return true;
   }
 }

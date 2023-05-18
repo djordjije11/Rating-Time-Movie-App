@@ -19,10 +19,6 @@ export default function Login(props) {
     }
   };
 
-  const openRegister = function () {
-    navigate("/register");
-  };
-
   return (
     <div className="login-background">
       <div className="login-wrapper">

@@ -37,7 +37,7 @@ export const swalWithBootstrapButtons = Swal.mixin({
 });
 
 export function ratedSuccessfullyPopUp(title, rating) {
-  Swal.fire({
+  return Swal.fire({
     ...swalOptions,
     icon: "success",
     title: `You successfully rated ${title} with ${rating} stars!`,
@@ -48,7 +48,7 @@ export function errorOccurredPopUp(text) {
   if (!text) {
     text = "Please try again";
   }
-  Swal.fire({
+  return Swal.fire({
     ...swalOptions,
     icon: "error",
     title: "Error occurred",
@@ -57,7 +57,7 @@ export function errorOccurredPopUp(text) {
 }
 
 export function errorRefreshPagePopUp() {
-  Swal.fire({
+  return Swal.fire({
     ...swalOptions,
     icon: "error",
     title: "Error occurred",
@@ -66,7 +66,7 @@ export function errorRefreshPagePopUp() {
 }
 
 export function invalidUsernamePopUp() {
-  Swal.fire({
+  return Swal.fire({
     ...swalOptions,
     icon: "warning",
     title: "Invalid Username",
@@ -75,7 +75,7 @@ export function invalidUsernamePopUp() {
 }
 
 export function invalidPasswordPopUp() {
-  Swal.fire({
+  return Swal.fire({
     ...swalOptions,
     icon: "warning",
     title: "Invalid Password",
@@ -84,7 +84,7 @@ export function invalidPasswordPopUp() {
 }
 
 export function invalidConfirmPasswordPopUp() {
-  Swal.fire({
+  return Swal.fire({
     ...swalOptions,
     icon: "warning",
     title: "Invalid Password",
@@ -93,7 +93,7 @@ export function invalidConfirmPasswordPopUp() {
 }
 
 export function invalidEmailPopUp() {
-  Swal.fire({
+  return Swal.fire({
     ...swalOptions,
     icon: "warning",
     title: "Invalid Email",
@@ -102,7 +102,7 @@ export function invalidEmailPopUp() {
 }
 
 export function invalidLoginCredentials() {
-  Swal.fire({
+  return Swal.fire({
     ...swalOptions,
     icon: "error",
     title: "Invalid credentials",
@@ -121,4 +121,33 @@ export async function logoutQuestionPopUpAsync() {
     cancelButtonText: "Cancel",
   });
   return shouldLogout;
+}
+
+export async function deleteRatedMovieQuestionPopUpAsync() {
+  const result = await swalWithBootstrapButtons.fire({
+    title: "Are you sure you want to delete the movie?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "No, cancel!",
+    reverseButtons: true,
+  });
+  return result.isConfirmed;
+}
+
+export function deletedRatedMovieSuccessfullyPopUp(title) {
+  return swalWithBootstrapButtons.fire(
+    "Deleted!",
+    `${title} has been deleted.`,
+    "success"
+  );
+}
+
+export function warningPopUp(title) {
+  return Swal.fire({
+    ...swalOptions,
+    icon: "warning",
+    title,
+  });
 }

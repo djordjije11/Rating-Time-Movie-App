@@ -44,7 +44,6 @@ export default function NavbarComponent(props) {
             </span>
             <Link
               className="text-decoration-none text-white"
-              to="/"
               onClick={onLogout}
             >
               Logout

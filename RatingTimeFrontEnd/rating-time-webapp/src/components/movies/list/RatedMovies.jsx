@@ -3,30 +3,34 @@ import ZoomedMovie from "../single/ZoomedMovie";
 import MovieService from "../../../services/rating_time/MovieService";
 import RatedMovie from "../single/RatedMovie";
 import "../../../css/movie/RatedMovies.css";
-import Swal from "sweetalert2";
-import {swalOptions } from "../../../popups/SwalPopUp";
+import { warningPopUp } from "../../../popups/SwalPopUp";
 import { useNavigate } from "react-router";
 import "../../../css/SwalPopUp.css";
 
 export default function RatedMovies(props) {
-  const {ratedMovies, setRatedMovies, currentMovie, setCurrentMovie, isZoomed, setIsZoomed, addMovieAsync, handleRatingChange} = props;
+  const {
+    ratedMovies,
+    setRatedMovies,
+    currentMovie,
+    setCurrentMovie,
+    isZoomed,
+    setIsZoomed,
+    addMovieAsync,
+    handleRatingChange,
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
     if (ratedMovies.length === 0) {
-      Swal.fire({
-        ...swalOptions,
-        icon: "warning",
-        title: "No rated movies found!",
-      }).then(() => {
-        navigate('/'); 
+      warningPopUp("No rated movies found!").then(() => {
+        navigate("/");
       });
     }
   }, [ratedMovies]);
 
   async function removeMovieAsync(index, ratedMovie) {
     const isRemoved = await MovieService.deleteMovieFromDBAsync(ratedMovie);
-    if(isRemoved){
+    if (isRemoved) {
       setRatedMovies((prevMovies) => prevMovies.filter((_, i) => i !== index));
     }
   }
@@ -41,13 +45,16 @@ export default function RatedMovies(props) {
             rating={ratedMovie.rating}
           />
           <div className="btn-rated-movies">
-            <button className="button-28" id="button-rated"
+            <button
+              className="button-28"
+              id="button-rated"
               onClick={() => removeMovieAsync(index, ratedMovie)}
             >
               Remove rating
             </button>
             <button
-              className="button-28" id="button-rated"
+              className="button-28"
+              id="button-rated"
               onClick={() => {
                 setCurrentMovie(ratedMovies[index]);
                 setIsZoomed(true);
