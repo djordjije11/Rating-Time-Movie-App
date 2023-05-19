@@ -20,14 +20,20 @@
     align-items: center;
     color: aliceblue;
 }
+.movie-img{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 #button-close{
-  align-self: flex-end;
-  margin-left: 95%;
-  background-color: #fff;
-  border: 2px solid #263238;
-  border-radius: 15px;
-  cursor: pointer;
-  width: 30px;
+    position: fixed;
+    align-self: flex-end;
+    margin-left: 95%;
+    background-color: #fff;
+    border: 2px solid #263238;
+    border-radius: 15px;
+    cursor: pointer;
+    width: 30px;
 }
 
 .zoomed-rate{
