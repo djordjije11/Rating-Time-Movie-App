@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserService from "../../services/rating_time/UserService";
 import "../../css/auth/Registration.css";
+import { Link } from "react-router-dom";
 
 export default function Register(props) {
   const onRegister = props.onRegister;
@@ -22,6 +23,10 @@ export default function Register(props) {
       onRegister(dbUser.username);
       navigate("/");
     }
+  };
+
+  const linkStyle = {
+    color: '#263238'
   };
 
   return (
@@ -69,9 +74,7 @@ export default function Register(props) {
             Register
           </button>
           <p className="register-p">Already have an account?</p>
-          <button onClick={() => navigate("/login")} className="button-28">
-            Login
-          </button>
+          <p> <Link to={'/login'} style={linkStyle}>Click here to login!</Link></p>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/auth/Login.css";
 import UserService from "../../services/rating_time/UserService";
+import { Link } from "react-router-dom";
 
 export default function Login(props) {
   const onLogin = props.onLogin;
@@ -17,6 +18,10 @@ export default function Login(props) {
       onLogin(role, loggedUser);
       navigate("/");
     }
+  };
+
+  const linkStyle = {
+    color: '#263238'
   };
 
   return (
@@ -44,11 +49,9 @@ export default function Login(props) {
         <button onClick={loginAsync} className="button-28">
           Submit
         </button>
-
         <p className="register-p">Don't have an account?</p>
-        <button onClick={() => navigate("/register")} className="button-28">
-          Register
-        </button>
+        <p> <Link to={'/register'} style={linkStyle}>Click here to register!</Link></p>
+
       </div>
     </div>
   );
