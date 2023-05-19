@@ -1,4 +1,5 @@
 import RatingStars from "../stars/RatingStars";
+import noMovieImg from "../../../images/no-movie-img.png";
 
 
 export default function Movie(props) {
@@ -8,7 +9,7 @@ export default function Movie(props) {
     <div className="single-movie">
       <img className="movie-img"
         {...(movie.imageUrl.endsWith("null")
-          ? null
+          ? { src: noMovieImg}
           : { src: movie.imageUrl })}
         alt={movie.title}
         onClick={
